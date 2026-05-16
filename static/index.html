@@ -7,101 +7,169 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script>tailwind.config={theme:{extend:{colors:{accent:'#4da8ff',accent2:'#2980ff',dark:'#0a0e17',dark2:'#111827',surface:'#131c2e'},fontFamily:{sans:['Inter','Microsoft YaHei','sans-serif']}}}}</script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root{--ease-out-expo:cubic-bezier(0.19,1,0.22,1);--ease-out-back:cubic-bezier(0.34,1.56,0.64,1);--ease-spring:cubic-bezier(0.43,1.47,0.65,0.99)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter','Microsoft YaHei',sans-serif;background:#0a0e17;color:#c8d6e5;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:linear-gradient(rgba(77,168,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(77,168,255,.3) 1px,transparent 1px);background-size:60px 60px}
+body{font-family:'Inter','Microsoft YaHei',sans-serif;background:#0a0e17;color:#c8d6e5;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.02;background-image:linear-gradient(rgba(77,168,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(77,168,255,.3) 1px,transparent 1px);background-size:60px 60px}
 
-/* Nav */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,14,23,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(77,168,255,.1);height:52px;display:flex;align-items:center;padding:0 28px}
-.nav-link{padding:8px 18px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border-radius:6px;transition:all .2s;border:none;background:none;font-family:inherit}
-.nav-link:hover{color:#4da8ff;background:rgba(77,168,255,.06)}
+/* ======== SPLASH SCREEN ======== */
+#splash{position:fixed;inset:0;z-index:9999;background:#0a0e17;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s var(--ease-out-expo),transform .8s var(--ease-out-expo)}
+#splash.hide{opacity:0;transform:scale(1.05);pointer-events:none}
+#splash canvas{position:absolute;inset:0}
+.splash-logo{position:relative;z-index:1;text-align:center}
+.splash-logo .icon{font-size:48px;color:#4da8ff;animation:splashIcon 2s var(--ease-out-expo) infinite}
+.splash-logo h1{font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px;margin-top:16px;opacity:0;animation:revealUp .8s var(--ease-out-expo) .3s forwards}
+.splash-logo p{font-size:14px;color:#4a6278;margin-top:8px;letter-spacing:4px;opacity:0;animation:revealUp .8s var(--ease-out-expo) .6s forwards}
+.splash-bar{position:relative;z-index:1;width:200px;height:2px;background:rgba(77,168,255,.1);border-radius:1px;margin-top:32px;overflow:hidden}
+.splash-bar-fill{height:100%;background:#4da8ff;border-radius:1px;width:0;animation:splashBar 2.2s var(--ease-out-expo) .2s forwards}
+@keyframes splashIcon{0%,100%{transform:translateY(0);filter:drop-shadow(0 0 20px rgba(77,168,255,.4))}50%{transform:translateY(-8px);filter:drop-shadow(0 0 40px rgba(77,168,255,.7))}}
+@keyframes splashBar{0%{width:0}60%{width:85%}100%{width:100%}}
+@keyframes revealUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ======== NAV ======== */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,14,23,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(77,168,255,.1);height:52px;display:flex;align-items:center;padding:0 28px;transform:translateY(-100%);transition:transform .6s var(--ease-out-expo)}
+.navbar.visible{transform:translateY(0)}
+.nav-link{position:relative;padding:8px 18px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border-radius:6px;transition:all .3s var(--ease-out-expo);border:none;background:none;font-family:inherit}
+.nav-link:hover{color:#fff}
 .nav-link.active{color:#4da8ff;background:rgba(77,168,255,.1)}
+.nav-link::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleX(0);width:20px;height:2px;background:#4da8ff;border-radius:1px;transition:transform .3s var(--ease-out-expo)}
+.nav-link.active::after{transform:translateX(-50%) scaleX(1)}
 
-/* Page */
-.page{display:none;padding-top:52px;min-height:100vh}
+/* ======== PAGE TRANSITIONS ======== */
+.page{display:none;padding-top:52px;min-height:100vh;animation:fadeSlideIn .5s var(--ease-out-expo)}
 .page.active{display:block}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(16px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
 
-/* Section */
+/* ======== SECTION ======== */
 .section{padding:80px 24px;max-width:1100px;margin:0 auto}
 .section-sm{padding:48px 24px}
 
-/* Cards */
-.card{background:rgba(19,28,46,.7);backdrop-filter:blur(12px);border:1px solid rgba(77,168,255,.1);border-radius:16px;padding:32px}
-.card-hover{transition:all .25s}
-.card-hover:hover{transform:translateY(-3px);border-color:rgba(77,168,255,.3);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+/* ======== CARDS with 3D tilt ======== */
+.card{background:rgba(19,28,46,.7);backdrop-filter:blur(12px);border:1px solid rgba(77,168,255,.1);border-radius:16px;padding:32px;transition:transform .4s var(--ease-out-expo),box-shadow .4s var(--ease-out-expo),border-color .4s}
+.card-hover:hover{transform:translateY(-4px);border-color:rgba(77,168,255,.3);box-shadow:0 16px 48px rgba(0,0,0,.4),0 0 0 1px rgba(77,168,255,.1) inset}
 
-/* Hero */
-.hero-orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbPulse 5s ease-in-out infinite}
-.hero-orb.large{width:400px;height:400px;top:10%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(77,168,255,.06) 0%,transparent 70%)}
-.hero-orb.small{width:200px;height:200px;bottom:20%;right:10%;background:radial-gradient(circle,rgba(41,128,255,.05) 0%,transparent 70%);animation-delay:2.5s}
-@keyframes orbPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.15);opacity:1}}
+/* ======== REVEAL ON SCROLL ======== */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease-out-expo),transform .8s var(--ease-out-expo)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-stagger>*{opacity:0;transform:translateY(24px)}
+.reveal-stagger.visible>*:nth-child(1){transition:all .6s var(--ease-out-expo) 0s;opacity:1;transform:translateY(0)}
+.reveal-stagger.visible>*:nth-child(2){transition:all .6s var(--ease-out-expo) .1s;opacity:1;transform:translateY(0)}
+.reveal-stagger.visible>*:nth-child(3){transition:all .6s var(--ease-out-expo) .2s;opacity:1;transform:translateY(0)}
+.reveal-stagger.visible>*:nth-child(4){transition:all .6s var(--ease-out-expo) .3s;opacity:1;transform:translateY(0)}
+.reveal-stagger.visible>*:nth-child(5){transition:all .6s var(--ease-out-expo) .4s;opacity:1;transform:translateY(0)}
+.reveal-stagger.visible>*:nth-child(6){transition:all .6s var(--ease-out-expo) .5s;opacity:1;transform:translateY(0)}
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;border:none;font-family:inherit}
-.btn-primary{background:linear-gradient(135deg,#2980ff,#0066e0);color:#fff;box-shadow:0 0 20px rgba(41,128,255,.2)}
-.btn-primary:hover{box-shadow:0 0 36px rgba(41,128,255,.4);transform:translateY(-1px)}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+/* ======== HERO ======== */
+.hero-title{font-size:52px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.15}
+.hero-title .char{display:inline-block;opacity:0;animation:charIn .6s var(--ease-out-expo) forwards}
+@keyframes charIn{from{opacity:0;transform:translateY(40px) rotateX(-20deg)}to{opacity:1;transform:translateY(0) rotateX(0)}}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbFloat 8s ease-in-out infinite}
+.hero-orb.large{width:500px;height:500px;top:20%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(77,168,255,.04) 0%,transparent 70%)}
+.hero-orb.small{width:250px;height:250px;bottom:30%;right:5%;background:radial-gradient(circle,rgba(41,128,255,.05) 0%,transparent 70%);animation-delay:4s}
+@keyframes orbFloat{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(0)}33%{transform:translate(-48%,-52%) scale(1.1) rotate(1deg)}66%{transform:translate(-52%,-48%) scale(.95) rotate(-1deg)}}
+
+/* ======== BUTTONS ======== */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s var(--ease-out-expo);border:none;font-family:inherit;position:relative;overflow:hidden}
+.btn-primary{background:linear-gradient(135deg,#2980ff,#0066e0);color:#fff;box-shadow:0 4px 20px rgba(41,128,255,.25)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(41,128,255,.45)}
+.btn-primary:active{transform:scale(.96)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
 .btn-ghost{background:transparent;color:#6b8aaa;border:1px solid rgba(77,168,255,.15)}
-.btn-ghost:hover{border-color:#4da8ff;color:#4da8ff}
+.btn-ghost:hover{border-color:#4da8ff;color:#4da8ff;background:rgba(77,168,255,.04)}
 .btn-outline{background:transparent;color:#4da8ff;border:1px solid rgba(77,168,255,.3)}
+.btn-outline:hover{background:rgba(77,168,255,.08)}
 .btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+/* Ripple */
+.btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:ripple .6s ease-out;pointer-events:none}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
 
-/* Input */
-input[type="text"]{background:rgba(10,14,23,.6);border:1px solid rgba(77,168,255,.15);border-radius:8px;color:#c8d6e5;padding:10px 14px;font-size:14px;width:100%;outline:none;transition:border-color .2s;font-family:inherit}
-input[type="text"]:focus{border-color:#4da8ff}
-input::placeholder{color:#3a5068}
+/* ======== INPUT ======== */
+input[type="text"]{background:rgba(10,14,23,.6);border:1px solid rgba(77,168,255,.15);border-radius:8px;color:#c8d6e5;padding:10px 14px;font-size:14px;width:100%;outline:none;transition:all .3s var(--ease-out-expo);font-family:inherit}
+input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,255,.1);transform:translateY(-1px)}
 
-/* Progress */
+/* ======== PROGRESS ======== */
 .progress-wrap{background:rgba(10,14,23,.6);border-radius:4px;height:4px;overflow:hidden}
-.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#2980ff,#4da8ff,#2980ff);background-size:200% 100%;animation:shimmer 2s linear infinite;transition:width .5s}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#2980ff,#4da8ff,#2980ff);background-size:200% 100%;animation:shimmer 2s linear infinite;transition:width .6s var(--ease-out-expo)}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* Steps */
-.step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid rgba(77,168,255,.2);color:#4a6278;background:rgba(19,28,46,.8);transition:all .4s}
-.step-dot.current{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 16px rgba(41,128,255,.4)}
-.step-dot.done{border-color:#10b981;background:#10b981;color:#fff}
-.step-line{width:56px;height:1.5px;background:rgba(77,168,255,.15);margin:0 4px;transition:background .4s}
+/* ======== STEPS ======== */
+.step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid rgba(77,168,255,.2);color:#4a6278;background:rgba(19,28,46,.8);transition:all .5s var(--ease-spring)}
+.step-dot.current{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 20px rgba(41,128,255,.5);animation:stepPulse 2s ease-in-out infinite}
+.step-dot.done{border-color:#10b981;background:#10b981;color:#fff;animation:stepPop .5s var(--ease-spring)}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 20px rgba(41,128,255,.5)}50%{box-shadow:0 0 40px rgba(41,128,255,.8)}}
+@keyframes stepPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.step-line{width:56px;height:1.5px;background:rgba(77,168,255,.15);margin:0 4px;transition:all .6s var(--ease-out-expo);position:relative;overflow:hidden}
 .step-line.done{background:#10b981}
+.step-line.done::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.3);animation:lineFlash .6s ease-out}
+@keyframes lineFlash{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 
-/* Log */
-.log-step{display:flex;align-items:flex-start;gap:10px;padding:6px 0;position:relative}
+/* ======== LOG STEPS ======== */
+.log-step{display:flex;align-items:flex-start;gap:10px;padding:6px 0;position:relative;animation:logIn .4s var(--ease-out-expo)}
+@keyframes logIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
 .log-step::before{content:'';position:absolute;left:10px;top:22px;bottom:-6px;width:1.5px;background:rgba(77,168,255,.1)}
 .log-step:last-child::before{display:none}
-.log-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;border:1.5px solid rgba(77,168,255,.2);background:#0a0e17;color:#4a6278;position:relative;z-index:1;transition:all .3s}
-.log-dot.active{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 8px rgba(41,128,255,.4)}
-.log-dot.done{border-color:#10b981;background:#10b981;color:#fff}
+.log-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;border:1.5px solid rgba(77,168,255,.2);background:#0a0e17;color:#4a6278;position:relative;z-index:1;transition:all .4s var(--ease-spring)}
+.log-dot.active{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 12px rgba(41,128,255,.5);animation:dotPulse 1.5s ease-in-out infinite}
+.log-dot.done{border-color:#10b981;background:#10b981;color:#fff;animation:stepPop .4s var(--ease-spring)}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 12px rgba(41,128,255,.5)}50%{box-shadow:0 0 24px rgba(41,128,255,.9)}}
 
-/* Subject card */
-.subj-card{background:rgba(19,28,46,.7);border:1px solid rgba(77,168,255,.08);border-radius:12px;padding:20px;cursor:pointer;transition:all .25s}
-.subj-card:hover{border-color:rgba(77,168,255,.3);transform:translateY(-2px);background:rgba(24,37,54,.8)}
-.subj-card.selected{border-color:#2980ff;background:rgba(41,128,255,.08);box-shadow:0 0 20px rgba(41,128,255,.1)}
+/* ======== SUBJECT CARDS ======== */
+.subj-card{background:rgba(19,28,46,.7);border:1px solid rgba(77,168,255,.08);border-radius:12px;padding:20px;cursor:pointer;transition:all .35s var(--ease-out-expo);position:relative;overflow:hidden}
+.subj-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(77,168,255,.08) 0%,transparent 60%);opacity:0;transition:opacity .3s}
+.subj-card:hover{transform:translateY(-3px);border-color:rgba(77,168,255,.4);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.subj-card:hover::before{opacity:1}
+.subj-card.selected{border-color:#2980ff;background:rgba(41,128,255,.08);box-shadow:0 0 24px rgba(41,128,255,.15);animation:cardSelect .5s var(--ease-spring)}
+@keyframes cardSelect{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
 
-/* Drop zone */
-.drop-zone{transition:all .3s}
-.drop-zone.drag-over{border-color:#4da8ff!important;background:rgba(41,128,255,.06)!important}
+/* ======== DROP ZONE ======== */
+.drop-zone{transition:all .4s var(--ease-out-expo)}
+.drop-zone.drag-over{border-color:#4da8ff!important;background:rgba(41,128,255,.08)!important;transform:scale(1.02);box-shadow:0 0 40px rgba(41,128,255,.15)}
 
-/* Tags */
-.risk-tag{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;margin-bottom:6px;font-size:13px}
+/* ======== RESULT SUCCESS ======== */
+.success-check{width:80px;height:80px;margin:0 auto 20px;position:relative}
+.success-check svg{width:100%;height:100%}
+.success-check circle{fill:none;stroke:#10b981;stroke-width:3;stroke-dasharray:240;stroke-dashoffset:240;animation:circleDraw .8s var(--ease-out-expo) forwards}
+.success-check path{fill:none;stroke:#10b981;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:checkDraw .4s var(--ease-out-expo) .5s forwards}
+@keyframes circleDraw{to{stroke-dashoffset:0}}
+@keyframes checkDraw{to{stroke-dashoffset:0}}
+
+/* ======== RISK TAGS ======== */
+.risk-tag{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;margin-bottom:6px;font-size:13px;animation:tagIn .5s var(--ease-out-expo) backwards}
+.risk-tag:nth-child(1){animation-delay:.1s}.risk-tag:nth-child(2){animation-delay:.2s}
+.risk-tag:nth-child(3){animation-delay:.3s}.risk-tag:nth-child(4){animation-delay:.4s}
+@keyframes tagIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
 .risk-tag.high{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
 .risk-tag.mid{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)}
 .risk-tag.low{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2)}
 
-/* Anim */
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeUp .45s ease}
+/* ======== SCROLLBAR ======== */
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(77,168,255,.15);border-radius:2px}
 
-/* Feature number */
+/* Feature num */
 .feature-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;background:rgba(41,128,255,.1);color:#4da8ff;flex-shrink:0}
 </style>
 </head>
 <body>
 
 <!-- ============================================================ -->
-<!--  固定导航栏 -->
+<!--  SPLASH SCREEN -->
 <!-- ============================================================ -->
-<nav class="navbar">
+<div id="splash">
+  <canvas id="splashCanvas"></canvas>
+  <div class="splash-logo">
+    <div class="icon"><i class="fas fa-scale-balanced"></i></div>
+    <h1>审计智能体</h1>
+    <p>AUDIT AGENT</p>
+  </div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<!-- ============================================================ -->
+<!--  NAV -->
+<!-- ============================================================ -->
+<nav class="navbar" id="navbar">
   <div class="flex items-center gap-3 mr-8">
     <div style="width:28px;height:28px;border-radius:6px;background:rgba(41,128,255,.15);display:flex;align-items:center;justify-content:center">
       <i class="fas fa-scale-balanced" style="color:#4da8ff;font-size:14px"></i>
@@ -120,60 +188,40 @@ input::placeholder{color:#3a5068}
 </nav>
 
 <!-- ============================================================ -->
-<!--  主页 HOME -->
+<!--  HOME PAGE -->
 <!-- ============================================================ -->
 <div class="page active" id="page-home">
-  <!-- Hero -->
-  <div style="position:relative;overflow:hidden;padding:120px 24px 80px;text-align:center">
+  <section style="position:relative;overflow:hidden;padding:120px 24px 80px;text-align:center">
     <div class="hero-orb large"></div><div class="hero-orb small"></div>
     <div style="position:relative;z-index:1">
-      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:20px;border:1px solid rgba(77,168,255,.2);background:rgba(41,128,255,.05);margin-bottom:28px">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:20px;border:1px solid rgba(77,168,255,.2);background:rgba(41,128,255,.05);margin-bottom:28px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.5s forwards">
         <span style="width:6px;height:6px;border-radius:50%;background:#4da8ff;box-shadow:0 0 6px #4da8ff"></span>
         <span style="font-size:12px;color:#6b8aaa;letter-spacing:2px">AI-POWERED AUDIT SYSTEM</span>
       </div>
-      <h1 style="font-size:52px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.15;margin-bottom:12px">
-        审计<span style="color:#4da8ff">智能体</span>
-      </h1>
-      <p style="font-size:20px;color:#6b8aaa;margin-bottom:8px;font-weight:300">新一代 AI 驱动审计工作底稿生成平台</p>
-      <p style="font-size:14px;color:#3a5068;margin-bottom:40px">上传原始财务数据 → AI 自动执行审计程序 → 输出专业底稿与审计日志</p>
-      <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="document.getElementById('nav-workspace').click()">
-        开始审计 <i class="fas fa-arrow-right"></i>
-      </button>
+      <div class="hero-title" id="heroTitle" style="margin-bottom:12px">审计<span style="color:#4da8ff">智能体</span></div>
+      <p style="font-size:20px;color:#6b8aaa;margin-bottom:8px;font-weight:300;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.7s forwards">新一代 AI 驱动审计工作底稿生成平台</p>
+      <p style="font-size:14px;color:#3a5068;margin-bottom:40px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.9s forwards">上传原始财务数据 → AI 自动执行审计程序 → 输出专业底稿与审计日志</p>
+      <div style="opacity:0;animation:revealUp .6s var(--ease-out-expo) 3.1s forwards">
+        <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="document.getElementById('nav-workspace').click()">
+          开始审计 <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- 核心功能 -->
   <div class="section-sm" style="text-align:center">
-    <h2 style="font-size:32px;font-weight:700;color:#e0e8f0;margin-bottom:8px">核心功能</h2>
-    <p style="color:#4a6278;margin-bottom:40px">覆盖审计全流程的智能工具链</p>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" style="display:grid">
-      <div class="card card-hover text-center">
-        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-magnifying-glass-chart"></i></div>
-        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">智能科目识别</h3>
-        <p style="font-size:13px;color:#4a6278">自动识别科目余额表结构，精准筛选审计科目</p>
-      </div>
-      <div class="card card-hover text-center">
-        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-calculator"></i></div>
-        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">自动计算分析</h3>
-        <p style="font-size:13px;color:#4a6278">周转率 · 变动率 · 账龄结构 · 利息测算，即时呈现</p>
-      </div>
-      <div class="card card-hover text-center">
-        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-shield-halved"></i></div>
-        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">风险自动识别</h3>
-        <p style="font-size:13px;color:#4a6278">异常波动 · 大额交易 · 逾期款项 · 未达账项，分级预警</p>
-      </div>
-      <div class="card card-hover text-center">
-        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-file-excel"></i></div>
-        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">底稿一键生成</h3>
-        <p style="font-size:13px;color:#4a6278">规范排版 · 审计结论 · 可追溯日志，一次输出</p>
-      </div>
+    <h2 class="reveal" style="font-size:32px;font-weight:700;color:#e0e8f0;margin-bottom:8px">核心功能</h2>
+    <p class="reveal" style="color:#4a6278;margin-bottom:40px">覆盖审计全流程的智能工具链</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 reveal-stagger" id="featureGrid" style="display:grid">
+      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-magnifying-glass-chart"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">智能科目识别</h3><p style="font-size:13px;color:#4a6278">自动识别科目余额表结构，精准筛选审计科目</p></div>
+      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-calculator"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">自动计算分析</h3><p style="font-size:13px;color:#4a6278">周转率·变动率·账龄结构·利息测算</p></div>
+      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-shield-halved"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">风险自动识别</h3><p style="font-size:13px;color:#4a6278">异常波动·大额交易·逾期款项·未达账项</p></div>
+      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-file-excel"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">底稿一键生成</h3><p style="font-size:13px;color:#4a6278">规范排版·审计结论·可追溯日志</p></div>
     </div>
   </div>
 
-  <!-- 适用场景 + 产品优势 -->
-  <div class="section" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-    <div class="card">
-      <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-bullseye" style="color:#4da8ff;margin-right:8px"></i>适用场景</h3>
+  <div class="section reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-bullseye" style="color:#4da8ff;margin-right:8px"></i>适用场景</h3>
       <div style="display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">📋</span><div><strong style="color:#c8d6e5">年报审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">快速生成各科目实质性程序底稿，覆盖货币资金、往来款项、借款等</p></div></div>
         <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🔍</span><div><strong style="color:#c8d6e5">专项审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">针对特定科目深入审计，自动识别异常交易与风险点</p></div></div>
@@ -181,30 +229,26 @@ input::placeholder{color:#3a5068}
         <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🎓</span><div><strong style="color:#c8d6e5">审计教学演示</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">内置演示数据与案例，直观展示审计程序执行过程</p></div></div>
       </div>
     </div>
-    <div class="card">
-      <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-star" style="color:#4da8ff;margin-right:8px"></i>产品优势</h3>
+    <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-star" style="color:#4da8ff;margin-right:8px"></i>产品优势</h3>
       <div style="display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">1</div><div><strong style="color:#c8d6e5">多科目覆盖</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">货币资金 · 应收票据 · 其他应收款 · 预付账款 · 预收账款 · 短期借款</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">2</div><div><strong style="color:#c8d6e5">全流程自动化</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">上传数据 → 配置参数 → AI分析 → 底稿输出，无需手动干预</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">1</div><div><strong style="color:#c8d6e5">多科目覆盖</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">货币资金·应收票据·其他应收款·预付账款·预收账款·短期借款</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">2</div><div><strong style="color:#c8d6e5">全流程自动化</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">上传数据→配置参数→AI分析→底稿输出，无需手动干预</p></div></div>
         <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">3</div><div><strong style="color:#c8d6e5">审计日志追溯</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">每一步操作可追溯，风险数据分级标注，满足监管合规要求</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">4</div><div><strong style="color:#c8d6e5">规范底稿排版</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">按审计准则格式输出，表头 · 数据 · 结论结构统一，可直接归档</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">4</div><div><strong style="color:#c8d6e5">规范底稿排版</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">按审计准则格式输出，表头·数据·结论结构统一，可直接归档</p></div></div>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
   <div style="text-align:center;padding:40px 24px;border-top:1px solid rgba(77,168,255,.08);margin-top:40px">
     <p style="font-size:12px;color:#2a4058">审计智能体 v2.0 · AI Audit Agent · 基于大语言模型的专业审计工具</p>
   </div>
 </div>
 
 <!-- ============================================================ -->
-<!--  工作界面 WORKSPACE (复用之前的4步流程) -->
+<!--  WORKSPACE PAGE  -->
 <!-- ============================================================ -->
 <div class="page" id="page-workspace">
   <div style="max-width:900px;margin:0 auto;padding:40px 24px">
-
-    <!-- ===== Step Bar ===== -->
     <div id="wsSteps" style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px">
       <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot current" id="ws1">1</div><div style="font-size:11px;color:#4da8ff;margin-top:5px;font-weight:600">选择科目</div></div>
       <div class="step-line" id="wsl1"></div>
@@ -215,8 +259,7 @@ input::placeholder{color:#3a5068}
       <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot" id="ws4">4</div><div style="font-size:11px;color:#4a6278;margin-top:5px">查看结果</div></div>
     </div>
 
-    <!-- ===== Panel 1: 选择科目 ===== -->
-    <div id="wsp1" class="card fade-in">
+    <div id="wsp1" class="card reveal">
       <h2 class="text-xl font-bold text-center mb-1" style="color:#e0e8f0">选择审计科目</h2>
       <p class="text-center mb-6" style="color:#4a6278;font-size:13px">AI 将自动执行该科目对应的全部审计程序</p>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="subjectGrid"></div>
@@ -226,8 +269,7 @@ input::placeholder{color:#3a5068}
       </div>
     </div>
 
-    <!-- ===== Panel 2: 上传数据 ===== -->
-    <div id="wsp2" class="card fade-in" style="display:none">
+    <div id="wsp2" class="card reveal" style="display:none">
       <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">上传审计数据</h2>
       <div class="drop-zone p-12 text-center cursor-pointer rounded-xl transition-all" style="border:2px dashed rgba(77,168,255,.15)" id="dropZone" onclick="document.getElementById('fileInput').click()">
         <div style="font-size:44px;margin-bottom:12px;color:#1a3350"><i class="fas fa-cloud-upload-alt"></i></div>
@@ -244,8 +286,7 @@ input::placeholder{color:#3a5068}
       <p class="text-center text-xs mt-3" style="color:#3a5068" id="uploadStatus"></p>
     </div>
 
-    <!-- ===== Panel 3: 执行审计 ===== -->
-    <div id="wsp3" class="card fade-in" style="display:none">
+    <div id="wsp3" class="card reveal" style="display:none">
       <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">审计配置</h2>
       <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
         <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">被审计单位</label><input id="entityName" placeholder="重庆蛮先进智能制造有限公司"></div>
@@ -254,8 +295,7 @@ input::placeholder{color:#3a5068}
         <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">事务所</label><input id="firmName" placeholder="XX会计师事务所"></div>
       </div>
       <div class="mt-3 max-w-md mx-auto p-3 rounded-lg" style="background:rgba(10,14,23,.4);border:1px solid rgba(77,168,255,.08)">
-        <span class="text-xs" style="color:#4a6278">数据文件: <span id="dataFileCount">0</span></span>
-        <div class="flex flex-wrap gap-1 mt-1" id="dataFileChips"></div>
+        <span class="text-xs" style="color:#4a6278">数据文件: <span id="dataFileCount">0</span></span><div class="flex flex-wrap gap-1 mt-1" id="dataFileChips"></div>
       </div>
       <div class="mt-6 max-w-md mx-auto" id="progressPanel" style="display:none">
         <div class="flex justify-between text-xs mb-1" style="color:#4a6278"><span id="progressPhase">准备中...</span><span id="progressPct">0%</span></div>
@@ -266,8 +306,7 @@ input::placeholder{color:#3a5068}
       <div class="flex justify-center gap-4 mt-8"><button class="btn btn-outline" onclick="showDemo()">演示</button><button class="btn btn-primary" id="runBtn" onclick="runAudit()">▶ 执行审计</button><button class="btn btn-ghost" onclick="wsGo(2)">← 返回</button></div>
     </div>
 
-    <!-- ===== Panel 4: 查看结果 ===== -->
-    <div id="wsp4" class="card fade-in" style="display:none">
+    <div id="wsp4" class="card reveal" style="display:none">
       <div id="resultHeader" class="text-center mb-6"></div>
       <div class="rounded-xl p-4 mb-5" style="background:rgba(41,128,255,.04);border:1px solid rgba(77,168,255,.1)">
         <h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-clipboard-check" style="color:#10b981;margin-right:6px"></i>审计摘要</h4>
@@ -287,20 +326,17 @@ input::placeholder{color:#3a5068}
       <details class="mb-5"><summary class="text-xs font-semibold cursor-pointer" style="color:#4a6278">日志预览</summary><pre class="mt-2 text-xs p-3 rounded-lg max-h-52 overflow-y-auto" style="background:#0a0e17;color:#4da8ff;font-family:'Cascadia Code','Fira Code',monospace;white-space:pre-wrap" id="logPreview"></pre></details>
       <button class="btn btn-primary w-full" onclick="wsGo(1)">← 返回第一步 · 执行新审计</button>
     </div>
-
   </div>
 </div>
 
 <!-- ============================================================ -->
-<!--  技术原理 TECH -->
+<!--  TECH PAGE -->
 <!-- ============================================================ -->
 <div class="page" id="page-tech">
   <div class="section">
     <h2 style="font-size:32px;font-weight:700;color:#e0e8f0;text-align:center;margin-bottom:6px">技术原理</h2>
     <p style="text-align:center;color:#4a6278;margin-bottom:40px">AI 审计智能体的底层架构与运行逻辑</p>
-
-    <!-- 运行流程 -->
-    <div class="card mb-6">
+    <div class="card mb-6 reveal">
       <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:24px"><i class="fas fa-diagram-project" style="color:#4da8ff;margin-right:8px"></i>运行流程</h3>
       <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;margin-bottom:24px">
         <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📂</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">1. 数据读取</div><div style="font-size:11px;color:#4a6278">openpyxl 解析<br>多Sheet识别</div></div>
@@ -310,47 +346,26 @@ input::placeholder{color:#3a5068}
         <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📝</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">5. 模板渲染</div><div style="font-size:11px;color:#4a6278">Python 模板<br>生成规范Excel</div></div>
         <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📋</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">6. 日志输出</div><div style="font-size:11px;color:#4a6278">审计轨迹文件<br>风险数据清单</div></div>
       </div>
-      <p style="font-size:13px;color:#4a6278;line-height:1.8">
-        用户上传原始财务数据（科目余额表、明细账、对账单等）后，系统通过 <strong style="color:#4da8ff">openpyxl</strong> 解析 Excel 文件，
-        将数据序列化为结构化文本。随后，系统加载预置的审计准则（CLAUDE.md），与用户数据组装为 Prompt，
-        通过 <strong style="color:#4da8ff">DeepSeek API</strong>（兼容 Anthropic Messages 协议）调用大语言模型。
-        LLM 依据中国注册会计师审计准则执行分析性复核、函证检查、账龄分析等程序，返回结构化审计数据。
-        服务端 Python 模板引擎将数据渲染为排版规范的 Excel 底稿，同时输出 Markdown 格式的审计日志。
-      </p>
+      <p style="font-size:13px;color:#4a6278;line-height:1.8">用户上传原始财务数据后，系统通过 <strong style="color:#4da8ff">openpyxl</strong> 解析 Excel，序列化为结构化文本。加载预置审计准则（CLAUDE.md），组装 Prompt 通过 <strong style="color:#4da8ff">DeepSeek API</strong> 调用大语言模型。LLM 依据中国注册会计师审计准则执行分析性复核、函证检查等程序，返回结构化审计数据。服务端 Python 模板引擎渲染为排版规范的 Excel 底稿，同时输出 Markdown 审计日志。</p>
     </div>
-
-    <!-- 技术栈 + 工具 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-      <div class="card">
-        <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-code" style="color:#4da8ff;margin-right:8px"></i>技术栈</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="reveal">
+      <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-code" style="color:#4da8ff;margin-right:8px"></i>技术栈</h3>
         <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">后端框架</span><span style="font-size:13px;color:#4da8ff">Python · FastAPI · uvicorn</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">Excel 处理</span><span style="font-size:13px;color:#4da8ff">openpyxl · 模板渲染引擎</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">AI 模型</span><span style="font-size:13px;color:#4da8ff">DeepSeek V4 Pro · Anthropic API</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">实时通信</span><span style="font-size:13px;color:#4da8ff">Server-Sent Events (SSE)</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">前端</span><span style="font-size:13px;color:#4da8ff">HTML5 · Tailwind CSS · Font Awesome</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">JSON 修复</span><span style="font-size:13px;color:#4da8ff">json-repair</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">后端框架</span><span style="font-size:13px;color:#4da8ff">Python · FastAPI · uvicorn</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">Excel 处理</span><span style="font-size:13px;color:#4da8ff">openpyxl · 模板渲染引擎</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">AI 模型</span><span style="font-size:13px;color:#4da8ff">DeepSeek V4 Pro · Anthropic API</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">实时通信</span><span style="font-size:13px;color:#4da8ff">Server-Sent Events (SSE)</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">前端</span><span style="font-size:13px;color:#4da8ff">HTML5 · Tailwind CSS · Font Awesome</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">JSON 修复</span><span style="font-size:13px;color:#4da8ff">json-repair</span></div>
         </div>
       </div>
-      <div class="card">
-        <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-tools" style="color:#4da8ff;margin-right:8px"></i>开发工具</h3>
+      <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-tools" style="color:#4da8ff;margin-right:8px"></i>开发工具</h3>
         <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">开发环境</span><span style="font-size:13px;color:#4da8ff">VS Code · Windows 11</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">AI 协作</span><span style="font-size:13px;color:#4da8ff">Claude Code (VS Code 插件)</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">版本控制</span><span style="font-size:13px;color:#4da8ff">Git · GitHub</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">Python 版本</span><span style="font-size:13px;color:#4da8ff">3.12</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">依赖管理</span><span style="font-size:13px;color:#4da8ff">pip · venv</span></div>
-          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">审计准则</span><span style="font-size:13px;color:#4da8ff">中国注册会计师审计准则</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">开发环境</span><span style="font-size:13px;color:#4da8ff">VS Code · Windows 11</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">AI 协作</span><span style="font-size:13px;color:#4da8ff">Claude Code (VS Code 插件)</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">版本控制</span><span style="font-size:13px;color:#4da8ff">Git</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">Python 版本</span><span style="font-size:13px;color:#4da8ff">3.12</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">审计准则</span><span style="font-size:13px;color:#4da8ff">中国注册会计师审计准则</span></div>
         </div>
       </div>
     </div>
@@ -358,6 +373,91 @@ input::placeholder{color:#3a5068}
 </div>
 
 <script>
+// ==================== SPLASH SCREEN ====================
+(function initSplash(){
+  const canvas=document.getElementById('splashCanvas'),ctx=canvas.getContext('2d');
+  let w,h,particles=[];
+  function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  for(let i=0;i<60;i++)particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:Math.random()*2+.5,o:Math.random()*.5+.2});
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(77,168,255,${p.o})`;ctx.fill();
+    });
+    // connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(77,168,255,${.04*(1-dist/120)})`;ctx.stroke()}
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+  // Hide splash after animation
+  setTimeout(()=>{
+    document.getElementById('splash').classList.add('hide');
+    document.getElementById('navbar').classList.add('visible');
+    setTimeout(()=>document.getElementById('splash').style.display='none',800);
+    // Start hero char animation
+    animateHeroTitle();
+  },2600);
+})();
+
+function animateHeroTitle(){
+  const el=document.getElementById('heroTitle');
+  if(!el)return;
+  const text=el.textContent,html=[];
+  for(let i=0;i<text.length;i++)html.push(`<span class="char" style="animation-delay:${i*.04}s">${text[i]===' '?'&nbsp;':text[i]}</span>`);
+  el.innerHTML=html.join('');
+}
+
+// ==================== PAGE SWITCH ====================
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target=document.getElementById('page-'+name);
+  target.classList.add('active');
+  // Re-trigger animation
+  target.style.animation='none';target.offsetHeight;target.style.animation='';
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  // Trigger reveal animations
+  setTimeout(()=>{document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));document.querySelectorAll('.reveal-stagger').forEach(el=>observer.observe(el))},100);
+}
+
+// ==================== SCROLL REVEAL ====================
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})
+},{threshold:.15});
+setTimeout(()=>{document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));document.querySelectorAll('.reveal-stagger').forEach(el=>observer.observe(el))},2800);
+
+// ==================== BUTTON RIPPLE ====================
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('.btn');
+  if(!btn)return;
+  const ripple=document.createElement('span');ripple.className='ripple';
+  const rect=btn.getBoundingClientRect(),size=Math.max(rect.width,rect.height);
+  ripple.style.width=ripple.style.height=size+'px';
+  ripple.style.left=(e.clientX-rect.left-size/2)+'px';
+  ripple.style.top=(e.clientY-rect.top-size/2)+'px';
+  btn.appendChild(ripple);
+  setTimeout(()=>ripple.remove(),600);
+});
+
+// ==================== SUBJECT CARD MOUSE TRACKING ====================
+document.addEventListener('mousemove',function(e){
+  document.querySelectorAll('.subj-card').forEach(card=>{
+    const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    card.style.setProperty('--mx',(x/r.width*100)+'%');card.style.setProperty('--my',(y/r.height*100)+'%');
+  });
+});
+
+// ==================== WORKSPACE LOGIC ====================
 const API='http://127.0.0.1:8800';
 const SUBJECTS=[
   {id:'C',name:'货币资金',icon:'fa-coins',color:'#4da8ff',desc:'库存现金·银行存款·其他货币资金',codes:'1001/1002/1003/1012'},
@@ -369,20 +469,9 @@ const SUBJECTS=[
 ];
 let selectedSubject='C',uploadedFiles=[],selectedFiles=[],wsPanel=1;
 
-// ==================== 页面切换 ====================
-function switchPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
-  document.getElementById('nav-'+name).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-// ==================== 工作流面板 ====================
 function wsGo(n){
   wsPanel=n;
   for(let i=1;i<=4;i++)document.getElementById('wsp'+i).style.display=(i===n)?'':'none';
-  // Update steps
   for(let i=1;i<=4;i++){
     const d=document.getElementById('ws'+i),l=document.getElementById('wsl'+i);
     if(i<n){d.className='step-dot done';d.textContent='✓';if(l)l.className='step-line done'}
@@ -390,16 +479,15 @@ function wsGo(n){
     else{d.className='step-dot';d.textContent=i;if(l)l.className='step-line'}
   }
   if(n===3)refreshFileList();
+  // Re-observe for reveal
+  setTimeout(()=>document.querySelectorAll('#page-workspace .reveal').forEach(el=>{el.classList.remove('visible');observer.observe(el)}),100);
 }
 
-// Subject cards
 (function renderSubjects(){
   document.getElementById('subjectGrid').innerHTML=SUBJECTS.map(s=>`
     <div class="subj-card ${s.id===selectedSubject?'selected':''}" onclick="selectSubject('${s.id}')" id="card_${s.id}">
-      <div class="flex items-center gap-3 mb-1">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:${s.color}15;color:${s.color}"><i class="fas ${s.icon}"></i></div>
-        <div><h3 class="font-bold text-sm" style="color:#c8d6e5">${s.name}</h3><span class="text-xs" style="color:#3a5068">${s.codes}</span></div>
-      </div>
+      <div class="flex items-center gap-3 mb-1"><div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:${s.color}15;color:${s.color}"><i class="fas ${s.icon}"></i></div>
+      <div><h3 class="font-bold text-sm" style="color:#c8d6e5">${s.name}</h3><span class="text-xs" style="color:#3a5068">${s.codes}</span></div></div>
       <p class="text-xs" style="color:#4a6278">${s.desc}</p>
     </div>`).join('');
 })();
@@ -420,7 +508,7 @@ function renderFileChips(){
 }
 async function uploadFiles(){
   if(selectedFiles.length===0)return;const fd=new FormData();selectedFiles.forEach(f=>fd.append('files',f));
-  document.getElementById('uploadStatus').innerHTML='<span class="loading loading-spinner loading-xs"></span> 上传中...';
+  document.getElementById('uploadStatus').innerHTML='上传中...';
   const r=await fetch(API+'/api/upload',{method:'POST',body:fd});const d=await r.json();
   if(d.success){uploadedFiles=d.files.map(p=>({name:p.split('/').pop().replace(/^\d+_/,''),path:p}));document.getElementById('uploadStatus').textContent=`上传完成 · ${d.count} 文件`;setTimeout(()=>wsGo(3),500)}
 }
@@ -438,7 +526,7 @@ async function runAudit(){
   if(uploadedFiles.length===0){alert('请先上传数据');return}
   document.getElementById('progressPanel').style.display='';document.getElementById('phaseLog').innerHTML='';
   document.getElementById('progressFill').style.width='0%';document.getElementById('progressPct').textContent='0%';
-  document.getElementById('runBtn').disabled=true;document.getElementById('runBtn').innerHTML='<span class="loading loading-spinner loading-xs"></span> 执行中...';
+  document.getElementById('runBtn').disabled=true;document.getElementById('runBtn').innerHTML='执行中...';
   const p=new URLSearchParams({subject:selectedSubject,entity_name:document.getElementById('entityName').value.trim()||'被审计单位',period:document.getElementById('period').value.trim()||'2024-12-31',auditor:document.getElementById('auditor').value.trim()||'AI审计',firm_name:document.getElementById('firmName').value.trim()||'',files:uploadedFiles.map(f=>f.path).join(',')});
   const phaseMap={};
   try{
@@ -459,13 +547,12 @@ function updateProgress(d){
   if(d.phase&&!phaseMap[k]){phaseMap[k]=true;
     const cls=d.status==='done'?'done':d.status==='error'?'error':d.status==='warn'?'warn':'active';
     const icon=d.status==='done'?'✓':d.status==='error'?'✗':d.status==='warn'?'!':'';
-    document.getElementById('phaseLog').innerHTML+=`<div class="log-step fade-in"><div class="log-dot ${cls}">${icon}</div><div class="flex-1"><p class="text-sm" style="color:#c8d6e5">${d.step||''}</p><p class="text-xs" style="color:#4a6278">${d.detail||''}</p></div>${d.elapsed?`<span class="text-xs" style="color:#3a5068">${fmt(d.elapsed)}</span>`:''}</div>`;
+    document.getElementById('phaseLog').innerHTML+=`<div class="log-step"><div class="log-dot ${cls}">${icon}</div><div class="flex-1"><p class="text-sm" style="color:#c8d6e5">${d.step||''}</p><p class="text-xs" style="color:#4a6278">${d.detail||''}</p></div>${d.elapsed?`<span class="text-xs" style="color:#3a5068">${fmt(d.elapsed)}</span>`:''}</div>`;
     document.getElementById('phaseLog').scrollTop=document.getElementById('phaseLog').scrollHeight;
   }
 }
 function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m>0?`${m}m${sec}s`:`${sec}s`}
 
-// Demo
 async function showDemo(){const r=await fetch(API+'/api/demo-result?subject='+selectedSubject);const d=await r.json();document.getElementById('entityName').value=d.entity_name||'';document.getElementById('period').value=d.period||'2024-12-31';showResult(d);wsGo(4)}
 function showResult(d){
   document.getElementById('summaryText').textContent=d.summary||'';document.getElementById('outputPath').textContent=d.output_file||'';
@@ -473,13 +560,12 @@ function showResult(d){
   document.getElementById('logPreview').textContent=d.log_content||'';
   document.getElementById('downloadBtn').onclick=()=>window.open(API+'/api/download?path='+encodeURIComponent(d.output_file));
   document.getElementById('logDownloadBtn').onclick=()=>{if(d.log_file)window.open(API+'/api/download?path='+encodeURIComponent(d.log_file))};
-  document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#10b981">✓</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险</p>`;
+  document.getElementById('resultHeader').innerHTML=`<div class="success-check"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 42l10 10 22-22"/></svg></div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险</p>`;
   document.getElementById('sheetGrid').innerHTML=(d.sheets||[]).map((s,i)=>`<div class="flex items-center gap-2 p-3 rounded-lg" style="background:rgba(19,28,46,.6);border:1px solid rgba(77,168,255,.06)"><i class="fas ${['fa-chart-pie','fa-coins','fa-building-columns','fa-envelope','fa-magnifying-glass-chart','fa-file-lines'][i%6]}" style="color:#4da8ff;font-size:13px"></i><span class="text-sm" style="color:#8a9bb5">${s}</span></div>`).join('');
   if(d.audit_findings?.length)document.getElementById('findingsArea').innerHTML=`<h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-magnifying-glass mr-1" style="color:#f59e0b"></i>审计发现</h4>`+d.audit_findings.map(f=>`<div class="risk-tag ${f.severity==='error'?'high':f.severity==='warning'?'mid':'low'}"><span>${f.severity==='error'?'🔴':f.severity==='warning'?'🟡':'🔵'}</span><span>${f.msg}</span></div>`).join('');
 }
 function showError(m){document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${m}</p>`;document.getElementById('summaryText').textContent=m;wsGo(4)}
 
-// Health
 async function checkHealth(){try{const r=await fetch(API+'/api/health');const d=await r.json();document.getElementById('statusDot').style.background='#10b981';document.getElementById('statusLabel').textContent=d.model}catch(e){document.getElementById('statusDot').style.background='#ef4444';document.getElementById('statusLabel').textContent='未连接'}}
 checkHealth();setInterval(checkHealth,30000);
 </script>
