@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+output/
+uploads/
+server.log
+debug_json.py
+composite_factor.py
+*.tmp
