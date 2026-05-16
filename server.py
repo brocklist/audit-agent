@@ -50,110 +50,67 @@ class AuditLogger:
                           "response_size": response_size, "elapsed": elapsed}
 
     def generate_log_file(self) -> str:
-        """生成 Markdown 格式的审计日志文件"""
+        """生成 Word(.docx) 格式的审计日志文件"""
+        from docx import Document
+        from docx.shared import Pt
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+
+        doc = Document()
+        style = doc.styles['Normal']
+        style.font.name = '微软雅黑'
+        style.font.size = Pt(10)
+
         elapsed_total = round(time.time() - self.start_time, 1)
-        lines = []
-        L = lines.append
 
-        # 头部
-        L(f"# 审计日志 - AI Audit Trail")
-        L(f"")
-        L(f"## 审计基本信息")
-        L(f"| 项目 | 内容 |")
-        L(f"|------|------|")
-        L(f"| 被审计单位 | {self.entity} |")
-        L(f"| 审计科目 | {self.subject_name}（索引号: {self.subject}） |")
-        L(f"| 会计期间 | {self.period} |")
-        L(f"| 审核员 | {self.auditor} |")
-        L(f"| 事务所 | {self.firm} |")
-        L(f"| 审计日期 | {datetime.now().strftime('%Y-%m-%d')} |")
-        L(f"| 总耗时 | {elapsed_total:.1f} 秒 |")
-        L(f"")
+        def add_heading(text, level=1):
+            h = doc.add_heading(text, level=level)
+            for run in h.runs: run.font.name = '微软雅黑'
 
-        # 数据源
-        L(f"## 一、数据源读取")
-        L(f"")
-        L(f"| 文件名 | Sheet数 | 总行数 | 内容摘要 |")
-        L(f"|--------|--------|--------|----------|")
-        for fname, info in self.data_summary.items():
-            preview = info.get("preview", "")[:80]
-            L(f"| {fname} | {info['sheets']} | {info['rows']} | {preview} |")
-        L(f"")
+        def add_table(headers, rows):
+            table = doc.add_table(rows=1+len(rows), cols=len(headers), style='Light Grid Accent 1')
+            for i, h in enumerate(headers): table.rows[0].cells[i].text = str(h)
+            for ri, row in enumerate(rows):
+                for ci, val in enumerate(row): table.rows[ri+1].cells[ci].text = str(val)
+            doc.add_paragraph()
 
-        # 执行时间线
-        L(f"## 二、审计执行时间线")
-        L(f"")
-        L(f"| 时间 | 耗时(s) | 阶段 | 类型 | 操作 | 详情 |")
-        L(f"|------|---------|------|------|------|------|")
-        for evt in self.events:
-            L(f"| {evt['ts']} | {evt['elapsed']:.1f} | {evt['phase']} | {evt['type']} | {evt['message'][:40]} | {evt['detail'][:60]} |")
-        L(f"")
+        add_heading('审计日志 - AI Audit Trail', 0)
 
-        # LLM统计
+        add_heading('审计基本信息', 1)
+        add_table(['项目','内容'], [['被审计单位',self.entity],['审计科目',f'{self.subject_name}（索引号:{self.subject}）'],['会计期间',self.period],['审核员',self.auditor],['事务所',self.firm],['审计日期',datetime.now().strftime('%Y-%m-%d')],['总耗时',f'{elapsed_total:.1f}秒']])
+
+        add_heading('一、数据源读取', 1)
+        if self.data_summary:
+            add_table(['文件名','Sheet数','总行数','内容摘要'], [[fn,str(i['sheets']),str(i['rows']),i.get('preview','')[:80]] for fn,i in self.data_summary.items()])
+
+        add_heading('二、审计执行时间线', 1)
+        add_table(['时间','耗时(s)','阶段','类型','操作','详情'], [[e['ts'],str(e['elapsed']),e['phase'],e['type'],e['message'][:50],e['detail'][:80]] for e in self.events])
+
         if self.llm_stats:
-            L(f"## 三、AI 模型调用统计")
-            L(f"")
-            L(f"| 指标 | 数值 |")
-            L(f"|------|------|")
-            L(f"| 模型 | {self.llm_stats.get('model','')} |")
-            L(f"| Prompt 大小 | {self.llm_stats.get('prompt_size',0):,} 字符 |")
-            L(f"| 响应大小 | {self.llm_stats.get('response_size',0):,} 字符 |")
-            L(f"| AI 耗时 | {self.llm_stats.get('elapsed',0):.1f} 秒 |")
-            L(f"")
+            add_heading('三、AI模型调用统计', 1)
+            add_table(['指标','数值'], [['模型',self.llm_stats.get('model','')],['Prompt大小',f"{self.llm_stats.get('prompt_size',0):,}字符"],['响应大小',f"{self.llm_stats.get('response_size',0):,}字符"],['AI耗时',f"{self.llm_stats.get('elapsed',0):.1f}秒"]])
 
-        # 风险数据清单 ⭐核心
-        L(f"## 四、风险数据清单")
-        L(f"")
+        add_heading('四、风险数据清单', 1)
         if self.risk_items:
-            L(f"| 风险等级 | 科目/项目 | 涉及金额 | 风险原因 |")
-            L(f"|----------|----------|----------|----------|")
-            for r in self.risk_items:
-                level_icon = "🔴 高" if r['level'] == 'error' else "🟡 中" if r['level'] == 'warning' else "🔵 低"
-                L(f"| {level_icon} | {r['item']} | {r['amount']} | {r['reason']} |")
+            add_table(['风险等级','科目/项目','涉及金额','风险原因'], [['高' if r['level']=='error' else '中' if r['level']=='warning' else '低',r['item'],str(r['amount']),r['reason']] for r in self.risk_items])
         else:
-            L(f"> 未发现重大风险事项")
-        L(f"")
+            doc.add_paragraph('未发现重大风险事项')
 
-        # 审计发现
-        L(f"## 五、审计发现汇总")
-        L(f"")
-        for i, f in enumerate(self.audit_findings, 1):
-            L(f"{i}. {f}")
-        L(f"")
+        add_heading('五、审计发现汇总', 1)
+        for i, f in enumerate(self.audit_findings, 1): doc.add_paragraph(f'{i}. {f}')
 
-        # 各Sheet审计结论
-        L(f"## 六、各工作底稿审计结论")
-        L(f"")
+        add_heading('六、各工作底稿审计结论', 1)
         for c in self.conclusions:
-            L(f"### {c['sheet']}")
-            L(f"{c['conclusion']}")
-            L(f"")
+            add_heading(c['sheet'], 2)
+            doc.add_paragraph(c['conclusion'])
 
-        # 底稿清单
-        L(f"## 七、输出文件")
-        L(f"")
-        L(f"- 审计底稿 Excel 及审计日志文件见工作目录")
-        L(f"")
+        add_heading('七、审计签名', 1)
+        add_table(['角色','签名','日期'], [['编制人（AI审计智能体）','',datetime.now().strftime('%Y-%m-%d')],['复核人','',''],['项目负责人','','']])
 
-        # 尾部
-        L(f"---")
-        L(f"*本日志由 AI 审计智能体自动生成 · 时间戳: {datetime.now().isoformat()}*")
-        L(f"")
-        L(f"### 审计签名")
-        L(f"| 角色 | 签名 | 日期 |")
-        L(f"|------|------|------|")
-        L(f"| 编制人（AI审计智能体） |  | {datetime.now().strftime('%Y-%m-%d')} |")
-        L(f"| 复核人 |  |  |")
-        L(f"| 项目负责人 |  |  |")
-
-        content = "\n".join(lines)
-
-        # 保存
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         safe = re.sub(r'[\\/*?:"<>|]', '_', self.entity or "审计")
-        fname = f"{safe}_{self.period.replace('-','')}_审计日志_{ts}.md"
+        fname = f"{safe}_{self.period.replace('-','')}_审计日志_{ts}.docx"
         path = OUTPUT_DIR / fname
-        path.write_text(content, encoding="utf-8")
+        doc.save(str(path))
         self.output_log = str(path)
         return str(path)
 from openpyxl.utils import get_column_letter
@@ -839,6 +796,59 @@ async def download(path: str):
     if not os.path.exists(path): raise HTTPException(404, "文件不存在")
     return FileResponse(path, filename=os.path.basename(path),
                         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+# ==================== 用户面板 API ====================
+TEMPLATE_DIR = BASE_DIR / "templates"
+TEMPLATE_DIR.mkdir(exist_ok=True)
+
+@app.post("/api/templates/upload")
+async def upload_template(subject: str = "C", file: UploadFile = None):
+    """上传某科目的底稿模板"""
+    if not file or not file.filename.endswith(('.xlsx', '.xls')):
+        raise HTTPException(400, "请上传Excel模板文件")
+    content = await file.read()
+    safe_name = re.sub(r'[\\/*?:<>|]', '_', file.filename)
+    path = TEMPLATE_DIR / f"{subject}_{safe_name}"
+    path.write_bytes(content)
+    return {"success": True, "path": str(path), "subject": subject}
+
+@app.get("/api/templates")
+async def list_templates():
+    """列出所有已上传的模板"""
+    templates = []
+    for f in TEMPLATE_DIR.glob("*.xlsx"):
+        subject = f.name.split('_')[0] if '_' in f.name else '?'
+        templates.append({"subject": subject, "name": f.name, "path": str(f), "size": f.stat().st_size, "modified": datetime.fromtimestamp(f.stat().st_mtime).strftime("%Y-%m-%d %H:%M")})
+    return {"templates": sorted(templates, key=lambda x: x['modified'], reverse=True)}
+
+@app.get("/api/recent")
+async def recent_records():
+    """获取近期生成的审计记录"""
+    records = []
+    # 底稿文件
+    for f in sorted(OUTPUT_DIR.glob("*.xlsx"), key=lambda x: x.stat().st_mtime, reverse=True)[:20]:
+        records.append({"type": "底稿", "name": f.name, "path": str(f), "size": f.stat().st_size, "time": datetime.fromtimestamp(f.stat().st_mtime).strftime("%m-%d %H:%M")})
+    # 日志文件
+    for f in sorted(OUTPUT_DIR.glob("*.docx"), key=lambda x: x.stat().st_mtime, reverse=True)[:20]:
+        records.append({"type": "日志", "name": f.name, "path": str(f), "size": f.stat().st_size, "time": datetime.fromtimestamp(f.stat().st_mtime).strftime("%m-%d %H:%M")})
+    # 合并排序
+    records.sort(key=lambda x: x['time'], reverse=True)
+    return {"records": records[:30]}
+
+@app.get("/api/risk-summary")
+async def risk_summary():
+    """返回近期风险摘要"""
+    risks = []
+    # 扫描demo_outputs中的日志
+    DEMO_DIR = BASE_DIR / "demo_outputs"
+    for f in sorted(DEMO_DIR.glob("*审计日志*"), key=lambda x: x.stat().st_mtime, reverse=True)[:6]:
+        content = f.read_text(encoding="utf-8")[:3000]
+        # 提取风险相关行
+        for line in content.split('\n'):
+            if any(kw in line for kw in ['🔴','🟡','风险','异常','需关注','差异','逾期','未回函']):
+                risks.append({"source": f.name.replace('_审计日志.md','').replace('_审计日志.docx',''), "finding": line.strip('| -*'), "time": datetime.fromtimestamp(f.stat().st_mtime).strftime("%m-%d %H:%M")})
+    return {"risks": risks[:20]}
+
 
 @app.get("/api/health")
 async def health():

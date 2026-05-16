@@ -159,7 +159,6 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
 <div id="splash">
   <canvas id="splashCanvas"></canvas>
   <div class="splash-logo">
-    <div class="icon"><i class="fas fa-scale-balanced"></i></div>
     <h1>审计智能体</h1>
     <p>AUDIT AGENT</p>
   </div>
@@ -180,6 +179,7 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
     <button class="nav-link active" onclick="switchPage('home')" id="nav-home">主页</button>
     <button class="nav-link" onclick="switchPage('workspace')" id="nav-workspace">工作界面</button>
     <button class="nav-link" onclick="switchPage('tech')" id="nav-tech">技术原理</button>
+    <button class="nav-link" onclick="switchPage('dashboard')" id="nav-dashboard">用户面板</button>
   </nav>
   <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
     <span style="width:7px;height:7px;border-radius:50%" id="statusDot"></span>
@@ -194,14 +194,14 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
   <section style="position:relative;overflow:hidden;padding:120px 24px 80px;text-align:center">
     <div class="hero-orb large"></div><div class="hero-orb small"></div>
     <div style="position:relative;z-index:1">
-      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:20px;border:1px solid rgba(77,168,255,.2);background:rgba(41,128,255,.05);margin-bottom:28px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.5s forwards">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:20px;border:1px solid rgba(77,168,255,.2);background:rgba(41,128,255,.05);margin-bottom:28px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 1.8s forwards">
         <span style="width:6px;height:6px;border-radius:50%;background:#4da8ff;box-shadow:0 0 6px #4da8ff"></span>
         <span style="font-size:12px;color:#6b8aaa;letter-spacing:2px">AI-POWERED AUDIT SYSTEM</span>
       </div>
       <div class="hero-title" id="heroTitle" style="margin-bottom:12px">审计<span style="color:#4da8ff">智能体</span></div>
-      <p style="font-size:20px;color:#6b8aaa;margin-bottom:8px;font-weight:300;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.7s forwards">新一代 AI 驱动审计工作底稿生成平台</p>
-      <p style="font-size:14px;color:#3a5068;margin-bottom:40px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.9s forwards">上传原始财务数据 → AI 自动执行审计程序 → 输出专业底稿与审计日志</p>
-      <div style="opacity:0;animation:revealUp .6s var(--ease-out-expo) 3.1s forwards">
+      <p style="font-size:20px;color:#6b8aaa;margin-bottom:8px;font-weight:300;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.0s forwards">新一代 AI 驱动审计工作底稿生成平台</p>
+      <p style="font-size:14px;color:#3a5068;margin-bottom:40px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.2s forwards">上传原始财务数据 → AI 自动执行审计程序 → 输出专业底稿与审计日志</p>
+      <div style="opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.4s forwards">
         <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="document.getElementById('nav-workspace').click()">
           开始审计 <i class="fas fa-arrow-right"></i>
         </button>
@@ -372,14 +372,91 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
   </div>
 </div>
 
+<!-- ============================================================ -->
+<!--  DASHBOARD PAGE -->
+<!-- ============================================================ -->
+<div class="page" id="page-dashboard">
+  <div class="section">
+    <h2 style="font-size:32px;font-weight:700;color:#e0e8f0;text-align:center;margin-bottom:6px">用户面板</h2>
+    <p style="text-align:center;color:#4a6278;margin-bottom:40px">模板管理 · 审计记录 · 风险监控</p>
+
+    <!-- Template Upload -->
+    <div class="card mb-6 reveal">
+      <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:16px"><i class="fas fa-file-upload" style="color:#4da8ff;margin-right:8px"></i>底稿模板管理</h3>
+      <p class="text-xs mb-4" style="color:#4a6278">上传各科目的审计底稿模板（Excel格式），AI将按模板结构填充数据</p>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <select id="templateSubject" style="background:rgba(10,14,23,.6);border:1px solid rgba(77,168,255,.15);border-radius:8px;color:#c8d6e5;padding:8px 12px;font-size:13px;outline:none;font-family:inherit">
+          <option value="C">C - 货币资金</option><option value="D">D - 应收票据</option><option value="E">E - 其他应收款</option><option value="F">F - 预付账款</option><option value="G">G - 预收账款</option><option value="H">H - 短期借款</option>
+        </select>
+        <input type="file" id="templateFile" accept=".xlsx,.xls" class="hidden" onchange="uploadTemplate()">
+        <button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById('templateFile').click()"><i class="fas fa-plus mr-1"></i>上传模板</button>
+      </div>
+      <div class="mt-4" id="templateList"></div>
+    </div>
+
+    <!-- Recent Records -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="reveal">
+      <div class="card">
+        <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:16px"><i class="fas fa-clock-rotate-left" style="color:#4da8ff;margin-right:8px"></i>近期审计记录</h3>
+        <div id="recentList" style="max-height:320px;overflow-y:auto">
+          <p class="text-xs" style="color:#3a5068">加载中...</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:16px"><i class="fas fa-triangle-exclamation" style="color:#f59e0b;margin-right:8px"></i>近期风险提示</h3>
+        <div id="riskList" style="max-height:320px;overflow-y:auto">
+          <p class="text-xs" style="color:#3a5068">加载中...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+// ==================== DASHBOARD ====================
+async function uploadTemplate(){
+  const file=document.getElementById('templateFile').files[0];
+  if(!file)return;
+  const fd=new FormData();fd.append('file',file);
+  const subj=document.getElementById('templateSubject').value;
+  const r=await fetch(API+'/api/templates/upload?subject='+subj,{method:'POST',body:fd});
+  const d=await r.json();
+  if(d.success){loadTemplates();alert('模板上传成功')}
+}
+async function loadTemplates(){
+  try{
+    const r=await fetch(API+'/api/templates');const d=await r.json();
+    const el=document.getElementById('templateList');
+    if(d.templates.length===0){el.innerHTML='<p class="text-xs" style="color:#3a5068">暂无模板，请上传</p>';return}
+    el.innerHTML=d.templates.map(t=>`<div class="flex items-center justify-between py-2 px-3 rounded-lg" style="background:rgba(19,28,46,.4);margin-bottom:4px"><span class="text-sm" style="color:#c8d6e5"><span class="text-xs px-2 py-0.5 rounded" style="background:rgba(77,168,255,.1);color:#4da8ff;margin-right:8px">${t.subject}</span>${t.name}</span><span class="text-xs" style="color:#3a5068">${t.modified}</span></div>`).join('');
+  }catch(e){}
+}
+async function loadRecent(){
+  try{
+    const r=await fetch(API+'/api/recent');const d=await r.json();
+    document.getElementById('recentList').innerHTML=d.records.slice(0,12).map(r=>`<div class="flex items-center justify-between py-2"><span class="text-sm" style="color:#c8d6e5">${r.name.substring(0,40)}</span><span class="text-xs" style="color:#3a5068">${r.time}</span></div>`).join('')||'<p class="text-xs" style="color:#3a5068">暂无记录</p>';
+  }catch(e){}
+}
+async function loadRisks(){
+  try{
+    const r=await fetch(API+'/api/risk-summary');const d=await r.json();
+    document.getElementById('riskList').innerHTML=d.risks.slice(0,12).map(r=>`<div class="risk-tag ${r.finding.includes('🔴')?'high':r.finding.includes('🟡')?'mid':'low'}" style="font-size:12px;padding:8px 10px"><span>${r.finding.substring(0,80)}</span></div>`).join('')||'<p class="text-xs" style="color:#3a5068">近期无风险提示</p>';
+  }catch(e){}
+}
+// Load on dashboard page switch
+const origSwitchPage=switchPage;
+switchPage=function(name){
+  origSwitchPage(name);
+  if(name==='dashboard'){loadTemplates();loadRecent();loadRisks()}
+};
+
 // ==================== SPLASH SCREEN ====================
 (function initSplash(){
   const canvas=document.getElementById('splashCanvas'),ctx=canvas.getContext('2d');
   let w,h,particles=[];
   function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
   resize();window.addEventListener('resize',resize);
-  for(let i=0;i<60;i++)particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:Math.random()*2+.5,o:Math.random()*.5+.2});
+  for(let i=0;i<120;i++)particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:Math.random()*2+.5,o:Math.random()*.5+.2});
   function draw(){
     ctx.clearRect(0,0,w,h);
     particles.forEach(p=>{
@@ -405,7 +482,7 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
     setTimeout(()=>document.getElementById('splash').style.display='none',800);
     // Start hero char animation
     animateHeroTitle();
-  },2600);
+  },2000);
 })();
 
 function animateHeroTitle(){
@@ -434,7 +511,7 @@ function switchPage(name){
 const observer=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}})
 },{threshold:.15});
-setTimeout(()=>{document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));document.querySelectorAll('.reveal-stagger').forEach(el=>observer.observe(el))},2800);
+setTimeout(()=>{document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));document.querySelectorAll('.reveal-stagger').forEach(el=>observer.observe(el))},2200);
 
 // ==================== BUTTON RIPPLE ====================
 document.addEventListener('click',function(e){
