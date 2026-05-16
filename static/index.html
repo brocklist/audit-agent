@@ -5,452 +5,357 @@
 <title>审计智能体 · AI Audit Agent</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        'accent':'#4da8ff','accent2':'#2980ff','accent3':'#0066e0',
-        'dark':'#0a0e17','dark2':'#111827','dark3':'#1a2332',
-        'surface':'#131c2e','surface2':'#182536',
-      }
-    }
-  }
-}
-</script>
+<script>tailwind.config={theme:{extend:{colors:{accent:'#4da8ff',accent2:'#2980ff',dark:'#0a0e17',dark2:'#111827',surface:'#131c2e'},fontFamily:{sans:['Inter','Microsoft YaHei','sans-serif']}}}}</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','Microsoft YaHei',sans-serif;background:#0a0e17;color:#c8d6e5;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:linear-gradient(rgba(77,168,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(77,168,255,.3) 1px,transparent 1px);background-size:60px 60px}
 
-* { margin:0; padding:0; box-sizing:border-box }
+/* Nav */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,14,23,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(77,168,255,.1);height:52px;display:flex;align-items:center;padding:0 28px}
+.nav-link{padding:8px 18px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border-radius:6px;transition:all .2s;border:none;background:none;font-family:inherit}
+.nav-link:hover{color:#4da8ff;background:rgba(77,168,255,.06)}
+.nav-link.active{color:#4da8ff;background:rgba(77,168,255,.1)}
 
-body {
-  font-family:'Inter','Microsoft YaHei',sans-serif;
-  background:#0a0e17; color:#c8d6e5; min-height:100vh;
-  overflow-x:hidden;
-}
+/* Page */
+.page{display:none;padding-top:52px;min-height:100vh}
+.page.active{display:block}
 
-/* 全局网格背景 */
-body::before {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.03;
-  background-image:
-    linear-gradient(rgba(77,168,255,0.3) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(77,168,255,0.3) 1px, transparent 1px);
-  background-size:60px 60px;
-}
+/* Section */
+.section{padding:80px 24px;max-width:1100px;margin:0 auto}
+.section-sm{padding:48px 24px}
 
-/* 发光效果 */
-.glow-blue { box-shadow:0 0 30px rgba(77,168,255,0.15), 0 0 60px rgba(41,128,255,0.06) }
-.glow-text { text-shadow:0 0 40px rgba(77,168,255,0.4) }
-.glow-border { border:1px solid rgba(77,168,255,0.25); box-shadow:inset 0 0 20px rgba(77,168,255,0.04) }
+/* Cards */
+.card{background:rgba(19,28,46,.7);backdrop-filter:blur(12px);border:1px solid rgba(77,168,255,.1);border-radius:16px;padding:32px}
+.card-hover{transition:all .25s}
+.card-hover:hover{transform:translateY(-3px);border-color:rgba(77,168,255,.3);box-shadow:0 8px 32px rgba(0,0,0,.3)}
 
-/* 科技线条 */
-.tech-line {
-  height:1px; background:linear-gradient(90deg,transparent,rgba(77,168,255,0.3),transparent);
-}
+/* Hero */
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbPulse 5s ease-in-out infinite}
+.hero-orb.large{width:400px;height:400px;top:10%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(77,168,255,.06) 0%,transparent 70%)}
+.hero-orb.small{width:200px;height:200px;bottom:20%;right:10%;background:radial-gradient(circle,rgba(41,128,255,.05) 0%,transparent 70%);animation-delay:2.5s}
+@keyframes orbPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.15);opacity:1}}
 
-/* ============ COVER 封面 ============ */
-.cover {
-  position:fixed; inset:0; z-index:1000;
-  background:radial-gradient(ellipse at 50% 30%, rgba(41,128,255,0.08) 0%, transparent 60%),
-             radial-gradient(ellipse at 80% 70%, rgba(77,168,255,0.05) 0%, transparent 50%),
-             #0a0e17;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  transition:opacity 0.6s ease, transform 0.6s ease;
-}
-.cover.hide { opacity:0; transform:scale(1.05); pointer-events:none }
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;border:none;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,#2980ff,#0066e0);color:#fff;box-shadow:0 0 20px rgba(41,128,255,.2)}
+.btn-primary:hover{box-shadow:0 0 36px rgba(41,128,255,.4);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:#6b8aaa;border:1px solid rgba(77,168,255,.15)}
+.btn-ghost:hover{border-color:#4da8ff;color:#4da8ff}
+.btn-outline{background:transparent;color:#4da8ff;border:1px solid rgba(77,168,255,.3)}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
 
-.cover-orb {
-  position:absolute; border-radius:50%; pointer-events:none;
-  animation:orbPulse 4s ease-in-out infinite;
-}
-.cover-orb.large {
-  width:300px; height:300px; top:20%; left:50%; transform:translate(-50%,-50%);
-  background:radial-gradient(circle, rgba(77,168,255,0.08) 0%, transparent 70%);
-}
-.cover-orb.medium {
-  width:200px; height:200px; bottom:25%; right:20%;
-  background:radial-gradient(circle, rgba(41,128,255,0.06) 0%, transparent 70%);
-  animation-delay:2s;
-}
-@keyframes orbPulse {
-  0%,100% { transform:translate(-50%,-50%) scale(1); opacity:0.6 }
-  50% { transform:translate(-50%,-50%) scale(1.2); opacity:1 }
-}
+/* Input */
+input[type="text"]{background:rgba(10,14,23,.6);border:1px solid rgba(77,168,255,.15);border-radius:8px;color:#c8d6e5;padding:10px 14px;font-size:14px;width:100%;outline:none;transition:border-color .2s;font-family:inherit}
+input[type="text"]:focus{border-color:#4da8ff}
+input::placeholder{color:#3a5068}
 
-/* 封面按钮 */
-.cover-btn {
-  position:relative; z-index:1;
-  display:inline-flex; align-items:center; gap:10px;
-  padding:14px 40px; border-radius:50px;
-  background:linear-gradient(135deg, #2980ff, #0066e0);
-  color:#fff; font-size:16px; font-weight:600; border:none; cursor:pointer;
-  transition:all 0.3s ease; letter-spacing:0.5px;
-  box-shadow:0 0 30px rgba(41,128,255,0.3);
-}
-.cover-btn:hover { transform:translateY(-2px); box-shadow:0 0 50px rgba(41,128,255,0.5) }
-.cover-btn:active { transform:scale(0.97) }
+/* Progress */
+.progress-wrap{background:rgba(10,14,23,.6);border-radius:4px;height:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#2980ff,#4da8ff,#2980ff);background-size:200% 100%;animation:shimmer 2s linear infinite;transition:width .5s}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ============ 顶部导航 ============ */
-.topbar {
-  background:rgba(10,14,23,0.92); backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(77,168,255,0.1);
-  height:52px; display:flex; align-items:center; padding:0 28px;
-  position:sticky; top:0; z-index:100; flex-shrink:0;
-}
+/* Steps */
+.step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid rgba(77,168,255,.2);color:#4a6278;background:rgba(19,28,46,.8);transition:all .4s}
+.step-dot.current{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 16px rgba(41,128,255,.4)}
+.step-dot.done{border-color:#10b981;background:#10b981;color:#fff}
+.step-line{width:56px;height:1.5px;background:rgba(77,168,255,.15);margin:0 4px;transition:background .4s}
+.step-line.done{background:#10b981}
 
-/* ============ 页面 ============ */
-.page { display:none; min-height:calc(100vh - 52px); flex-direction:column; position:relative; z-index:1 }
-.page.active { display:flex }
+/* Log */
+.log-step{display:flex;align-items:flex-start;gap:10px;padding:6px 0;position:relative}
+.log-step::before{content:'';position:absolute;left:10px;top:22px;bottom:-6px;width:1.5px;background:rgba(77,168,255,.1)}
+.log-step:last-child::before{display:none}
+.log-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;border:1.5px solid rgba(77,168,255,.2);background:#0a0e17;color:#4a6278;position:relative;z-index:1;transition:all .3s}
+.log-dot.active{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 8px rgba(41,128,255,.4)}
+.log-dot.done{border-color:#10b981;background:#10b981;color:#fff}
 
-/* ============ 内容区 ============ */
-.content { flex:1; display:flex; flex-direction:column; align-items:center; padding:56px 24px; max-width:860px; margin:0 auto; width:100% }
-.content.wide { max-width:960px }
+/* Subject card */
+.subj-card{background:rgba(19,28,46,.7);border:1px solid rgba(77,168,255,.08);border-radius:12px;padding:20px;cursor:pointer;transition:all .25s}
+.subj-card:hover{border-color:rgba(77,168,255,.3);transform:translateY(-2px);background:rgba(24,37,54,.8)}
+.subj-card.selected{border-color:#2980ff;background:rgba(41,128,255,.08);box-shadow:0 0 20px rgba(41,128,255,.1)}
 
-/* 步骤条 */
-.steps {
-  display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:40px;
-}
-.step-dot {
-  width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-size:13px; font-weight:700; border:2px solid rgba(77,168,255,0.2); color:#4a6278;
-  background:rgba(19,28,46,0.8); transition:all 0.4s ease;
-}
-.step-dot.current { border-color:#4da8ff; background:#2980ff; color:#fff; box-shadow:0 0 16px rgba(41,128,255,0.4) }
-.step-dot.done { border-color:#10b981; background:#10b981; color:#fff }
-.step-line { width:56px; height:1.5px; background:rgba(77,168,255,0.15); transition:background 0.4s }
-.step-line.done { background:#10b981 }
-.step-label { font-size:11px; color:#4a6278; margin-top:5px; text-align:center; transition:color 0.3s }
-.step-label.current { color:#4da8ff; font-weight:600 }
-.step-label.done { color:#10b981 }
+/* Drop zone */
+.drop-zone{transition:all .3s}
+.drop-zone.drag-over{border-color:#4da8ff!important;background:rgba(41,128,255,.06)!important}
 
-/* 卡片 */
-.card {
-  background:rgba(19,28,46,0.7); backdrop-filter:blur(12px);
-  border:1px solid rgba(77,168,255,0.1); border-radius:16px;
-  padding:32px; width:100%;
-}
+/* Tags */
+.risk-tag{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:10px;margin-bottom:6px;font-size:13px}
+.risk-tag.high{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
+.risk-tag.mid{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)}
+.risk-tag.low{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2)}
 
-/* 科目卡片 */
-.subj-card {
-  background:rgba(19,28,46,0.7); border:1px solid rgba(77,168,255,0.08);
-  border-radius:12px; padding:20px; cursor:pointer; transition:all 0.25s ease;
-}
-.subj-card:hover { border-color:rgba(77,168,255,0.3); transform:translateY(-2px); background:rgba(24,37,54,0.8) }
-.subj-card.selected { border-color:#2980ff; background:rgba(41,128,255,0.08); box-shadow:0 0 20px rgba(41,128,255,0.1) }
+/* Anim */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .45s ease}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(77,168,255,.15);border-radius:2px}
 
-/* 输入框 */
-input[type="text"] {
-  background:rgba(10,14,23,0.6); border:1px solid rgba(77,168,255,0.15);
-  border-radius:8px; color:#c8d6e5; padding:10px 14px; font-size:14px;
-  width:100%; outline:none; transition:border-color 0.2s; font-family:inherit;
-}
-input[type="text"]:focus { border-color:#4da8ff }
-input[type="text"]::placeholder { color:#3a5068 }
-
-/* 主按钮 */
-.btn {
-  display:inline-flex; align-items:center; gap:6px; padding:10px 24px;
-  border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;
-  transition:all 0.2s ease; border:none; font-family:inherit; white-space:nowrap;
-}
-.btn-primary {
-  background:linear-gradient(135deg, #2980ff, #0066e0);
-  color:#fff; box-shadow:0 0 20px rgba(41,128,255,0.2);
-}
-.btn-primary:hover { box-shadow:0 0 30px rgba(41,128,255,0.4); transform:translateY(-1px) }
-.btn-primary:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none }
-.btn-ghost { background:transparent; color:#6b8aaa; border:1px solid rgba(77,168,255,0.15) }
-.btn-ghost:hover { border-color:#4da8ff; color:#4da8ff }
-.btn-outline { background:transparent; color:#4da8ff; border:1px solid rgba(77,168,255,0.3) }
-.btn-success { background:linear-gradient(135deg,#10b981,#059669); color:#fff }
-
-/* 进度条 */
-.progress-wrap { background:rgba(10,14,23,0.6); border-radius:4px; height:4px; overflow:hidden }
-.progress-fill {
-  height:100%; border-radius:4px;
-  background:linear-gradient(90deg, #2980ff, #4da8ff, #2980ff); background-size:200% 100%;
-  animation: shimmer 2s linear infinite; transition:width 0.5s ease;
-}
-@keyframes shimmer { 0% { background-position:200% 0 } 100% { background-position:-200% 0 } }
-
-/* 进度步骤日志 */
-.log-step { display:flex; align-items:flex-start; gap:10px; padding:6px 0; position:relative }
-.log-step::before { content:''; position:absolute; left:10px; top:22px; bottom:-6px; width:1.5px; background:rgba(77,168,255,0.1) }
-.log-step:last-child::before { display:none }
-.log-dot {
-  width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex;
-  align-items:center; justify-content:center; font-size:10px;
-  border:1.5px solid rgba(77,168,255,0.2); background:#0a0e17; color:#4a6278;
-  position:relative; z-index:1; transition:all 0.3s;
-}
-.log-dot.active { border-color:#4da8ff; background:#2980ff; color:#fff; box-shadow:0 0 8px rgba(41,128,255,0.4) }
-.log-dot.done { border-color:#10b981; background:#10b981; color:#fff }
-
-/* 风险标签 */
-.risk-tag { display:flex; align-items:flex-start; gap:8px; padding:10px 14px; border-radius:10px; margin-bottom:6px; font-size:13px }
-.risk-tag.high { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2) }
-.risk-tag.mid { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2) }
-.risk-tag.low { background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2) }
-
-/* 拖拽区 */
-.drop-zone { transition:all 0.3s }
-.drop-zone.drag-over { border-color:#4da8ff !important; background:rgba(41,128,255,0.06) !important }
-
-/* 动画 */
-@keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
-.fade-in { animation:fadeUp 0.45s ease }
-
-/* 封面标题光晕 */
-.cover-title-line {
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:400px; height:1px;
-  background:linear-gradient(90deg,transparent,rgba(77,168,255,0.5),transparent);
-  pointer-events:none;
-}
-
-/* 控制台风格滚动条 */
-::-webkit-scrollbar { width:4px } ::-webkit-scrollbar-track { background:transparent } ::-webkit-scrollbar-thumb { background:rgba(77,168,255,0.15); border-radius:2px }
+/* Feature number */
+.feature-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;background:rgba(41,128,255,.1);color:#4da8ff;flex-shrink:0}
 </style>
 </head>
 <body>
 
-<!-- ================================================================ -->
-<!--  COVER 封面 -->
-<!-- ================================================================ -->
-<div class="cover" id="cover">
-  <div class="cover-orb large"></div>
-  <div class="cover-orb medium"></div>
-
-  <!-- 顶部装饰线 -->
-  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(77,168,255,0.4),transparent)"></div>
-  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(77,168,255,0.15),transparent)"></div>
-
-  <div style="position:relative;z-index:1;text-align:center">
-    <!-- 小标签 -->
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;border:1px solid rgba(77,168,255,0.2);background:rgba(41,128,255,0.05);margin-bottom:28px">
-      <span style="width:6px;height:6px;border-radius:50%;background:#4da8ff;box-shadow:0 0 6px #4da8ff"></span>
-      <span style="font-size:12px;color:#6b8aaa;letter-spacing:2px">AI-POWERED AUDIT SYSTEM</span>
+<!-- ============================================================ -->
+<!--  固定导航栏 -->
+<!-- ============================================================ -->
+<nav class="navbar">
+  <div class="flex items-center gap-3 mr-8">
+    <div style="width:28px;height:28px;border-radius:6px;background:rgba(41,128,255,.15);display:flex;align-items:center;justify-content:center">
+      <i class="fas fa-scale-balanced" style="color:#4da8ff;font-size:14px"></i>
     </div>
+    <span style="font-weight:700;font-size:15px;color:#fff">审计智能体</span>
+  </div>
+  <nav style="display:flex;gap:4px">
+    <button class="nav-link active" onclick="switchPage('home')" id="nav-home">主页</button>
+    <button class="nav-link" onclick="switchPage('workspace')" id="nav-workspace">工作界面</button>
+    <button class="nav-link" onclick="switchPage('tech')" id="nav-tech">技术原理</button>
+  </nav>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+    <span style="width:7px;height:7px;border-radius:50%" id="statusDot"></span>
+    <span style="font-size:11px;color:#4a6278" id="statusLabel">检测中</span>
+  </div>
+</nav>
 
-    <!-- 标题 -->
-    <h1 style="font-size:48px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.15;margin-bottom:12px">
-      审计<span style="color:#4da8ff">智能体</span>
-    </h1>
-    <p style="font-size:18px;color:#4a6278;margin-bottom:6px;font-weight:300">
-      多科目 · 全流程 · 可追溯
-    </p>
-    <p style="font-size:14px;color:#3a5068;margin-bottom:40px">
-      基于 AI 大模型的自动化审计工作底稿生成平台
-    </p>
-
-    <!-- 特性标签 -->
-    <div style="display:flex;gap:16px;justify-content:center;margin-bottom:48px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4a6278">
-        <i class="fas fa-check-circle" style="color:#10b981"></i> 6大科目覆盖
+<!-- ============================================================ -->
+<!--  主页 HOME -->
+<!-- ============================================================ -->
+<div class="page active" id="page-home">
+  <!-- Hero -->
+  <div style="position:relative;overflow:hidden;padding:120px 24px 80px;text-align:center">
+    <div class="hero-orb large"></div><div class="hero-orb small"></div>
+    <div style="position:relative;z-index:1">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:20px;border:1px solid rgba(77,168,255,.2);background:rgba(41,128,255,.05);margin-bottom:28px">
+        <span style="width:6px;height:6px;border-radius:50%;background:#4da8ff;box-shadow:0 0 6px #4da8ff"></span>
+        <span style="font-size:12px;color:#6b8aaa;letter-spacing:2px">AI-POWERED AUDIT SYSTEM</span>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4a6278">
-        <i class="fas fa-check-circle" style="color:#10b981"></i> 审计日志追溯
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4a6278">
-        <i class="fas fa-check-circle" style="color:#10b981"></i> 风险自动识别
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#4a6278">
-        <i class="fas fa-check-circle" style="color:#10b981"></i> 底稿一键生成
-      </div>
+      <h1 style="font-size:52px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.15;margin-bottom:12px">
+        审计<span style="color:#4da8ff">智能体</span>
+      </h1>
+      <p style="font-size:20px;color:#6b8aaa;margin-bottom:8px;font-weight:300">新一代 AI 驱动审计工作底稿生成平台</p>
+      <p style="font-size:14px;color:#3a5068;margin-bottom:40px">上传原始财务数据 → AI 自动执行审计程序 → 输出专业底稿与审计日志</p>
+      <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="document.getElementById('nav-workspace').click()">
+        开始审计 <i class="fas fa-arrow-right"></i>
+      </button>
     </div>
-
-    <button class="cover-btn" onclick="enterApp()">
-      进入系统 <i class="fas fa-arrow-right"></i>
-    </button>
   </div>
 
-  <!-- 底部装饰 -->
-  <div style="position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-size:11px;color:#2a4058;letter-spacing:2px">v2.0 · Claude Code + DeepSeek</div>
+  <!-- 核心功能 -->
+  <div class="section-sm" style="text-align:center">
+    <h2 style="font-size:32px;font-weight:700;color:#e0e8f0;margin-bottom:8px">核心功能</h2>
+    <p style="color:#4a6278;margin-bottom:40px">覆盖审计全流程的智能工具链</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" style="display:grid">
+      <div class="card card-hover text-center">
+        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-magnifying-glass-chart"></i></div>
+        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">智能科目识别</h3>
+        <p style="font-size:13px;color:#4a6278">自动识别科目余额表结构，精准筛选审计科目</p>
+      </div>
+      <div class="card card-hover text-center">
+        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-calculator"></i></div>
+        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">自动计算分析</h3>
+        <p style="font-size:13px;color:#4a6278">周转率 · 变动率 · 账龄结构 · 利息测算，即时呈现</p>
+      </div>
+      <div class="card card-hover text-center">
+        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-shield-halved"></i></div>
+        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">风险自动识别</h3>
+        <p style="font-size:13px;color:#4a6278">异常波动 · 大额交易 · 逾期款项 · 未达账项，分级预警</p>
+      </div>
+      <div class="card card-hover text-center">
+        <div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-file-excel"></i></div>
+        <h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">底稿一键生成</h3>
+        <p style="font-size:13px;color:#4a6278">规范排版 · 审计结论 · 可追溯日志，一次输出</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 适用场景 + 产品优势 -->
+  <div class="section" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div class="card">
+      <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-bullseye" style="color:#4da8ff;margin-right:8px"></i>适用场景</h3>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">📋</span><div><strong style="color:#c8d6e5">年报审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">快速生成各科目实质性程序底稿，覆盖货币资金、往来款项、借款等</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🔍</span><div><strong style="color:#c8d6e5">专项审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">针对特定科目深入审计，自动识别异常交易与风险点</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🏢</span><div><strong style="color:#c8d6e5">中小企业审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">降低审计成本，标准化底稿输出，提升事务所效率</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🎓</span><div><strong style="color:#c8d6e5">审计教学演示</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">内置演示数据与案例，直观展示审计程序执行过程</p></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-star" style="color:#4da8ff;margin-right:8px"></i>产品优势</h3>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">1</div><div><strong style="color:#c8d6e5">多科目覆盖</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">货币资金 · 应收票据 · 其他应收款 · 预付账款 · 预收账款 · 短期借款</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">2</div><div><strong style="color:#c8d6e5">全流程自动化</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">上传数据 → 配置参数 → AI分析 → 底稿输出，无需手动干预</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">3</div><div><strong style="color:#c8d6e5">审计日志追溯</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">每一步操作可追溯，风险数据分级标注，满足监管合规要求</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">4</div><div><strong style="color:#c8d6e5">规范底稿排版</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">按审计准则格式输出，表头 · 数据 · 结论结构统一，可直接归档</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center;padding:40px 24px;border-top:1px solid rgba(77,168,255,.08);margin-top:40px">
+    <p style="font-size:12px;color:#2a4058">审计智能体 v2.0 · AI Audit Agent · 基于大语言模型的专业审计工具</p>
+  </div>
 </div>
 
-<!-- ================================================================ -->
-<!--  主应用（封面隐藏后才显示） -->
-<!-- ================================================================ -->
-<div id="app" style="display:none">
+<!-- ============================================================ -->
+<!--  工作界面 WORKSPACE (复用之前的4步流程) -->
+<!-- ============================================================ -->
+<div class="page" id="page-workspace">
+  <div style="max-width:900px;margin:0 auto;padding:40px 24px">
 
-  <!-- 顶栏 -->
-  <div class="topbar">
-    <div class="flex items-center gap-3">
-      <div style="width:28px;height:28px;border-radius:6px;background:rgba(41,128,255,0.15);display:flex;align-items:center;justify-content:center">
-        <i class="fas fa-scale-balanced" style="color:#4da8ff;font-size:14px"></i>
+    <!-- ===== Step Bar ===== -->
+    <div id="wsSteps" style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px">
+      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot current" id="ws1">1</div><div style="font-size:11px;color:#4da8ff;margin-top:5px;font-weight:600">选择科目</div></div>
+      <div class="step-line" id="wsl1"></div>
+      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot" id="ws2">2</div><div style="font-size:11px;color:#4a6278;margin-top:5px">上传数据</div></div>
+      <div class="step-line" id="wsl2"></div>
+      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot" id="ws3">3</div><div style="font-size:11px;color:#4a6278;margin-top:5px">执行审计</div></div>
+      <div class="step-line" id="wsl3"></div>
+      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot" id="ws4">4</div><div style="font-size:11px;color:#4a6278;margin-top:5px">查看结果</div></div>
+    </div>
+
+    <!-- ===== Panel 1: 选择科目 ===== -->
+    <div id="wsp1" class="card fade-in">
+      <h2 class="text-xl font-bold text-center mb-1" style="color:#e0e8f0">选择审计科目</h2>
+      <p class="text-center mb-6" style="color:#4a6278;font-size:13px">AI 将自动执行该科目对应的全部审计程序</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="subjectGrid"></div>
+      <div class="flex justify-center gap-4 mt-8">
+        <button class="btn btn-ghost" onclick="showDemo()">查看演示</button>
+        <button class="btn btn-primary" id="nextBtn" disabled onclick="wsGo(2)">下一步</button>
       </div>
-      <span style="font-weight:700;font-size:15px;color:#fff">审计智能体</span>
     </div>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
-      <span style="font-size:11px;color:#3a5068" id="topSubj">货币资金</span>
-      <span style="width:7px;height:7px;border-radius:50%" id="statusDot"></span>
-      <span style="font-size:11px;color:#4a6278" id="statusLabel">检测中</span>
+
+    <!-- ===== Panel 2: 上传数据 ===== -->
+    <div id="wsp2" class="card fade-in" style="display:none">
+      <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">上传审计数据</h2>
+      <div class="drop-zone p-12 text-center cursor-pointer rounded-xl transition-all" style="border:2px dashed rgba(77,168,255,.15)" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div style="font-size:44px;margin-bottom:12px;color:#1a3350"><i class="fas fa-cloud-upload-alt"></i></div>
+        <p style="font-size:16px;font-weight:600;color:#6b8aaa;margin-bottom:4px">拖拽 Excel 文件到此处</p>
+        <p style="font-size:13px;color:#3a5068">或点击选择 · .xlsx .xls · 可多选</p>
+        <input type="file" id="fileInput" multiple accept=".xlsx,.xls" class="hidden" onchange="handleFiles(this.files)">
+      </div>
+      <div class="mt-4" id="fileListWrap" style="display:none"><p class="text-xs font-semibold uppercase mb-2" style="color:#4a6278">已选 <span id="fileCount">0</span> 文件</p><div class="flex flex-wrap gap-2" id="fileChips"></div></div>
+      <div class="mt-5 p-4 rounded-xl flex items-center justify-between" style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.15)">
+        <div class="flex items-center gap-2"><span>💡</span><div><p class="text-sm font-semibold" style="color:#fbbf24">没有数据？</p><p class="text-xs" style="color:#6b8aaa">加载该科目的内置范例数据</p></div></div>
+        <button class="btn btn-ghost" style="font-size:12px" onclick="loadDemoFiles()">加载范例</button>
+      </div>
+      <div class="flex justify-between mt-7"><button class="btn btn-ghost" onclick="wsGo(1)">← 返回</button><button class="btn btn-primary" id="uploadBtn" onclick="uploadFiles()" disabled>上传并继续</button></div>
+      <p class="text-center text-xs mt-3" style="color:#3a5068" id="uploadStatus"></p>
     </div>
+
+    <!-- ===== Panel 3: 执行审计 ===== -->
+    <div id="wsp3" class="card fade-in" style="display:none">
+      <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">审计配置</h2>
+      <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">被审计单位</label><input id="entityName" placeholder="重庆蛮先进智能制造有限公司"></div>
+        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">会计期间</label><input id="period" value="2024-12-31"></div>
+        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">审核员</label><input id="auditor" placeholder="AI审计智能体"></div>
+        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">事务所</label><input id="firmName" placeholder="XX会计师事务所"></div>
+      </div>
+      <div class="mt-3 max-w-md mx-auto p-3 rounded-lg" style="background:rgba(10,14,23,.4);border:1px solid rgba(77,168,255,.08)">
+        <span class="text-xs" style="color:#4a6278">数据文件: <span id="dataFileCount">0</span></span>
+        <div class="flex flex-wrap gap-1 mt-1" id="dataFileChips"></div>
+      </div>
+      <div class="mt-6 max-w-md mx-auto" id="progressPanel" style="display:none">
+        <div class="flex justify-between text-xs mb-1" style="color:#4a6278"><span id="progressPhase">准备中...</span><span id="progressPct">0%</span></div>
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="text-right text-xs mt-1" style="color:#3a5068" id="progressElapsed"></div>
+        <div class="mt-4 max-h-60 overflow-y-auto" id="phaseLog"></div>
+      </div>
+      <div class="flex justify-center gap-4 mt-8"><button class="btn btn-outline" onclick="showDemo()">演示</button><button class="btn btn-primary" id="runBtn" onclick="runAudit()">▶ 执行审计</button><button class="btn btn-ghost" onclick="wsGo(2)">← 返回</button></div>
+    </div>
+
+    <!-- ===== Panel 4: 查看结果 ===== -->
+    <div id="wsp4" class="card fade-in" style="display:none">
+      <div id="resultHeader" class="text-center mb-6"></div>
+      <div class="rounded-xl p-4 mb-5" style="background:rgba(41,128,255,.04);border:1px solid rgba(77,168,255,.1)">
+        <h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-clipboard-check" style="color:#10b981;margin-right:6px"></i>审计摘要</h4>
+        <p class="text-sm leading-relaxed" style="color:#8a9bb5" id="summaryText"></p>
+      </div>
+      <div class="mb-5" id="findingsArea"></div>
+      <h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-table" style="color:#4da8ff;margin-right:6px"></i>工作底稿</h4>
+      <div class="grid grid-cols-2 gap-2 mb-5" id="sheetGrid"></div>
+      <div class="flex items-center justify-between p-4 rounded-xl mb-2" style="background:rgba(19,28,46,.6);border:1px solid rgba(77,168,255,.08)">
+        <div class="flex items-center gap-3"><i class="fas fa-file-excel text-xl" style="color:#10b981"></i><div><p class="text-xs" style="color:#4a6278">审计底稿 Excel</p><code class="text-sm" style="color:#6b8aaa" id="outputPath"></code></div></div>
+        <button class="btn btn-success" style="font-size:12px" id="downloadBtn">下载底稿</button>
+      </div>
+      <div class="flex items-center justify-between p-4 rounded-xl mb-2" style="background:rgba(245,158,11,.03);border:1px solid rgba(245,158,11,.12)">
+        <div class="flex items-center gap-3"><i class="fas fa-file-lines text-xl" style="color:#f59e0b"></i><div><p class="text-xs" style="color:#4a6278">审计日志 · 风险: <span class="font-bold" style="color:#ef4444" id="riskCount">0</span></p><code class="text-sm" style="color:#6b8aaa" id="logPath"></code></div></div>
+        <button class="btn btn-outline" style="font-size:12px" id="logDownloadBtn">下载日志</button>
+      </div>
+      <details class="mb-5"><summary class="text-xs font-semibold cursor-pointer" style="color:#4a6278">日志预览</summary><pre class="mt-2 text-xs p-3 rounded-lg max-h-52 overflow-y-auto" style="background:#0a0e17;color:#4da8ff;font-family:'Cascadia Code','Fira Code',monospace;white-space:pre-wrap" id="logPreview"></pre></details>
+      <button class="btn btn-primary w-full" onclick="wsGo(1)">← 返回第一步 · 执行新审计</button>
+    </div>
+
   </div>
+</div>
 
-  <!-- ===== PAGE 1: 选择科目 ===== -->
-  <div class="page active" id="page1">
-    <div class="content">
-      <div class="steps">
-        <div class="flex flex-col items-center"><div class="step-dot current" id="s1">1</div><div class="step-label current">选择科目</div></div>
-        <div class="step-line" id="l1"></div>
-        <div class="flex flex-col items-center"><div class="step-dot" id="s2">2</div><div class="step-label">上传数据</div></div>
-        <div class="step-line" id="l2"></div>
-        <div class="flex flex-col items-center"><div class="step-dot" id="s3">3</div><div class="step-label">执行审计</div></div>
-        <div class="step-line" id="l3"></div>
-        <div class="flex flex-col items-center"><div class="step-dot" id="s4">4</div><div class="step-label">查看结果</div></div>
-      </div>
+<!-- ============================================================ -->
+<!--  技术原理 TECH -->
+<!-- ============================================================ -->
+<div class="page" id="page-tech">
+  <div class="section">
+    <h2 style="font-size:32px;font-weight:700;color:#e0e8f0;text-align:center;margin-bottom:6px">技术原理</h2>
+    <p style="text-align:center;color:#4a6278;margin-bottom:40px">AI 审计智能体的底层架构与运行逻辑</p>
 
-      <div class="card fade-in">
-        <h2 class="text-xl font-bold text-center mb-1" style="color:#e0e8f0">选择审计科目</h2>
-        <p class="text-center mb-6" style="color:#4a6278;font-size:13px">AI 将自动执行该科目对应的全部审计程序</p>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="subjectGrid"></div>
-        <div class="flex justify-center gap-4 mt-8">
-          <button class="btn btn-ghost" onclick="showDemo()">查看演示</button>
-          <button class="btn btn-primary" id="nextBtn" disabled onclick="goPage(2)">下一步</button>
-        </div>
+    <!-- 运行流程 -->
+    <div class="card mb-6">
+      <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:24px"><i class="fas fa-diagram-project" style="color:#4da8ff;margin-right:8px"></i>运行流程</h3>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;margin-bottom:24px">
+        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📂</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">1. 数据读取</div><div style="font-size:11px;color:#4a6278">openpyxl 解析<br>多Sheet识别</div></div>
+        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">🔤</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">2. 数据序列化</div><div style="font-size:11px;color:#4a6278">Excel → 结构化<br>文本表示</div></div>
+        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">🧠</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">3. AI 分析</div><div style="font-size:11px;color:#4a6278">加载审计准则<br>LLM 推理计算</div></div>
+        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📊</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">4. 结果解析</div><div style="font-size:11px;color:#4a6278">JSON 结构化<br>提取审计数据</div></div>
+        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📝</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">5. 模板渲染</div><div style="font-size:11px;color:#4a6278">Python 模板<br>生成规范Excel</div></div>
+        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📋</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">6. 日志输出</div><div style="font-size:11px;color:#4a6278">审计轨迹文件<br>风险数据清单</div></div>
       </div>
+      <p style="font-size:13px;color:#4a6278;line-height:1.8">
+        用户上传原始财务数据（科目余额表、明细账、对账单等）后，系统通过 <strong style="color:#4da8ff">openpyxl</strong> 解析 Excel 文件，
+        将数据序列化为结构化文本。随后，系统加载预置的审计准则（CLAUDE.md），与用户数据组装为 Prompt，
+        通过 <strong style="color:#4da8ff">DeepSeek API</strong>（兼容 Anthropic Messages 协议）调用大语言模型。
+        LLM 依据中国注册会计师审计准则执行分析性复核、函证检查、账龄分析等程序，返回结构化审计数据。
+        服务端 Python 模板引擎将数据渲染为排版规范的 Excel 底稿，同时输出 Markdown 格式的审计日志。
+      </p>
     </div>
-  </div>
 
-  <!-- ===== PAGE 2: 上传数据 ===== -->
-  <div class="page" id="page2">
-    <div class="content">
-      <div class="steps">
-        <div class="flex flex-col items-center"><div class="step-dot done">✓</div><div class="step-label done">选择科目</div></div>
-        <div class="step-line done"></div>
-        <div class="flex flex-col items-center"><div class="step-dot current">2</div><div class="step-label current">上传数据</div></div>
-        <div class="step-line"></div>
-        <div class="flex flex-col items-center"><div class="step-dot">3</div><div class="step-label">执行审计</div></div>
-        <div class="step-line"></div>
-        <div class="flex flex-col items-center"><div class="step-dot">4</div><div class="step-label">查看结果</div></div>
-      </div>
-
-      <div class="card fade-in">
-        <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">上传审计数据</h2>
-
-        <div class="drop-zone glow-border p-12 text-center cursor-pointer rounded-xl transition-all"
-             style="border-style:dashed" id="dropZone" onclick="document.getElementById('fileInput').click()">
-          <div style="font-size:44px;margin-bottom:12px;color:#1a3350"><i class="fas fa-cloud-upload-alt"></i></div>
-          <p style="font-size:16px;font-weight:600;color:#6b8aaa;margin-bottom:4px">拖拽 Excel 文件到此处</p>
-          <p style="font-size:13px;color:#3a5068">或点击选择 · .xlsx .xls · 可多选</p>
-          <input type="file" id="fileInput" multiple accept=".xlsx,.xls" class="hidden" onchange="handleFiles(this.files)">
-        </div>
-
-        <div class="mt-4" id="fileListWrap" style="display:none">
-          <p class="text-xs font-semibold uppercase mb-2" style="color:#4a6278">已选 <span id="fileCount">0</span> 文件</p>
-          <div class="flex flex-wrap gap-2" id="fileChips"></div>
-        </div>
-
-        <div class="mt-5 p-4 rounded-xl flex items-center justify-between" style="background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.15)">
-          <div class="flex items-center gap-2">
-            <span>💡</span>
-            <div><p class="text-sm font-semibold" style="color:#fbbf24">没有数据？</p><p class="text-xs" style="color:#6b8aaa">加载该科目的内置范例数据</p></div>
-          </div>
-          <button class="btn btn-outline" style="font-size:12px" onclick="loadDemoFiles()">加载范例</button>
-        </div>
-
-        <div class="flex justify-between mt-7">
-          <button class="btn btn-ghost" onclick="goPage(1)">← 返回</button>
-          <button class="btn btn-primary" id="uploadBtn" onclick="uploadFiles()" disabled>上传并继续</button>
-        </div>
-        <p class="text-center text-xs mt-3" style="color:#3a5068" id="uploadStatus"></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE 3: 执行审计 ===== -->
-  <div class="page" id="page3">
-    <div class="content">
-      <div class="steps">
-        <div class="flex flex-col items-center"><div class="step-dot done">✓</div><div class="step-label done">选择科目</div></div>
-        <div class="step-line done"></div>
-        <div class="flex flex-col items-center"><div class="step-dot done">✓</div><div class="step-label done">上传数据</div></div>
-        <div class="step-line done"></div>
-        <div class="flex flex-col items-center"><div class="step-dot current">3</div><div class="step-label current">执行审计</div></div>
-        <div class="step-line"></div>
-        <div class="flex flex-col items-center"><div class="step-dot">4</div><div class="step-label">查看结果</div></div>
-      </div>
-
-      <div class="card fade-in">
-        <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">审计配置</h2>
-        <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
-          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">被审计单位</label><input id="entityName" placeholder="重庆蛮先进智能制造有限公司"></div>
-          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">会计期间</label><input id="period" value="2024-12-31"></div>
-          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">审核员</label><input id="auditor" placeholder="AI审计智能体"></div>
-          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">事务所</label><input id="firmName" placeholder="XX会计师事务所"></div>
-        </div>
-        <div class="mt-3 max-w-md mx-auto p-3 rounded-lg" style="background:rgba(10,14,23,0.4);border:1px solid rgba(77,168,255,0.08)">
-          <span class="text-xs" style="color:#4a6278">数据文件: <span id="dataFileCount">0</span> 个</span>
-          <div class="flex flex-wrap gap-1 mt-1" id="dataFileChips"></div>
-        </div>
-
-        <div class="mt-6 max-w-md mx-auto" id="progressPanel" style="display:none">
-          <div class="flex justify-between text-xs mb-1" style="color:#4a6278">
-            <span id="progressPhase">准备中...</span><span id="progressPct">0%</span>
-          </div>
-          <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-          <div class="text-right text-xs mt-1" style="color:#3a5068" id="progressElapsed"></div>
-          <div class="mt-4 max-h-60 overflow-y-auto" id="phaseLog"></div>
-        </div>
-
-        <div class="flex justify-center gap-4 mt-8">
-          <button class="btn btn-outline" onclick="showDemo()">演示</button>
-          <button class="btn btn-primary" id="runBtn" onclick="runAudit()">▶ 执行审计</button>
-          <button class="btn btn-ghost" onclick="goPage(2)">← 返回</button>
+    <!-- 技术栈 + 工具 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div class="card">
+        <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-code" style="color:#4da8ff;margin-right:8px"></i>技术栈</h3>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">后端框架</span><span style="font-size:13px;color:#4da8ff">Python · FastAPI · uvicorn</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">Excel 处理</span><span style="font-size:13px;color:#4da8ff">openpyxl · 模板渲染引擎</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">AI 模型</span><span style="font-size:13px;color:#4da8ff">DeepSeek V4 Pro · Anthropic API</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">实时通信</span><span style="font-size:13px;color:#4da8ff">Server-Sent Events (SSE)</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">前端</span><span style="font-size:13px;color:#4da8ff">HTML5 · Tailwind CSS · Font Awesome</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">JSON 修复</span><span style="font-size:13px;color:#4da8ff">json-repair</span></div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE 4: 查看结果 ===== -->
-  <div class="page" id="page4">
-    <div class="content wide" style="justify-content:flex-start;padding-top:48px">
-      <div class="steps">
-        <div class="flex flex-col items-center"><div class="step-dot done">✓</div><div class="step-label done">选择科目</div></div>
-        <div class="step-line done"></div>
-        <div class="flex flex-col items-center"><div class="step-dot done">✓</div><div class="step-label done">上传数据</div></div>
-        <div class="step-line done"></div>
-        <div class="flex flex-col items-center"><div class="step-dot done">✓</div><div class="step-label done">执行审计</div></div>
-        <div class="step-line done"></div>
-        <div class="flex flex-col items-center"><div class="step-dot current">4</div><div class="step-label current">查看结果</div></div>
-      </div>
-
-      <div class="card fade-in w-full">
-        <div id="resultHeader" class="text-center mb-6"></div>
-        <div class="rounded-xl p-4 mb-5" style="background:rgba(41,128,255,0.04);border:1px solid rgba(77,168,255,0.1)">
-          <h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-clipboard-check" style="color:#10b981;margin-right:6px"></i>审计摘要</h4>
-          <p class="text-sm leading-relaxed" style="color:#8a9bb5" id="summaryText"></p>
+      <div class="card">
+        <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-tools" style="color:#4da8ff;margin-right:8px"></i>开发工具</h3>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">开发环境</span><span style="font-size:13px;color:#4da8ff">VS Code · Windows 11</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">AI 协作</span><span style="font-size:13px;color:#4da8ff">Claude Code (VS Code 插件)</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">版本控制</span><span style="font-size:13px;color:#4da8ff">Git · GitHub</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">Python 版本</span><span style="font-size:13px;color:#4da8ff">3.12</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">依赖管理</span><span style="font-size:13px;color:#4da8ff">pip · venv</span></div>
+          <div style="height:1px;background:rgba(77,168,255,.05)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:#c8d6e5">审计准则</span><span style="font-size:13px;color:#4da8ff">中国注册会计师审计准则</span></div>
         </div>
-        <div class="mb-5" id="findingsArea"></div>
-
-        <h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-table" style="color:#4da8ff;margin-right:6px"></i>工作底稿</h4>
-        <div class="grid grid-cols-2 gap-2 mb-5" id="sheetGrid"></div>
-
-        <div class="flex items-center justify-between p-4 rounded-xl mb-2" style="background:rgba(19,28,46,0.6);border:1px solid rgba(77,168,255,0.08)">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-file-excel text-xl" style="color:#10b981"></i>
-            <div><p class="text-xs" style="color:#4a6278">审计底稿 Excel</p><code class="text-sm" style="color:#6b8aaa" id="outputPath"></code></div>
-          </div>
-          <button class="btn btn-success" style="font-size:12px" id="downloadBtn">下载底稿</button>
-        </div>
-        <div class="flex items-center justify-between p-4 rounded-xl mb-2" style="background:rgba(245,158,11,0.03);border:1px solid rgba(245,158,11,0.12)">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-file-lines text-xl" style="color:#f59e0b"></i>
-            <div><p class="text-xs" style="color:#4a6278">审计日志 · 风险: <span class="font-bold" style="color:#ef4444" id="riskCount">0</span></p><code class="text-sm" style="color:#6b8aaa" id="logPath"></code></div>
-          </div>
-          <button class="btn btn-outline" style="font-size:12px" id="logDownloadBtn">下载日志</button>
-        </div>
-        <details class="mb-5">
-          <summary class="text-xs font-semibold cursor-pointer" style="color:#4a6278">日志预览</summary>
-          <pre class="mt-2 text-xs p-3 rounded-lg max-h-52 overflow-y-auto" style="background:#0a0e17;color:#4da8ff;font-family:'Cascadia Code','Fira Code',monospace;white-space:pre-wrap" id="logPreview"></pre>
-        </details>
-        <button class="btn btn-primary w-full" onclick="goPage(1)">← 返回首页 · 执行新审计</button>
       </div>
     </div>
   </div>
-
-</div><!-- /#app -->
+</div>
 
 <script>
 const API='http://127.0.0.1:8800';
@@ -462,89 +367,76 @@ const SUBJECTS=[
   {id:'G',name:'预收账款',icon:'fa-cart-arrow-down',color:'#a78bfa',desc:'预收货款·预收工程款',codes:'2203'},
   {id:'H',name:'短期借款',icon:'fa-building-columns',color:'#f87171',desc:'信用/抵押/保证借款·利息测算',codes:'2001'},
 ];
+let selectedSubject='C',uploadedFiles=[],selectedFiles=[],wsPanel=1;
 
-let selectedSubject='C', uploadedFiles=[], selectedFiles=[];
-
-// ============ 封面 ============
-function enterApp(){
-  document.getElementById('cover').classList.add('hide');
-  document.getElementById('app').style.display='block';
-  setTimeout(()=>document.getElementById('cover').style.display='none',600);
-}
-
-// ============ 页面跳转 ============
-function goPage(n){
-  document.querySelectorAll('#app .page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page'+n).classList.add('active');
-  if(n===3) refreshFileList();
+// ==================== 页面切换 ====================
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
   window.scrollTo(0,0);
 }
 
-// ============ 科目卡片 ============
+// ==================== 工作流面板 ====================
+function wsGo(n){
+  wsPanel=n;
+  for(let i=1;i<=4;i++)document.getElementById('wsp'+i).style.display=(i===n)?'':'none';
+  // Update steps
+  for(let i=1;i<=4;i++){
+    const d=document.getElementById('ws'+i),l=document.getElementById('wsl'+i);
+    if(i<n){d.className='step-dot done';d.textContent='✓';if(l)l.className='step-line done'}
+    else if(i===n){d.className='step-dot current';d.textContent=i;if(l)l.className='step-line'}
+    else{d.className='step-dot';d.textContent=i;if(l)l.className='step-line'}
+  }
+  if(n===3)refreshFileList();
+}
+
+// Subject cards
 (function renderSubjects(){
   document.getElementById('subjectGrid').innerHTML=SUBJECTS.map(s=>`
     <div class="subj-card ${s.id===selectedSubject?'selected':''}" onclick="selectSubject('${s.id}')" id="card_${s.id}">
       <div class="flex items-center gap-3 mb-1">
         <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:${s.color}15;color:${s.color}"><i class="fas ${s.icon}"></i></div>
-        <div>
-          <h3 class="font-bold text-sm" style="color:#c8d6e5">${s.name}</h3>
-          <span class="text-xs" style="color:#3a5068">${s.codes}</span>
-        </div>
+        <div><h3 class="font-bold text-sm" style="color:#c8d6e5">${s.name}</h3><span class="text-xs" style="color:#3a5068">${s.codes}</span></div>
       </div>
       <p class="text-xs" style="color:#4a6278">${s.desc}</p>
-    </div>
-  `).join('');
+    </div>`).join('');
 })();
+function selectSubject(id){selectedSubject=id;document.querySelectorAll('.subj-card').forEach(c=>c.classList.remove('selected'));document.getElementById('card_'+id)?.classList.add('selected');document.getElementById('nextBtn').disabled=false}
 
-function selectSubject(id){
-  selectedSubject=id;
-  document.querySelectorAll('.subj-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('card_'+id)?.classList.add('selected');
-  document.getElementById('nextBtn').disabled=false;
-  document.getElementById('topSubj').textContent=SUBJECTS.find(s=>s.id===id).name;
-}
-
-// ============ 文件处理 ============
+// File handling
 const dz=document.getElementById('dropZone');
 ['dragenter','dragover'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add('drag-over')}));
 ['dragleave','drop'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('drag-over')}));
 dz.addEventListener('drop',e=>handleFiles(e.dataTransfer.files));
-
-function handleFiles(files){
-  for(const f of files){if(!f.name.endsWith('.xlsx')&&!f.name.endsWith('.xls'))continue;if(!selectedFiles.find(sf=>sf.name===f.name&&sf.size===f.size))selectedFiles.push(f)}
-  renderFileChips();
-}
+function handleFiles(files){for(const f of files){if(!f.name.endsWith('.xlsx')&&!f.name.endsWith('.xls'))continue;if(!selectedFiles.find(sf=>sf.name===f.name&&sf.size===f.size))selectedFiles.push(f)}renderFileChips()}
 function removeFile(i){selectedFiles.splice(i,1);renderFileChips()}
 function renderFileChips(){
   const w=document.getElementById('fileListWrap'),c=document.getElementById('fileChips'),b=document.getElementById('uploadBtn');
   if(selectedFiles.length===0){w.style.display='none';b.disabled=true;return}
   w.style.display='';b.disabled=false;document.getElementById('fileCount').textContent=selectedFiles.length;
-  c.innerHTML=selectedFiles.map((f,i)=>`<span class="inline-flex items-center gap-2 px-3 py-1 text-xs rounded-full" style="background:rgba(41,128,255,0.1);color:#4da8ff">${f.name}<span style="color:#3a5068">(${(f.size/1024).toFixed(0)}KB)</span><i class="fas fa-times-circle cursor-pointer hover:text-red-400" onclick="event.stopPropagation();removeFile(${i})"></i></span>`).join('');
+  c.innerHTML=selectedFiles.map((f,i)=>`<span class="inline-flex items-center gap-2 px-3 py-1 text-xs rounded-full" style="background:rgba(41,128,255,.1);color:#4da8ff">${f.name}<span style="color:#3a5068">(${(f.size/1024).toFixed(0)}KB)</span><i class="fas fa-times-circle cursor-pointer hover:text-red-400" onclick="event.stopPropagation();removeFile(${i})"></i></span>`).join('');
 }
-
 async function uploadFiles(){
-  if(selectedFiles.length===0)return;
-  const fd=new FormData();selectedFiles.forEach(f=>fd.append('files',f));
+  if(selectedFiles.length===0)return;const fd=new FormData();selectedFiles.forEach(f=>fd.append('files',f));
   document.getElementById('uploadStatus').innerHTML='<span class="loading loading-spinner loading-xs"></span> 上传中...';
   const r=await fetch(API+'/api/upload',{method:'POST',body:fd});const d=await r.json();
-  if(d.success){uploadedFiles=d.files.map(p=>({name:p.split('/').pop().replace(/^\d+_/,''),path:p}));document.getElementById('uploadStatus').textContent=`上传完成 · ${d.count} 文件`;setTimeout(()=>goPage(3),500)}
+  if(d.success){uploadedFiles=d.files.map(p=>({name:p.split('/').pop().replace(/^\d+_/,''),path:p}));document.getElementById('uploadStatus').textContent=`上传完成 · ${d.count} 文件`;setTimeout(()=>wsGo(3),500)}
 }
-
 async function loadDemoFiles(){
   const r=await fetch(API+'/api/demo-files?subject='+selectedSubject);const d=await r.json();
-  if(d.success&&d.files.length>0){uploadedFiles=d.files.map(p=>({name:p.split('/').pop(),path:p}));document.getElementById('uploadStatus').innerHTML=`范例已加载 · ${d.count} 文件`;setTimeout(()=>goPage(3),500)}
+  if(d.success&&d.files.length>0){uploadedFiles=d.files.map(p=>({name:p.split('/').pop(),path:p}));document.getElementById('uploadStatus').innerHTML=`范例已加载 · ${d.count} 文件`;setTimeout(()=>wsGo(3),500)}
 }
-
 function refreshFileList(){
   document.getElementById('dataFileCount').textContent=uploadedFiles.length;
-  document.getElementById('dataFileChips').innerHTML=uploadedFiles.length===0?'<span class="text-xs" style="color:#3a5068">待上传</span>':uploadedFiles.map(f=>`<span class="inline-flex px-2 py-1 text-xs rounded-full" style="background:rgba(77,168,255,0.06);color:#6b8aaa">${f.name}</span>`).join('');
+  document.getElementById('dataFileChips').innerHTML=uploadedFiles.length===0?'<span class="text-xs" style="color:#3a5068">待上传</span>':uploadedFiles.map(f=>`<span class="inline-flex px-2 py-1 text-xs rounded-full" style="background:rgba(77,168,255,.06);color:#6b8aaa">${f.name}</span>`).join('');
 }
 
-// ============ 执行审计 (SSE) ============
+// SSE audit
 async function runAudit(){
   if(uploadedFiles.length===0){alert('请先上传数据');return}
-  document.getElementById('progressPanel').style.display='';
-  document.getElementById('phaseLog').innerHTML='';
+  document.getElementById('progressPanel').style.display='';document.getElementById('phaseLog').innerHTML='';
   document.getElementById('progressFill').style.width='0%';document.getElementById('progressPct').textContent='0%';
   document.getElementById('runBtn').disabled=true;document.getElementById('runBtn').innerHTML='<span class="loading loading-spinner loading-xs"></span> 执行中...';
   const p=new URLSearchParams({subject:selectedSubject,entity_name:document.getElementById('entityName').value.trim()||'被审计单位',period:document.getElementById('period').value.trim()||'2024-12-31',auditor:document.getElementById('auditor').value.trim()||'AI审计',firm_name:document.getElementById('firmName').value.trim()||'',files:uploadedFiles.map(f=>f.path).join(',')});
@@ -552,32 +444,19 @@ async function runAudit(){
   try{
     const resp=await fetch(API+'/api/audit-stream?'+p.toString());const reader=resp.body.getReader();
     const dec=new TextDecoder();let buf='',cevent='';
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      buf+=dec.decode(value,{stream:true});const parts=buf.split('\n\n');buf=parts.pop();
-      for(const part of parts){
-        const lines=part.split('\n');let data='';
-        for(const l of lines){if(l.startsWith('event:'))cevent=l.slice(6).trim();if(l.startsWith('data:'))data=l.slice(5).trim()}
-        if(!data)continue;
-        try{
-          const d=JSON.parse(data);
-          if(cevent==='progress')updateProgress(d);
-          if(cevent==='result'){updateProgress({pct:100,phase:'complete',step:'审计完成',detail:'',status:'done',elapsed:d.elapsed_total});setTimeout(()=>showResult(d),300)}
-          if(cevent==='error')showError(d.msg);
-        }catch(e){}
+    while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const parts=buf.split('\n\n');buf=parts.pop();
+      for(const part of parts){const lines=part.split('\n');let data='';for(const l of lines){if(l.startsWith('event:'))cevent=l.slice(6).trim();if(l.startsWith('data:'))data=l.slice(5).trim()}if(!data)continue;
+        try{const d=JSON.parse(data);if(cevent==='progress')updateProgress(d);if(cevent==='result'){updateProgress({pct:100,phase:'complete',step:'审计完成',detail:'',status:'done',elapsed:d.elapsed_total});setTimeout(()=>showResult(d),300)}if(cevent==='error')showError(d.msg)}catch(e){}
       }
     }
   }catch(e){showError('连接失败: '+e.message)}
   finally{document.getElementById('runBtn').disabled=false;document.getElementById('runBtn').innerHTML='▶ 执行审计'}
 }
-
 function updateProgress(d){
   document.getElementById('progressFill').style.width=d.pct+'%';document.getElementById('progressPct').textContent=d.pct+'%';
-  document.getElementById('progressPhase').textContent=d.step||'';
-  if(d.elapsed)document.getElementById('progressElapsed').textContent=fmt(d.elapsed);
+  document.getElementById('progressPhase').textContent=d.step||'';if(d.elapsed)document.getElementById('progressElapsed').textContent=fmt(d.elapsed);
   const k=d.phase+'_'+d.step;
-  if(d.phase&&!phaseMap[k]){
-    phaseMap[k]=true;
+  if(d.phase&&!phaseMap[k]){phaseMap[k]=true;
     const cls=d.status==='done'?'done':d.status==='error'?'error':d.status==='warn'?'warn':'active';
     const icon=d.status==='done'?'✓':d.status==='error'?'✗':d.status==='warn'?'!':'';
     document.getElementById('phaseLog').innerHTML+=`<div class="log-step fade-in"><div class="log-dot ${cls}">${icon}</div><div class="flex-1"><p class="text-sm" style="color:#c8d6e5">${d.step||''}</p><p class="text-xs" style="color:#4a6278">${d.detail||''}</p></div>${d.elapsed?`<span class="text-xs" style="color:#3a5068">${fmt(d.elapsed)}</span>`:''}</div>`;
@@ -586,37 +465,22 @@ function updateProgress(d){
 }
 function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m>0?`${m}m${sec}s`:`${sec}s`}
 
-// ============ 演示 ============
-async function showDemo(){
-  const r=await fetch(API+'/api/demo-result?subject='+selectedSubject);const d=await r.json();
-  document.getElementById('entityName').value=d.entity_name||'';document.getElementById('period').value=d.period||'2024-12-31';
-  showResult(d);goPage(4);
-}
-
+// Demo
+async function showDemo(){const r=await fetch(API+'/api/demo-result?subject='+selectedSubject);const d=await r.json();document.getElementById('entityName').value=d.entity_name||'';document.getElementById('period').value=d.period||'2024-12-31';showResult(d);wsGo(4)}
 function showResult(d){
-  document.getElementById('summaryText').textContent=d.summary||'';
-  document.getElementById('outputPath').textContent=d.output_file||'';
-  document.getElementById('riskCount').textContent=d.risk_count||0;
-  document.getElementById('logPath').textContent=d.log_file||'';
+  document.getElementById('summaryText').textContent=d.summary||'';document.getElementById('outputPath').textContent=d.output_file||'';
+  document.getElementById('riskCount').textContent=d.risk_count||0;document.getElementById('logPath').textContent=d.log_file||'';
   document.getElementById('logPreview').textContent=d.log_content||'';
   document.getElementById('downloadBtn').onclick=()=>window.open(API+'/api/download?path='+encodeURIComponent(d.output_file));
   document.getElementById('logDownloadBtn').onclick=()=>{if(d.log_file)window.open(API+'/api/download?path='+encodeURIComponent(d.log_file))};
-
-  document.getElementById('resultHeader').innerHTML=d.success?`<div class="text-4xl mb-3" style="color:#10b981">✓</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险</p>`:`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${d.summary||''}</p>`;
-  document.getElementById('sheetGrid').innerHTML=(d.sheets||[]).map((s,i)=>`<div class="flex items-center gap-2 p-3 rounded-lg" style="background:rgba(19,28,46,0.6);border:1px solid rgba(77,168,255,0.06)"><i class="fas ${['fa-chart-pie','fa-coins','fa-building-columns','fa-envelope','fa-magnifying-glass-chart','fa-file-lines'][i%6]}" style="color:#4da8ff;font-size:13px"></i><span class="text-sm" style="color:#8a9bb5">${s}</span></div>`).join('');
+  document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#10b981">✓</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险</p>`;
+  document.getElementById('sheetGrid').innerHTML=(d.sheets||[]).map((s,i)=>`<div class="flex items-center gap-2 p-3 rounded-lg" style="background:rgba(19,28,46,.6);border:1px solid rgba(77,168,255,.06)"><i class="fas ${['fa-chart-pie','fa-coins','fa-building-columns','fa-envelope','fa-magnifying-glass-chart','fa-file-lines'][i%6]}" style="color:#4da8ff;font-size:13px"></i><span class="text-sm" style="color:#8a9bb5">${s}</span></div>`).join('');
   if(d.audit_findings?.length)document.getElementById('findingsArea').innerHTML=`<h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-magnifying-glass mr-1" style="color:#f59e0b"></i>审计发现</h4>`+d.audit_findings.map(f=>`<div class="risk-tag ${f.severity==='error'?'high':f.severity==='warning'?'mid':'low'}"><span>${f.severity==='error'?'🔴':f.severity==='warning'?'🟡':'🔵'}</span><span>${f.msg}</span></div>`).join('');
 }
+function showError(m){document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${m}</p>`;document.getElementById('summaryText').textContent=m;wsGo(4)}
 
-function showError(m){
-  document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${m}</p>`;
-  document.getElementById('summaryText').textContent=m;goPage(4);
-}
-
-// ============ 健康检查 ============
-async function checkHealth(){
-  try{const r=await fetch(API+'/api/health');const d=await r.json();document.getElementById('statusDot').style.background='#10b981';document.getElementById('statusLabel').textContent=d.model}
-  catch(e){document.getElementById('statusDot').style.background='#ef4444';document.getElementById('statusLabel').textContent='未连接'}
-}
+// Health
+async function checkHealth(){try{const r=await fetch(API+'/api/health');const d=await r.json();document.getElementById('statusDot').style.background='#10b981';document.getElementById('statusLabel').textContent=d.model}catch(e){document.getElementById('statusDot').style.background='#ef4444';document.getElementById('statusLabel').textContent='未连接'}}
 checkHealth();setInterval(checkHealth,30000);
 </script>
 </body>
