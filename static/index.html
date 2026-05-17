@@ -342,6 +342,67 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(56,189,248,.15)}50%{box-shadow:0 0 40px rgba(56,189,248,.35)}}
 @keyframes modalBackdrop{from{opacity:0}to{opacity:1}}
+
+/* ======== DASHBOARD ======== */
+.dash-sidebar{width:64px;transition:width .35s var(--ease-out-expo);overflow:hidden}
+.dash-sidebar:hover{width:180px}
+.dash-sidebar:hover .dash-nav-text{opacity:1;transform:translateX(0);pointer-events:auto}
+.dash-nav{width:100%;display:flex;align-items:center;gap:0;padding:12px 0;border-radius:10px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border:none;background:none;font-family:inherit;transition:all .25s var(--ease-out-expo);justify-content:center;position:relative}
+.dash-nav:hover{color:#f8fafc;background:rgba(56,189,248,.06)}
+.dash-nav.active{color:#4da8ff;background:rgba(77,168,255,.1)}
+.dash-nav-text{opacity:0;transform:translateX(-8px);transition:all .25s var(--ease-out-expo);white-space:nowrap;margin-left:12px;pointer-events:none}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi-card{background:rgba(16,24,40,.55);backdrop-filter:blur(20px) saturate(1.3);border:1px solid rgba(56,189,248,.08);border-radius:16px;padding:20px;transition:all .4s var(--ease-out-expo)}
+.kpi-card:hover{border-color:rgba(56,189,248,.18);box-shadow:0 16px 48px rgba(0,0,0,.35),0 0 0 1px rgba(56,189,248,.08) inset}
+.kpi-value{font-size:32px;font-weight:800;color:#f8fafc;font-variant-numeric:tabular-nums;line-height:1.1}
+
+.mini-ring{width:44px;height:44px;border-radius:50%;position:relative;flex-shrink:0}
+.mini-ring::after{content:'';position:absolute;inset:5px;border-radius:50%;background:#101828}
+
+.trend-chart{width:100%;height:140px;overflow:visible}
+.trend-chart .trend-dot{transition:all .3s var(--ease-out-expo);cursor:pointer}
+.trend-chart .trend-dot:hover{transform:scale(1.8);filter:drop-shadow(0 0 6px rgba(56,189,248,.6))}
+
+.subject-pie{position:relative;transition:transform .6s var(--ease-out-expo)}
+.subject-pie:hover{transform:scale(1.05)}
+
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:rgba(56,189,248,.08);border-radius:1px}
+.timeline-item{position:relative;margin-bottom:16px;padding:14px 16px;background:rgba(16,24,40,.4);border:1px solid rgba(56,189,248,.06);border-radius:12px;transition:all .3s var(--ease-out-expo)}
+.timeline-item:hover{border-color:rgba(56,189,248,.15);transform:translateX(4px)}
+.timeline-dot{position:absolute;left:-20px;top:22px;width:10px;height:10px;border-radius:50%;background:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
+.timeline-dot.docx{background:#a78bfa;box-shadow:0 0 0 3px rgba(167,139,250,.15)}
+
+.risk-dist-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:rgba(16,24,40,.6)}
+.risk-dist-bar>div{transition:width .6s var(--ease-out-expo)}
+.risk-dist-bar .high{background:#ef4444}
+.risk-dist-bar .mid{background:#f59e0b}
+.risk-dist-bar .low{background:#3b82f6}
+
+.risk-card{background:rgba(16,24,40,.4);border:1px solid rgba(56,189,248,.06);border-radius:12px;padding:14px 16px;transition:all .3s var(--ease-out-expo);position:relative;overflow:hidden}
+.risk-card:hover{border-color:rgba(56,189,248,.15);transform:translateY(-2px)}
+.risk-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0}
+.risk-card.high::before{background:#ef4444}
+.risk-card.mid::before{background:#f59e0b}
+.risk-card.low::before{background:#3b82f6}
+
+.template-card{background:rgba(16,24,40,.4);border:1px solid rgba(56,189,248,.06);border-radius:12px;padding:16px;transition:all .3s var(--ease-out-expo);display:flex;flex-direction:column;gap:8px}
+.template-card:hover{border-color:rgba(56,189,248,.15);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.template-card .subj-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(56,189,248,.1);color:#38bdf8;width:fit-content}
+.template-card .tc-actions{display:flex;gap:8px;margin-top:auto;justify-content:flex-end}
+.template-card .tc-actions button{background:none;border:none;color:#4a6278;cursor:pointer;font-size:13px;transition:color .2s}
+.template-card .tc-actions button:hover{color:#38bdf8}
+
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .dash-sidebar{width:56px}
+  .dash-sidebar:hover{width:160px}
+}
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:1fr}
+  #riskGrid{grid-template-columns:1fr!important}
+}
 </style>
 </head>
 <body>
@@ -1068,31 +1129,153 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 </div>
 
 <!-- ============================================================ -->
-<!--  DASHBOARD PAGE (左侧导航+右侧内容) -->
+<!--  DASHBOARD PAGE (图标导航 + 4 面板) -->
 <!-- ============================================================ -->
 <div class="page" id="page-dashboard">
   <div style="display:flex;min-height:calc(100vh - 52px)">
-    <!-- 左侧导航 -->
-    <div style="width:220px;flex-shrink:0;padding:32px 16px;border-right:1px solid rgba(77,168,255,.08)">
-      <h3 style="font-size:14px;font-weight:700;color:#e0e8f0;margin-bottom:24px;padding-left:12px">用户面板</h3>
-      <div style="display:flex;flex-direction:column;gap:4px">
-        <button class="dash-nav active" onclick="dashSwitch('templates')" id="dashNav-templates" style="text-align:left;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border:none;background:none;font-family:inherit;transition:all .2s">
-          <i class="fas fa-file-upload mr-2" style="width:16px"></i>模板管理
-        </button>
-        <button class="dash-nav" onclick="dashSwitch('records')" id="dashNav-records" style="text-align:left;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border:none;background:none;font-family:inherit;transition:all .2s">
-          <i class="fas fa-clock-rotate-left mr-2" style="width:16px"></i>审计记录
-        </button>
-        <button class="dash-nav" onclick="dashSwitch('risks')" id="dashNav-risks" style="text-align:left;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border:none;background:none;font-family:inherit;transition:all .2s">
-          <i class="fas fa-triangle-exclamation mr-2" style="width:16px"></i>风险提示
-        </button>
+    <!-- 左侧图标导航 -->
+    <div class="dash-sidebar" style="flex-shrink:0;padding:24px 0;border-right:1px solid rgba(77,168,255,.08);display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:10">
+      <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 4px 16px rgba(14,165,233,.35)">
+        <i class="fas fa-gauge-high" style="color:#fff;font-size:16px"></i>
+      </div>
+      <button class="dash-nav active" onclick="dashSwitch('overview')" id="dashNav-overview" title="概览">
+        <i class="fas fa-chart-pie" style="font-size:16px"></i><span class="dash-nav-text">概览</span>
+      </button>
+      <button class="dash-nav" onclick="dashSwitch('records')" id="dashNav-records" title="审计记录">
+        <i class="fas fa-clock-rotate-left" style="font-size:16px"></i><span class="dash-nav-text">审计记录</span>
+      </button>
+      <button class="dash-nav" onclick="dashSwitch('risks')" id="dashNav-risks" title="风险提示">
+        <i class="fas fa-triangle-exclamation" style="font-size:16px"></i><span class="dash-nav-text">风险提示</span>
+      </button>
+      <button class="dash-nav" onclick="dashSwitch('templates')" id="dashNav-templates" title="模板管理">
+        <i class="fas fa-file-upload" style="font-size:16px"></i><span class="dash-nav-text">模板管理</span>
+      </button>
+      <div style="margin-top:auto;padding:16px 0;display:flex;flex-direction:column;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px rgba(16,185,129,.4)" id="dashHealthDot"></span>
+        <span class="dash-nav-text" style="font-size:10px;color:#3a5068;white-space:nowrap">运行中</span>
       </div>
     </div>
 
     <!-- 右侧内容区 -->
-    <div style="flex:1;padding:40px 32px;overflow-y:auto">
+    <div style="flex:1;padding:32px;overflow-y:auto">
 
-      <!-- 模板管理 -->
-      <div id="dashPanel-templates" class="dash-panel">
+      <!-- ====== 概览面板 ====== -->
+      <div id="dashPanel-overview" class="dash-panel">
+        <!-- KPI 卡片 -->
+        <div class="kpi-grid" style="margin-bottom:24px">
+          <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <span style="font-size:12px;color:#4a6278;font-weight:500">累计审计</span>
+              <i class="fas fa-file-lines" style="color:#38bdf8;font-size:14px;opacity:.6"></i>
+            </div>
+            <div class="kpi-value" id="kpiTotalAudits">0</div>
+            <div style="font-size:11px;color:#10b981;margin-top:4px;display:flex;align-items:center;gap:4px"><i class="fas fa-arrow-up" style="font-size:9px"></i><span id="kpiAuditTrend">-</span></div>
+          </div>
+          <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <span style="font-size:12px;color:#4a6278;font-weight:500">本月风险</span>
+              <div class="mini-ring" id="kpiRiskRing"></div>
+            </div>
+            <div class="kpi-value" id="kpiMonthlyRisks">0</div>
+            <div style="font-size:11px;color:#4a6278;margin-top:4px">发现项</div>
+          </div>
+          <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <span style="font-size:12px;color:#4a6278;font-weight:500">已传模板</span>
+              <i class="fas fa-layer-group" style="color:#a78bfa;font-size:14px;opacity:.6"></i>
+            </div>
+            <div class="kpi-value" id="kpiTemplateCount">0</div>
+            <div style="font-size:11px;color:#4a6278;margin-top:4px">个模板文件</div>
+          </div>
+          <div class="kpi-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <span style="font-size:12px;color:#4a6278;font-weight:500">系统健康</span>
+              <i class="fas fa-heart-pulse" style="color:#10b981;font-size:14px;opacity:.6"></i>
+            </div>
+            <div class="kpi-value" id="kpiSystemHealth">100%</div>
+            <div class="progress-wrap" style="height:4px;margin-top:8px;border-radius:2px"><div class="progress-fill" style="width:100%;height:100%"></div></div>
+          </div>
+        </div>
+
+        <!-- 快捷开始 -->
+        <div class="card" style="margin-bottom:24px;padding:20px 24px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h4 style="font-size:14px;font-weight:700;color:#e0e8f0"><i class="fas fa-bolt" style="color:#f59e0b;margin-right:8px"></i>快捷开始</h4>
+            <span style="font-size:11px;color:#4a6278">点击科目直接开始审计</span>
+          </div>
+          <div id="quickStartArea" style="display:flex;gap:10px;flex-wrap:wrap">
+            <p class="text-xs" style="color:#3a5068">暂无审计记录，前往工作界面开始首次审计</p>
+          </div>
+        </div>
+
+        <!-- 概览图表区 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <!-- 科目分布饼图 -->
+          <div class="card">
+            <h4 style="font-size:14px;font-weight:700;color:#e0e8f0;margin-bottom:16px"><i class="fas fa-chart-pie" style="color:#38bdf8;margin-right:8px"></i>科目审计分布</h4>
+            <div style="display:flex;align-items:center;gap:20px">
+              <div class="subject-pie" id="subjectPie" style="width:120px;height:120px;border-radius:50%;flex-shrink:0"></div>
+              <div id="subjectPieLegend" style="display:flex;flex-direction:column;gap:6px;flex:1"></div>
+            </div>
+          </div>
+          <!-- 近7日趋势 -->
+          <div class="card">
+            <h4 style="font-size:14px;font-weight:700;color:#e0e8f0;margin-bottom:16px"><i class="fas fa-chart-line" style="color:#38bdf8;margin-right:8px"></i>近7日审计活动</h4>
+            <div id="weeklyTrendArea" style="width:100%;height:140px">
+              <svg class="trend-chart" viewBox="0 0 300 140" preserveAspectRatio="none">
+                <defs><linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8" stop-opacity=".25"/><stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/></linearGradient></defs>
+                <path id="trendArea" d="" fill="url(#trendGrad)"/>
+                <polyline id="trendLine" points="" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <g id="trendDots"></g>
+              </svg>
+            </div>
+            <div id="trendLabels" style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:#3a5068"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== 审计记录面板 ====== -->
+      <div id="dashPanel-records" class="dash-panel" style="display:none">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+            <h3 style="font-size:18px;font-weight:700;color:#e0e8f0"><i class="fas fa-clock-rotate-left" style="color:#4da8ff;margin-right:8px"></i>审计记录</h3>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <select id="recordFilterSubject" onchange="filterRecords()" style="background:rgba(10,14,23,.6);border:1px solid rgba(77,168,255,.15);border-radius:8px;color:#c8d6e5;padding:6px 10px;font-size:12px;outline:none;font-family:inherit">
+                <option value="">全部科目</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option><option value="K">K</option><option value="L">L</option><option value="M">M</option><option value="N">N</option><option value="O">O</option><option value="P">P</option><option value="Q">Q</option><option value="R">R</option>
+              </select>
+              <select id="recordFilterType" onchange="filterRecords()" style="background:rgba(10,14,23,.6);border:1px solid rgba(77,168,255,.15);border-radius:8px;color:#c8d6e5;padding:6px 10px;font-size:12px;outline:none;font-family:inherit">
+                <option value="">全部类型</option><option value="底稿">底稿</option><option value="日志">日志</option>
+              </select>
+              <input type="text" id="recordSearch" placeholder="搜索文件名..." oninput="filterRecords()" style="width:160px;padding:6px 10px;font-size:12px">
+            </div>
+          </div>
+          <p class="text-xs mb-5" style="color:#4a6278">最近生成的审计底稿与日志文件</p>
+          <div class="timeline" id="recentTimeline"><p class="text-xs" style="color:#3a5068">加载中...</p></div>
+        </div>
+      </div>
+
+      <!-- ====== 风险提示面板 ====== -->
+      <div id="dashPanel-risks" class="dash-panel" style="display:none">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <h3 style="font-size:18px;font-weight:700;color:#e0e8f0"><i class="fas fa-triangle-exclamation" style="color:#f59e0b;margin-right:8px"></i>风险提示</h3>
+          </div>
+          <p class="text-xs mb-4" style="color:#4a6278">各科目审计中发现的风险事项汇总</p>
+          <!-- 风险分布条 -->
+          <div style="margin-bottom:16px">
+            <div class="risk-dist-bar" id="riskDistBar"><div class="high" style="width:0%"></div><div class="mid" style="width:0%"></div><div class="low" style="width:0%"></div></div>
+            <div style="display:flex;gap:16px;margin-top:8px;font-size:11px">
+              <span style="color:#ef4444"><span id="riskCountHigh">0</span> 重大</span>
+              <span style="color:#f59e0b"><span id="riskCountMid">0</span> 关注</span>
+              <span style="color:#3b82f6"><span id="riskCountLow">0</span> 提示</span>
+            </div>
+          </div>
+          <div id="riskGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><p class="text-xs" style="color:#3a5068">加载中...</p></div>
+        </div>
+      </div>
+
+      <!-- ====== 模板管理面板 ====== -->
+      <div id="dashPanel-templates" class="dash-panel" style="display:none">
         <div class="card">
           <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:4px"><i class="fas fa-file-upload" style="color:#4da8ff;margin-right:8px"></i>底稿模板管理</h3>
           <p class="text-xs mb-5" style="color:#4a6278">上传各科目的审计底稿模板（Excel格式），AI将按模板结构填充数据</p>
@@ -1105,25 +1288,7 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
             <input type="file" id="templateFile" accept=".xlsx,.xls" class="hidden" onchange="uploadTemplate()">
             <button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById('templateFile').click()"><i class="fas fa-plus mr-1"></i>上传模板</button>
           </div>
-          <div id="templateList"><p class="text-xs" style="color:#3a5068">暂无模板</p></div>
-        </div>
-      </div>
-
-      <!-- 审计记录 -->
-      <div id="dashPanel-records" class="dash-panel" style="display:none">
-        <div class="card">
-          <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:4px"><i class="fas fa-clock-rotate-left" style="color:#4da8ff;margin-right:8px"></i>近期审计记录</h3>
-          <p class="text-xs mb-5" style="color:#4a6278">最近生成的审计底稿与日志文件</p>
-          <div id="recentList" style="max-height:500px;overflow-y:auto"><p class="text-xs" style="color:#3a5068">加载中...</p></div>
-        </div>
-      </div>
-
-      <!-- 风险提示 -->
-      <div id="dashPanel-risks" class="dash-panel" style="display:none">
-        <div class="card">
-          <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:4px"><i class="fas fa-triangle-exclamation" style="color:#f59e0b;margin-right:8px"></i>近期风险提示</h3>
-          <p class="text-xs mb-5" style="color:#4a6278">各科目审计中发现的风险事项汇总</p>
-          <div id="riskList" style="max-height:500px;overflow-y:auto"><p class="text-xs" style="color:#3a5068">加载中...</p></div>
+          <div id="templateGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px"><p class="text-xs" style="color:#3a5068">暂无模板</p></div>
         </div>
       </div>
 
@@ -1133,16 +1298,118 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 
 <script>
 // ==================== DASHBOARD ====================
+let dashStats=null, recentData=[], riskData=[];
+
 function dashSwitch(tab){
   document.querySelectorAll('.dash-panel').forEach(p=>p.style.display='none');
   document.getElementById('dashPanel-'+tab).style.display='';
   document.querySelectorAll('.dash-nav').forEach(b=>{b.classList.remove('active');b.style.color='#6b8aaa';b.style.background='transparent'});
   const btn=document.getElementById('dashNav-'+tab);
   btn.classList.add('active');btn.style.color='#4da8ff';btn.style.background='rgba(77,168,255,.1)';
+  if(tab==='overview')loadStats();
   if(tab==='templates')loadTemplates();
   if(tab==='records')loadRecent();
   if(tab==='risks')loadRisks();
 }
+
+function animateNumber(el,target,duration=800){
+  const start=performance.now();
+  (function tick(now){
+    const p=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*ease).toLocaleString();
+    if(p<1)requestAnimationFrame(tick);
+  })(start);
+}
+
+async function loadStats(){
+  try{
+    const r=await fetch(API+'/api/stats');const d=await r.json();
+    dashStats=d;
+    animateNumber(document.getElementById('kpiTotalAudits'),d.total_audits||0);
+    document.getElementById('kpiAuditTrend').textContent='累计 '+d.total_logs+' 份日志';
+    animateNumber(document.getElementById('kpiMonthlyRisks'),d.monthly_risks||0);
+    animateNumber(document.getElementById('kpiTemplateCount'),d.template_count||0);
+    const healthText=d.system_health==='ok'?'100%':'85%';
+    document.getElementById('kpiSystemHealth').textContent=healthText;
+    renderQuickStart(d.subject_dist||{});
+    renderSubjectPie(d.subject_dist||{});
+    renderWeeklyTrend(d.weekly_activity||[]);
+  }catch(e){console.error('loadStats',e)}
+}
+
+function renderQuickStart(dist){
+  const area=document.getElementById('quickStartArea');
+  const items=Object.entries(dist).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  if(items.length===0){
+    area.innerHTML='<p class="text-xs" style="color:#3a5068">暂无审计记录，前往工作界面开始首次审计</p>';
+    return;
+  }
+  const subjMap={C:'货币资金',D:'应收票据',E:'其他应收款',F:'预付账款',G:'预收账款',H:'短期借款',I:'应收账款',J:'应付账款',K:'应付票据',L:'应付职工薪酬',M:'应交税费',N:'其他应付款',O:'存货',P:'固定资产',Q:'无形资产',R:'长期借款'};
+  const colors=['#38bdf8','#0ea5e9','#0284c7','#22d3ee'];
+  area.innerHTML=items.map(([s,c],i)=>`
+    <button onclick="quickStartAudit('${s}')" class="btn btn-ghost" style="font-size:12px;padding:8px 16px;border-radius:10px;display:flex;align-items:center;gap:8px;border-color:${colors[i]}30">
+      <span style="width:3px;height:16px;border-radius:2px;background:${colors[i]};display:inline-block"></span>
+      <span style="font-weight:600">${s} ${subjMap[s]||''}</span>
+      <span style="font-size:11px;color:#4a6278">已审计 ${c} 次</span>
+    </button>
+  `).join('');
+}
+
+function quickStartAudit(s){
+  switchPage('work');
+  setTimeout(()=>{selectSubject(s);wsGo(2);},120);
+}
+
+function renderSubjectPie(dist){
+  const subjects=['C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R'];
+  const colors=['#38bdf8','#0ea5e9','#0284c7','#22d3ee','#67e8f9','#a78bfa','#8b5cf6','#7c3aed','#c084fc','#e879f9','#f472b6','#fb7185','#f87171','#ef4444','#f59e0b','#10b981'];
+  const total=Object.values(dist).reduce((a,b)=>a+b,0);
+  if(total===0){
+    document.getElementById('subjectPie').style.background='conic-gradient(rgba(56,189,248,.1) 0% 100%)';
+    document.getElementById('subjectPieLegend').innerHTML='<span style="font-size:12px;color:#3a5068">暂无数据</span>';
+    return;
+  }
+  let angle=0;
+  const gradients=[], legendItems=[];
+  subjects.forEach((s,i)=>{
+    const count=dist[s]||0;
+    if(count>0){
+      const pct=count/total;
+      const deg=pct*360;
+      gradients.push(`${colors[i]} ${angle}deg ${angle+deg}deg`);
+      angle+=deg;
+      legendItems.push(`<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#94a3b8"><span style="width:8px;height:8px;border-radius:2px;background:${colors[i]};flex-shrink:0"></span><span style="flex:1">${s}</span><span style="font-weight:600;color:#e0e8f0">${count}</span></div>`);
+    }
+  });
+  document.getElementById('subjectPie').style.background=`conic-gradient(${gradients.join(',')})`;
+  document.getElementById('subjectPieLegend').innerHTML=legendItems.join('');
+}
+
+function renderWeeklyTrend(data){
+  const line=document.getElementById('trendLine');
+  const areaPath=document.getElementById('trendArea');
+  const dotsGroup=document.getElementById('trendDots');
+  const labels=document.getElementById('trendLabels');
+  const maxCount=Math.max(...data.map(d=>d.count),1);
+  const w=300,h=140,pad=12;
+  const stepX=data.length>1?(w-pad*2)/(data.length-1):0;
+  const points=data.map((d,i)=>{
+    const x=pad+i*stepX;
+    const y=h-pad-(d.count/maxCount)*(h-pad*2);
+    return `${x},${y}`;
+  }).join(' ');
+  line.setAttribute('points',points);
+  const firstX=pad,lastX=pad+(data.length-1)*stepX;
+  areaPath.setAttribute('d',`M${firstX},${h} L${points.replace(/ /g,' L')} L${lastX},${h} Z`);
+  dotsGroup.innerHTML=data.map((d,i)=>{
+    const x=pad+i*stepX;
+    const y=h-pad-(d.count/maxCount)*(h-pad*2);
+    return `<circle cx="${x}" cy="${y}" r="3" fill="#38bdf8" class="trend-dot"><title>${d.date}: ${d.count}次</title></circle>`;
+  }).join('');
+  labels.innerHTML=data.map(d=>`<span>${d.date}</span>`).join('');
+}
+
 async function uploadTemplate(){
   const file=document.getElementById('templateFile').files[0];
   if(!file)return;
@@ -1152,32 +1419,109 @@ async function uploadTemplate(){
   const d=await r.json();
   if(d.success){loadTemplates();alert('模板上传成功')}
 }
+
 async function loadTemplates(){
   try{
     const r=await fetch(API+'/api/templates');const d=await r.json();
-    const el=document.getElementById('templateList');
-    if(d.templates.length===0){el.innerHTML='<p class="text-xs" style="color:#3a5068">暂无模板，请上传</p>';return}
-    el.innerHTML=d.templates.map(t=>`<div class="flex items-center justify-between py-2 px-3 rounded-lg" style="background:rgba(19,28,46,.4);margin-bottom:4px"><span class="text-sm" style="color:#c8d6e5"><span class="text-xs px-2 py-0.5 rounded" style="background:rgba(77,168,255,.1);color:#4da8ff;margin-right:8px">${t.subject}</span>${t.name}</span><span class="text-xs" style="color:#3a5068">${t.modified}</span></div>`).join('');
+    const el=document.getElementById('templateGrid');
+    if(d.templates.length===0){el.innerHTML='<p class="text-xs" style="color:#3a5068;grid-column:1/-1">暂无模板，请上传</p>';return}
+    el.innerHTML=d.templates.map(t=>`
+      <div class="template-card">
+        <span class="subj-badge">${t.subject}</span>
+        <div style="font-size:13px;font-weight:600;color:#e0e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</div>
+        <div style="display:flex;gap:12px;font-size:11px;color:#4a6278">
+          <span>${(t.size/1024).toFixed(1)} KB</span>
+          <span>${t.modified}</span>
+        </div>
+        <div class="tc-actions">
+          <button onclick="window.open('${API}/api/download?path=${encodeURIComponent(t.path)}','_blank')" title="下载"><i class="fas fa-download"></i></button>
+        </div>
+      </div>
+    `).join('');
   }catch(e){}
 }
+
 async function loadRecent(){
   try{
     const r=await fetch(API+'/api/recent');const d=await r.json();
-    document.getElementById('recentList').innerHTML=d.records.slice(0,12).map(r=>`<div class="flex items-center justify-between py-2"><span class="text-sm" style="color:#c8d6e5">${r.name.substring(0,40)}</span><span class="text-xs" style="color:#3a5068">${r.time}</span></div>`).join('')||'<p class="text-xs" style="color:#3a5068">暂无记录</p>';
+    recentData=d.records||[];
+    filterRecords();
   }catch(e){}
 }
+
+function filterRecords(){
+  const subjFilter=document.getElementById('recordFilterSubject').value;
+  const typeFilter=document.getElementById('recordFilterType').value;
+  const keyword=document.getElementById('recordSearch').value.toLowerCase();
+  let filtered=recentData.slice();
+  if(subjFilter)filtered=filtered.filter(r=>(r.name.split('_')[0]||'').toUpperCase()===subjFilter);
+  if(typeFilter)filtered=filtered.filter(r=>r.type===typeFilter);
+  if(keyword)filtered=filtered.filter(r=>r.name.toLowerCase().includes(keyword));
+  const el=document.getElementById('recentTimeline');
+  if(filtered.length===0){el.innerHTML='<p class="text-xs" style="color:#3a5068;padding-left:24px">无匹配记录</p>';return}
+  el.innerHTML=filtered.slice(0,20).map(r=>{
+    const subj=(r.name.split('_')[0]||'?').toUpperCase();
+    const isDocx=r.type==='日志';
+    return `
+      <div class="timeline-item" style="animation:fadeSlideIn .4s var(--ease-out-expo)">
+        <div class="timeline-dot ${isDocx?'docx':''}"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div style="min-width:0">
+            <div style="font-size:13px;font-weight:600;color:#e0e8f0;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.name.substring(0,50)}</div>
+            <div style="font-size:11px;color:#4a6278;display:flex;gap:8px;align-items:center">
+              <span class="text-xs px-2 py-0.5 rounded" style="background:${isDocx?'rgba(167,139,250,.1)':'rgba(56,189,248,.1)'};color:${isDocx?'#a78bfa':'#38bdf8'}">${r.type}</span>
+              <span>${r.time}</span>
+              ${r.size?`<span>${(r.size/1024).toFixed(1)} KB</span>`:''}
+            </div>
+          </div>
+          <button onclick="window.open('${API}/api/download?path=${encodeURIComponent(r.path)}','_blank')" class="btn btn-ghost" style="font-size:11px;padding:6px 10px;flex-shrink:0"><i class="fas fa-download"></i></button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 async function loadRisks(){
   try{
     const r=await fetch(API+'/api/risk-summary');const d=await r.json();
-    document.getElementById('riskList').innerHTML=d.risks.slice(0,12).map(r=>`<div class="risk-tag ${r.finding.includes('🔴')?'high':r.finding.includes('🟡')?'mid':'low'}" style="font-size:12px;padding:8px 10px"><span>${r.finding.substring(0,80)}</span></div>`).join('')||'<p class="text-xs" style="color:#3a5068">近期无风险提示</p>';
+    riskData=d.risks||[];
+    let high=0,mid=0,low=0;
+    riskData.forEach(x=>{
+      if(x.finding.includes('🔴'))high++;
+      else if(x.finding.includes('🟡'))mid++;
+      else low++;
+    });
+    const total=high+mid+low||1;
+    document.querySelector('#riskDistBar .high').style.width=(high/total*100)+'%';
+    document.querySelector('#riskDistBar .mid').style.width=(mid/total*100)+'%';
+    document.querySelector('#riskDistBar .low').style.width=(low/total*100)+'%';
+    document.getElementById('riskCountHigh').textContent=high;
+    document.getElementById('riskCountMid').textContent=mid;
+    document.getElementById('riskCountLow').textContent=low;
+    const el=document.getElementById('riskGrid');
+    if(riskData.length===0){el.innerHTML='<p class="text-xs" style="color:#3a5068;grid-column:1/-1">近期无风险提示</p>';return}
+    el.innerHTML=riskData.slice(0,20).map(x=>{
+      const level=x.finding.includes('🔴')?'high':x.finding.includes('🟡')?'mid':'low';
+      const source=(x.source||'').split('_')[0]||'';
+      return `
+        <div class="risk-card ${level}" style="animation:fadeSlideIn .4s var(--ease-out-expo)">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+            <span class="text-xs px-2 py-0.5 rounded" style="background:rgba(56,189,248,.1);color:#38bdf8;font-weight:600">${source}</span>
+            <span style="font-size:11px;color:#4a6278">${x.time}</span>
+          </div>
+          <div style="font-size:12px;color:#cbd5e1;line-height:1.5">${x.finding.substring(0,120)}</div>
+        </div>
+      `;
+    }).join('');
   }catch(e){}
 }
+
 // Dashboard + health on page switch
 (function(){
   const orig=switchPage;
   switchPage=function(name){
     orig(name);
-    if(name==='dashboard')dashSwitch('templates');
+    if(name==='dashboard')dashSwitch('overview');
     checkHealth();
   };
 })();

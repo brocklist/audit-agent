@@ -3,7 +3,7 @@
 LLM分析数据 → 服务端模板渲染Excel → 输出审计日志
 """
 import json, os, re, io, asyncio, time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import openpyxl
@@ -126,7 +126,7 @@ CLAUDE_MD = BASE_DIR / "CLAUDE.md"
 OUTPUT_DIR = BASE_DIR / "output"; UPLOAD_DIR = BASE_DIR / "uploads"
 OUTPUT_DIR.mkdir(exist_ok=True); UPLOAD_DIR.mkdir(exist_ok=True)
 
-ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
+ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic/v1")
 ANTHROPIC_AUTH_TOKEN = os.getenv("ANTHROPIC_AUTH_TOKEN", "")
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "deepseek-v4-pro[1m]")
 
@@ -922,13 +922,77 @@ async def risk_summary():
     # 扫描demo_outputs中的日志
     DEMO_DIR = BASE_DIR / "demo_outputs"
     for f in sorted(DEMO_DIR.glob("*审计日志*"), key=lambda x: x.stat().st_mtime, reverse=True)[:6]:
-        content = f.read_text(encoding="utf-8")[:3000]
+        if f.suffix == '.docx':
+            continue
+        try:
+            content = f.read_text(encoding="utf-8")[:3000]
+        except UnicodeDecodeError:
+            continue
         # 提取风险相关行
         for line in content.split('\n'):
             if any(kw in line for kw in ['🔴','🟡','风险','异常','需关注','差异','逾期','未回函']):
                 risks.append({"source": f.name.replace('_审计日志.md','').replace('_审计日志.docx',''), "finding": line.strip('| -*'), "time": datetime.fromtimestamp(f.stat().st_mtime).strftime("%m-%d %H:%M")})
     return {"risks": risks[:20]}
 
+@app.get("/api/stats")
+async def dashboard_stats():
+    """仪表盘聚合统计数据"""
+    now = datetime.now()
+    current_year, current_month = now.year, now.month
+
+    # 审计底稿与日志
+    xlsx_files = list(OUTPUT_DIR.glob("*.xlsx"))
+    docx_files = list(OUTPUT_DIR.glob("*.docx"))
+    total_audits = len(xlsx_files)
+    total_logs = len(docx_files)
+
+    # 模板数量
+    template_count = len(list(TEMPLATE_DIR.glob("*.xlsx")))
+
+    # 近7日活动趋势
+    weekly_activity = []
+    for i in range(6, -1, -1):
+        d = now - timedelta(days=i)
+        date_str = d.strftime("%m-%d")
+        count = sum(1 for f in xlsx_files if datetime.fromtimestamp(f.stat().st_mtime).strftime("%m-%d") == date_str)
+        weekly_activity.append({"date": date_str, "count": count})
+
+    # 科目分布（从底稿文件名前缀提取）
+    subject_dist = {}
+    for f in xlsx_files:
+        prefix = f.name.split('_')[0] if '_' in f.name else '?'
+        if len(prefix) == 1 and prefix.isalpha() and prefix.isupper():
+            subject_dist[prefix] = subject_dist.get(prefix, 0) + 1
+
+    # 本月风险数（从 demo_outputs 日志中提取）
+    monthly_risks = 0
+    DEMO_DIR = BASE_DIR / "demo_outputs"
+    if DEMO_DIR.exists():
+        for f in DEMO_DIR.glob("*审计日志*"):
+            if f.suffix == '.docx':
+                continue
+            mtime = datetime.fromtimestamp(f.stat().st_mtime)
+            if mtime.year == current_year and mtime.month == current_month:
+                try:
+                    content = f.read_text(encoding="utf-8")[:5000]
+                except UnicodeDecodeError:
+                    continue
+                for line in content.split('\n'):
+                    if any(kw in line for kw in ['🔴','🟡','风险','异常','需关注','差异','逾期','未回函']):
+                        monthly_risks += 1
+
+    # 系统健康（简单规则）
+    system_health = "ok"
+
+    return {
+        "total_audits": total_audits,
+        "total_logs": total_logs,
+        "template_count": template_count,
+        "monthly_risks": monthly_risks,
+        "subject_dist": subject_dist,
+        "weekly_activity": weekly_activity,
+        "system_health": system_health
+    }
 
 @app.get("/api/health")
 async def health():

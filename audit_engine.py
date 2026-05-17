@@ -16,7 +16,7 @@ SAMPLES_DIR = BASE_DIR / 'samples'
 OUTPUT_DIR = BASE_DIR / 'demo_outputs'
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
+ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic/v1")
 ANTHROPIC_AUTH_TOKEN = os.getenv("ANTHROPIC_AUTH_TOKEN", "")
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "deepseek-v4-pro[1m]")
 
