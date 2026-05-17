@@ -106,6 +106,24 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 .step-line.done::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.3);animation:lineFlash .6s ease-out}
 @keyframes lineFlash{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 
+/* ======== WORKSPACE SIDE NAV ======== */
+.ws-layout{display:flex;gap:24px;max-width:1100px;margin:0 auto;padding:40px 24px}
+.ws-sidebar{width:220px;flex-shrink:0}
+.ws-sidebar-inner{position:sticky;top:80px}
+.ws-step-link{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;cursor:pointer;transition:all .3s var(--ease-out-expo);border:1px solid transparent;position:relative}
+.ws-step-link:hover{background:rgba(16,24,40,.4)}
+.ws-step-link.active{background:rgba(14,165,233,.08);border-color:rgba(56,189,248,.15)}
+.ws-step-link.done{opacity:.6}
+.ws-step-link.done:hover{opacity:.8}
+.ws-step-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid rgba(77,168,255,.2);color:#4a6278;background:rgba(19,28,46,.8);transition:all .5s var(--ease-spring);flex-shrink:0}
+.ws-step-link.active .ws-step-num{border-color:#38bdf8;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;box-shadow:0 0 20px rgba(14,165,233,.4);animation:stepPulse 2s ease-in-out infinite}
+.ws-step-link.done .ws-step-num{border-color:#10b981;background:#10b981;color:#fff}
+.ws-step-title{font-size:14px;font-weight:600;color:#f1f5f9;margin-bottom:2px;transition:color .3s}
+.ws-step-desc{font-size:12px;color:#64748b;line-height:1.4}
+.ws-step-conn{width:2px;height:20px;margin-left:35px;background:rgba(56,189,248,.08);transition:all .6s var(--ease-out-expo)}
+.ws-step-conn.done{background:linear-gradient(180deg,#10b981 0%,rgba(16,24,40,0) 100%)}
+@media(max-width:900px){.ws-layout{flex-direction:column}.ws-sidebar{width:100%}.ws-sidebar-inner{position:static;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.ws-step-conn{display:none}.ws-step-link{flex-direction:column;gap:6px;padding:10px 12px;min-width:80px;text-align:center}.ws-step-num{width:32px;height:32px;font-size:12px}.ws-step-title{font-size:12px}.ws-step-desc{display:none}}
+
 /* ======== LOG STEPS ======== */
 .log-step{display:flex;align-items:flex-start;gap:10px;padding:6px 0;position:relative;animation:logIn .4s var(--ease-out-expo)}
 @keyframes logIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
@@ -117,7 +135,8 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 @keyframes dotPulse{0%,100%{box-shadow:0 0 12px rgba(41,128,255,.5)}50%{box-shadow:0 0 24px rgba(41,128,255,.9)}}
 
 /* ======== SUBJECT CARDS ======== */
-.subj-card{background:rgba(16,24,40,.55);border:1px solid rgba(56,189,248,.08);border-radius:12px;padding:20px;cursor:pointer;transition:all .35s var(--ease-out-expo);position:relative;overflow:hidden}
+.subj-card{background:rgba(16,24,40,.55);border:1px solid rgba(56,189,248,.08);border-radius:12px;padding:20px;cursor:pointer;transition:all .35s var(--ease-out-expo);position:relative;overflow:hidden;transform-style:preserve-3d}
+.sc-inner{transition:transform .3s var(--ease-out-expo);transform-style:preserve-3d}
 .subj-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(56,189,248,.08) 0%,transparent 60%);opacity:0;transition:opacity .3s}
 .subj-card:hover{transform:translateY(-3px);border-color:rgba(56,189,248,.35);box-shadow:0 12px 40px rgba(0,0,0,.35),0 0 40px rgba(56,189,248,.06)}
 .subj-card:hover::before{opacity:1}
@@ -656,20 +675,41 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 <!--  WORKSPACE PAGE  -->
 <!-- ============================================================ -->
 <div class="page" id="page-workspace">
-  <div style="max-width:900px;margin:0 auto;padding:40px 24px">
-    <div id="wsSteps" style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px">
-      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot current" id="ws1">1</div><div style="font-size:11px;color:#4da8ff;margin-top:5px;font-weight:600">选择科目</div></div>
-      <div class="step-line" id="wsl1"></div>
-      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot" id="ws2">2</div><div style="font-size:11px;color:#4a6278;margin-top:5px">上传数据</div></div>
-      <div class="step-line" id="wsl2"></div>
-      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot" id="ws3">3</div><div style="font-size:11px;color:#4a6278;margin-top:5px">执行审计</div></div>
-      <div class="step-line" id="wsl3"></div>
-      <div style="display:flex;flex-direction:column;align-items:center"><div class="step-dot" id="ws4">4</div><div style="font-size:11px;color:#4a6278;margin-top:5px">查看结果</div></div>
+  <div class="ws-layout">
+    <div class="ws-sidebar">
+      <div class="ws-sidebar-inner">
+        <div class="ws-step-link active" id="wsNav1" onclick="wsGo(1)">
+          <div class="ws-step-num" id="wsNum1">1</div>
+          <div><div class="ws-step-title">选择科目</div><div class="ws-step-desc">确定审计目标</div></div>
+        </div>
+        <div class="ws-step-conn" id="wsConn1"></div>
+        <div class="ws-step-link" id="wsNav2" onclick="wsGo(2)">
+          <div class="ws-step-num" id="wsNum2">2</div>
+          <div><div class="ws-step-title">上传数据</div><div class="ws-step-desc">Excel 文件导入</div></div>
+        </div>
+        <div class="ws-step-conn" id="wsConn2"></div>
+        <div class="ws-step-link" id="wsNav3" onclick="wsGo(3)">
+          <div class="ws-step-num" id="wsNum3">3</div>
+          <div><div class="ws-step-title">审计配置</div><div class="ws-step-desc">参数与执行</div></div>
+        </div>
+        <div class="ws-step-conn" id="wsConn3"></div>
+        <div class="ws-step-link" id="wsNav4" onclick="wsGo(4)">
+          <div class="ws-step-num" id="wsNum4">4</div>
+          <div><div class="ws-step-title">查看结果</div><div class="ws-step-desc">底稿与日志</div></div>
+        </div>
+      </div>
     </div>
+    <div style="flex:1;min-width:0">
 
     <div id="wsp1" class="card reveal">
       <h2 class="text-xl font-bold text-center mb-1" style="color:#e0e8f0">选择审计科目</h2>
-      <p class="text-center mb-6" style="color:#4a6278;font-size:13px">AI 将自动执行该科目对应的全部审计程序</p>
+      <p class="text-center mb-4" style="color:#4a6278;font-size:13px">AI 将自动执行该科目对应的全部审计程序</p>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap">
+        <button class="subject-tab active" onclick="filterWorkSubjects('all',this)" id="wsFilter-all">全部</button>
+        <button class="subject-tab" onclick="filterWorkSubjects('asset',this)" id="wsFilter-asset">资产类</button>
+        <button class="subject-tab" onclick="filterWorkSubjects('liability',this)" id="wsFilter-liability">负债类</button>
+        <input type="text" id="subjectSearch" placeholder="搜索科目..." oninput="renderWorkSubjects()" style="max-width:180px;padding:8px 14px;font-size:13px">
+      </div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="subjectGrid"></div>
       <div class="flex justify-center gap-4 mt-8">
         <button class="btn btn-ghost" onclick="showDemo()">查看演示</button>
@@ -695,25 +735,24 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
     </div>
 
     <div id="wsp3" class="card reveal" style="display:none">
-      <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">审计配置</h2>
-      <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
-        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">被审计单位</label><input id="entityName" placeholder="重庆蛮先进智能制造有限公司"></div>
-        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">会计期间</label><input id="period" value="2024-12-31"></div>
-        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">审核员</label><input id="auditor" placeholder="AI审计智能体"></div>
-        <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">事务所</label><input id="firmName" placeholder="XX会计师事务所"></div>
+      <div id="wsConfigForm">
+        <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">审计配置</h2>
+        <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">被审计单位</label><input id="entityName" placeholder="重庆蛮先进智能制造有限公司"></div>
+          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">会计期间</label><input id="period" value="2024-12-31"></div>
+          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">审核员</label><input id="auditor" placeholder="AI审计智能体"></div>
+          <div><label class="text-xs font-semibold mb-1 block" style="color:#4a6278">事务所</label><input id="firmName" placeholder="XX会计师事务所"></div>
+        </div>
+        <div class="mt-3 max-w-md mx-auto p-3 rounded-lg" style="background:rgba(10,14,23,.4);border:1px solid rgba(77,168,255,.08)">
+          <span class="text-xs" style="color:#4a6278">数据文件: <span id="dataFileCount">0</span></span><div class="flex flex-wrap gap-1 mt-1" id="dataFileChips"></div>
+        </div>
+        <div class="flex justify-center gap-4 mt-8"><button class="btn btn-outline" onclick="showDemo()">演示</button><button class="btn btn-primary" id="runBtn" onclick="runAudit()">▶ 执行审计</button><button class="btn btn-ghost" onclick="wsGo(2)">← 返回</button></div>
       </div>
-      <div class="mt-3 max-w-md mx-auto p-3 rounded-lg" style="background:rgba(10,14,23,.4);border:1px solid rgba(77,168,255,.08)">
-        <span class="text-xs" style="color:#4a6278">数据文件: <span id="dataFileCount">0</span></span><div class="flex flex-wrap gap-1 mt-1" id="dataFileChips"></div>
-      </div>
-      <div class="flex justify-center gap-4 mt-8"><button class="btn btn-outline" onclick="showDemo()">演示</button><button class="btn btn-primary" id="runBtn" onclick="runAudit()">▶ 执行审计</button><button class="btn btn-ghost" onclick="wsGo(2)">← 返回</button></div>
-    </div>
 
-    <!-- 进度面板 - 独立于配置卡片之外 -->
-    <div class="mt-6" id="progressPanel" style="display:none">
-      <div class="card">
+      <div id="wsProgressView" style="display:none;opacity:0;transform:translateY(12px);transition:all .5s var(--ease-out-expo)">
         <div class="flex items-center justify-between mb-4">
-          <h3 style="font-size:14px;font-weight:700;color:#e0e8f0"><i class="fas fa-bars-progress" style="color:#4da8ff;margin-right:6px"></i>审计执行进度</h3>
-          <span style="font-size:13px;font-weight:700;color:#4da8ff" id="progressPct">0%</span>
+          <h3 style="font-size:16px;font-weight:700;color:#e0e8f0"><i class="fas fa-bars-progress" style="color:#4da8ff;margin-right:8px"></i>审计执行进度</h3>
+          <span style="font-size:14px;font-weight:700;color:#4da8ff" id="progressPct">0%</span>
         </div>
         <div class="progress-wrap mb-3"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
         <div class="flex justify-between text-xs mb-4" style="color:#4a6278">
@@ -733,25 +772,51 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
     </div>
 
     <div id="wsp4" class="card reveal" style="display:none">
+      <!-- 顶部状态区 -->
       <div id="resultHeader" class="text-center mb-6"></div>
-      <div class="rounded-xl p-4 mb-5" style="background:rgba(41,128,255,.04);border:1px solid rgba(77,168,255,.1)">
+
+      <!-- 审计摘要 -->
+      <div class="rounded-xl p-5 mb-5" style="background:rgba(41,128,255,.04);border:1px solid rgba(77,168,255,.1)">
         <h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-clipboard-check" style="color:#10b981;margin-right:6px"></i>审计摘要</h4>
         <p class="text-sm leading-relaxed" style="color:#8a9bb5" id="summaryText"></p>
       </div>
+
+      <!-- 风险发现 -->
       <div class="mb-5" id="findingsArea"></div>
-      <h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-table" style="color:#4da8ff;margin-right:6px"></i>工作底稿</h4>
-      <div class="grid grid-cols-2 gap-2 mb-5" id="sheetGrid"></div>
-      <div class="flex items-center justify-between p-4 rounded-xl mb-2" style="background:rgba(19,28,46,.6);border:1px solid rgba(77,168,255,.08)">
-        <div class="flex items-center gap-3"><i class="fas fa-file-excel text-xl" style="color:#10b981"></i><div><p class="text-xs" style="color:#4a6278">审计底稿 Excel</p><code class="text-sm" style="color:#6b8aaa" id="outputPath"></code></div></div>
-        <button class="btn btn-success" style="font-size:12px" id="downloadBtn">下载底稿</button>
+
+      <!-- 工作底稿 -->
+      <h4 class="text-sm font-bold mb-3" style="color:#e0e8f0"><i class="fas fa-table" style="color:#4da8ff;margin-right:6px"></i>工作底稿</h4>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6" id="sheetGrid"></div>
+
+      <!-- 下载区 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+        <div class="p-5 rounded-xl text-center cursor-pointer transition-all hover:translate-y-[-2px]" style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15)" id="downloadCard">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:rgba(16,185,129,.12)">
+            <i class="fas fa-file-excel text-xl" style="color:#10b981"></i>
+          </div>
+          <p class="text-sm font-semibold mb-1" style="color:#e0e8f0">审计底稿 Excel</p>
+          <code class="text-xs block mb-3" style="color:#6b8aaa" id="outputPath"></code>
+          <button class="btn btn-success w-full" style="font-size:13px" id="downloadBtn"><i class="fas fa-download mr-1"></i> 下载底稿</button>
+        </div>
+        <div class="p-5 rounded-xl text-center cursor-pointer transition-all hover:translate-y-[-2px]" style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.15)">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:rgba(245,158,11,.12)">
+            <i class="fas fa-file-lines text-xl" style="color:#f59e0b"></i>
+          </div>
+          <p class="text-sm font-semibold mb-1" style="color:#e0e8f0">审计日志 Word</p>
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <code class="text-xs" style="color:#6b8aaa" id="logPath"></code>
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:rgba(239,68,68,.12);color:#ef4444" id="riskCount">0 风险</span>
+          </div>
+          <button class="btn btn-outline w-full" style="font-size:13px" id="logDownloadBtn"><i class="fas fa-download mr-1"></i> 下载日志</button>
+        </div>
       </div>
-      <div class="flex items-center justify-between p-4 rounded-xl mb-2" style="background:rgba(245,158,11,.03);border:1px solid rgba(245,158,11,.12)">
-        <div class="flex items-center gap-3"><i class="fas fa-file-lines text-xl" style="color:#f59e0b"></i><div><p class="text-xs" style="color:#4a6278">审计日志 · 风险: <span class="font-bold" style="color:#ef4444" id="riskCount">0</span></p><code class="text-sm" style="color:#6b8aaa" id="logPath"></code></div></div>
-        <button class="btn btn-outline" style="font-size:12px" id="logDownloadBtn">下载日志</button>
-      </div>
+
+      <!-- 日志预览 -->
       <details class="mb-5"><summary class="text-xs font-semibold cursor-pointer" style="color:#4a6278">日志预览</summary><pre class="mt-2 text-xs p-3 rounded-lg max-h-52 overflow-y-auto" style="background:#0a0e17;color:#4da8ff;font-family:'Cascadia Code','Fira Code',monospace;white-space:pre-wrap" id="logPreview"></pre></details>
+
       <button class="btn btn-primary w-full" onclick="wsGo(1)">← 返回第一步 · 执行新审计</button>
     </div>
+  </div>
   </div>
 </div>
 
@@ -1129,11 +1194,19 @@ document.addEventListener('click',function(e){
   setTimeout(()=>ripple.remove(),600);
 });
 
-// ==================== SUBJECT CARD MOUSE TRACKING ====================
+// ==================== SUBJECT CARD MOUSE TRACKING + 3D TILT ====================
 document.addEventListener('mousemove',function(e){
   document.querySelectorAll('.subj-card').forEach(card=>{
     const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
     card.style.setProperty('--mx',(x/r.width*100)+'%');card.style.setProperty('--my',(y/r.height*100)+'%');
+    const inner=card.querySelector('.sc-inner');
+    if(inner&&x>=0&&x<=r.width&&y>=0&&y<=r.height){
+      const rx=(y-r.height/2)/(r.height/2)*-5;
+      const ry=(x-r.width/2)/(r.width/2)*5;
+      inner.style.transform=`perspective(500px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    }else if(inner){
+      inner.style.transform='';
+    }
   });
 });
 
@@ -1162,26 +1235,64 @@ let selectedSubject='C',uploadedFiles=[],selectedFiles=[],wsPanel=1,resultData=n
 function wsGo(n){
   wsPanel=n;
   for(let i=1;i<=4;i++)document.getElementById('wsp'+i).style.display=(i===n)?'':'none';
+  // Update side nav
   for(let i=1;i<=4;i++){
-    const d=document.getElementById('ws'+i),l=document.getElementById('wsl'+i);
-    if(i<n){d.className='step-dot done';d.textContent='✓';if(l)l.className='step-line done'}
-    else if(i===n){d.className='step-dot current';d.textContent=i;if(l)l.className='step-line'}
-    else{d.className='step-dot';d.textContent=i;if(l)l.className='step-line'}
+    const nav=document.getElementById('wsNav'+i);
+    const num=document.getElementById('wsNum'+i);
+    const conn=document.getElementById('wsConn'+i);
+    nav.classList.remove('active','done');
+    if(conn)conn.classList.remove('done');
+    if(i<n){
+      nav.classList.add('done');
+      num.textContent='✓';
+    }else if(i===n){
+      nav.classList.add('active');
+      num.textContent=i;
+    }else{
+      num.textContent=i;
+    }
+    if(i<n&&conn)conn.classList.add('done');
   }
-  if(n===3)refreshFileList();
+  if(n===3){
+    refreshFileList();
+    const cfg=document.getElementById('wsConfigForm');
+    const prg=document.getElementById('wsProgressView');
+    if(cfg){cfg.style.display='';cfg.style.opacity='1';cfg.style.transform='translateY(0)'}
+    if(prg){prg.style.display='none';prg.style.opacity='0';prg.style.transform='translateY(12px)'}
+    document.getElementById('progressFill').style.width='0%';
+    document.getElementById('progressPct').textContent='0%';
+    document.getElementById('phaseLog').innerHTML='<p class="text-xs" style="color:#3a5068">等待开始...</p>';
+    document.getElementById('viewResultBtn').style.display='none';
+    document.getElementById('runBtn').disabled=false;
+    document.getElementById('runBtn').innerHTML='▶ 执行审计';
+  }
   // Re-observe for reveal
   setTimeout(()=>document.querySelectorAll('#page-workspace .reveal').forEach(el=>{el.classList.remove('visible');observer.observe(el)}),100);
 }
 
-(function renderSubjects(){
-  document.getElementById('subjectGrid').innerHTML=SUBJECTS.map(s=>`
+(function renderWorkSubjects(){
+  const filter=document.getElementById('wsFilter-all')?.dataset?.filter||'all';
+  const search=(document.getElementById('subjectSearch')?.value||'').trim().toLowerCase();
+  const cats={asset:['C','D','E','F','I','O','P','Q'],liability:['G','H','J','K','L','M','N','R']};
+  let items=SUBJECTS;
+  if(filter!=='all')items=items.filter(s=>cats[filter]?.includes(s.id));
+  if(search)items=items.filter(s=>s.name.includes(search)||s.desc.includes(search)||s.codes.includes(search));
+  document.getElementById('subjectGrid').innerHTML=items.map(s=>`
     <div class="subj-card ${s.id===selectedSubject?'selected':''}" onclick="selectSubject('${s.id}')" id="card_${s.id}">
-      <div class="flex items-center gap-3 mb-1"><div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:${s.color}15;color:${s.color}"><i class="fas ${s.icon}"></i></div>
-      <div><h3 class="font-bold text-sm" style="color:#c8d6e5">${s.name}</h3><span class="text-xs" style="color:#3a5068">${s.codes}</span></div></div>
-      <p class="text-xs" style="color:#4a6278">${s.desc}</p>
+      <div class="sc-inner">
+        <div class="flex items-center gap-3 mb-1"><div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:${s.color}15;color:${s.color}"><i class="fas ${s.icon}"></i></div>
+        <div><h3 class="font-bold text-sm" style="color:#c8d6e5">${s.name}</h3><span class="text-xs" style="color:#3a5068">${s.codes}</span></div></div>
+        <p class="text-xs" style="color:#4a6278">${s.desc}</p>
+      </div>
     </div>`).join('');
 })();
 function selectSubject(id){selectedSubject=id;document.querySelectorAll('.subj-card').forEach(c=>c.classList.remove('selected'));document.getElementById('card_'+id)?.classList.add('selected');document.getElementById('nextBtn').disabled=false}
+function filterWorkSubjects(cat,btn){
+  document.querySelectorAll('#wsp1 .subject-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#wsp1 .subject-tab').forEach(b=>b.dataset.filter=cat);
+  renderWorkSubjects();
+}
 
 // File handling
 const dz=document.getElementById('dropZone');
@@ -1214,7 +1325,11 @@ function refreshFileList(){
 // SSE audit
 async function runAudit(){
   if(uploadedFiles.length===0){alert('请先上传数据');return}
-  document.getElementById('progressPanel').style.display='';document.getElementById('phaseLog').innerHTML='';
+  const cfg=document.getElementById('wsConfigForm');
+  const prg=document.getElementById('wsProgressView');
+  if(cfg){cfg.style.opacity='0';cfg.style.transform='translateY(-12px)';setTimeout(()=>cfg.style.display='none',400)}
+  if(prg){prg.style.display='';requestAnimationFrame(()=>{prg.style.opacity='1';prg.style.transform='translateY(0)'})}
+  document.getElementById('phaseLog').innerHTML='';
   document.getElementById('progressFill').style.width='0%';document.getElementById('progressPct').textContent='0%';
   document.getElementById('runBtn').disabled=true;document.getElementById('runBtn').innerHTML='执行中...';
   const p=new URLSearchParams({subject:selectedSubject,entity_name:document.getElementById('entityName').value.trim()||'被审计单位',period:document.getElementById('period').value.trim()||'2024-12-31',auditor:document.getElementById('auditor').value.trim()||'AI审计',firm_name:document.getElementById('firmName').value.trim()||'',files:uploadedFiles.map(f=>f.path).join(',')});
@@ -1253,21 +1368,41 @@ function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m>0?`${m}m$
 function viewResult(){if(!resultData)return;document.getElementById('viewResultBtn').style.display='none';showResult(resultData)}
 async function showDemo(){const r=await fetch(API+'/api/demo-result?subject='+selectedSubject);const d=await r.json();document.getElementById('entityName').value=d.entity_name||'';document.getElementById('period').value=d.period||'2024-12-31';resultData=d;showResult(d)}
 function showResult(d){
-  document.getElementById('summaryText').textContent=d.summary||'';document.getElementById('outputPath').textContent=d.output_file||'';
-  document.getElementById('riskCount').textContent=d.risk_count||0;document.getElementById('logPath').textContent=d.log_file||'';
+  document.getElementById('summaryText').textContent=d.summary||'';
+  document.getElementById('outputPath').textContent=d.output_file||'';
+  document.getElementById('riskCount').textContent=(d.risk_count||0)+' 风险';
+  document.getElementById('logPath').textContent=d.log_file||'';
   document.getElementById('logPreview').textContent=d.log_content||'';
   document.getElementById('downloadBtn').onclick=()=>window.open(API+'/api/download?path='+encodeURIComponent(d.output_file));
   document.getElementById('logDownloadBtn').onclick=()=>{if(d.log_file)window.open(API+'/api/download?path='+encodeURIComponent(d.log_file))};
-  document.getElementById('resultHeader').innerHTML=`<div class="success-check"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 42l10 10 22-22"/></svg></div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险</p>`;
-  document.getElementById('sheetGrid').innerHTML=(d.sheets||[]).map((s,i)=>`<div class="flex items-center gap-2 p-3 rounded-lg" style="background:rgba(19,28,46,.6);border:1px solid rgba(77,168,255,.06)"><i class="fas ${['fa-chart-pie','fa-coins','fa-building-columns','fa-envelope','fa-magnifying-glass-chart','fa-file-lines'][i%6]}" style="color:#4da8ff;font-size:13px"></i><span class="text-sm" style="color:#8a9bb5">${s}</span></div>`).join('');
-  if(d.audit_findings?.length)document.getElementById('findingsArea').innerHTML=`<h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-magnifying-glass mr-1" style="color:#f59e0b"></i>审计发现</h4>`+d.audit_findings.map(f=>`<div class="risk-tag ${f.severity==='error'?'high':f.severity==='warning'?'mid':'low'}"><span>${f.severity==='error'?'🔴':f.severity==='warning'?'🟡':'🔵'}</span><span>${f.msg}</span></div>`).join('');
+  const elapsed=d.elapsed_total?` · 耗时 ${fmt(d.elapsed_total)}`:'';
+  document.getElementById('resultHeader').innerHTML=`<div class="success-check"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 42l10 10 22-22"/></svg></div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险${elapsed}</p>`;
+  const sheetIcons=['fa-chart-pie','fa-coins','fa-building-columns','fa-envelope','fa-magnifying-glass-chart','fa-file-lines'];
+  document.getElementById('sheetGrid').innerHTML=(d.sheets||[]).map((s,i)=>`
+    <div class="subj-wall-card p-4" style="cursor:default">
+      <div class="sw-icon mb-2" style="background:rgba(56,189,248,.1);color:#38bdf8"><i class="fas ${sheetIcons[i%6]}"></i></div>
+      <h4 class="text-sm font-semibold" style="color:#f1f5f9">${s}</h4>
+      <p class="text-xs mt-1" style="color:#64748b">工作底稿 ${i+1}</p>
+    </div>`).join('');
+  if(d.audit_findings?.length){
+    document.getElementById('findingsArea').innerHTML=`<h4 class="text-sm font-bold mb-3" style="color:#e0e8f0"><i class="fas fa-triangle-exclamation mr-1" style="color:#f59e0b"></i>审计发现</h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">`+d.audit_findings.map(f=>{
+      const isHigh=f.severity==='error';
+      const isMid=f.severity==='warning';
+      const bg=isHigh?'rgba(239,68,68,.08)':isMid?'rgba(245,158,11,.08)':'rgba(59,130,246,.08)';
+      const border=isHigh?'rgba(239,68,68,.2)':isMid?'rgba(245,158,11,.2)':'rgba(59,130,246,.2)';
+      const icon=isHigh?'🔴':isMid?'🟡':'🔵';
+      return `<div class="p-3 rounded-lg" style="background:${bg};border:1px solid ${border}">
+        <div class="flex items-start gap-2"><span>${icon}</span><span class="text-sm" style="color:#c8d6e5">${f.msg}</span></div>
+      </div>`;
+    }).join('')+`</div>`;
+  }else{document.getElementById('findingsArea').innerHTML='';}
   switchPage('workspace');
   wsGo(4);
-  // 强制显示结果面板（跳过reveal观察器延迟）
-  const wsp4 = document.getElementById('wsp4');
+  const wsp4=document.getElementById('wsp4');
   if(wsp4){wsp4.classList.add('visible');wsp4.style.opacity='1';wsp4.style.transform='none';}
 }
-function showError(m){switchPage('workspace');document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${m}</p>`;document.getElementById('summaryText').textContent=m;wsGo(4)}
+function showError(m){switchPage('workspace');document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${m}</p>`;document.getElementById('summaryText').textContent=m;document.getElementById('findingsArea').innerHTML='';document.getElementById('sheetGrid').innerHTML='';wsGo(4);}
 
 let healthFailCount=0;
 async function checkHealth(){
