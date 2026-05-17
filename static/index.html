@@ -5,14 +5,14 @@
 <title>审计智能体 · AI Audit Agent</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script>tailwind.config={theme:{extend:{colors:{accent:'#4da8ff',accent2:'#2980ff',dark:'#0a0e17',dark2:'#111827',surface:'#131c2e'},fontFamily:{sans:['Inter','Microsoft YaHei','sans-serif']}}}}</script>
+<script>tailwind.config={theme:{extend:{colors:{accent:'#38bdf8',accent2:'#0ea5e9',dark:'#080c14',dark2:'#0f172a',surface:'#101828'},fontFamily:{sans:['Inter','Microsoft YaHei','sans-serif']}}}}</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root{--ease-out-expo:cubic-bezier(0.19,1,0.22,1);--ease-out-back:cubic-bezier(0.34,1.56,0.64,1);--ease-spring:cubic-bezier(0.43,1.47,0.65,0.99)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter','Microsoft YaHei',sans-serif;background:#0a0e17;color:#c8d6e5;min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.02;background-image:linear-gradient(rgba(77,168,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(77,168,255,.3) 1px,transparent 1px);background-size:60px 60px}
+body{font-family:'Inter','Microsoft YaHei',sans-serif;background:#080c14;color:#cbd5e1;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.035;background-image:linear-gradient(rgba(56,189,248,.4) .5px,transparent .5px),linear-gradient(90deg,rgba(56,189,248,.4) .5px,transparent .5px);background-size:80px 80px}
 
 /* ======== SPLASH SCREEN ======== */
 #splash{position:fixed;inset:0;z-index:9999;background:#0a0e17;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s var(--ease-out-expo),transform .8s var(--ease-out-expo)}
@@ -27,26 +27,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 @keyframes revealUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
 /* ======== NAV ======== */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,14,23,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(77,168,255,.1);height:52px;display:flex;align-items:center;padding:0 28px;transform:translateY(-100%);transition:transform .6s var(--ease-out-expo)}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(8,12,20,.72);backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid rgba(56,189,248,.06);height:56px;display:flex;align-items:center;padding:0 28px;transform:translateY(-100%);transition:transform .6s var(--ease-out-expo)}
 .navbar.visible{transform:translateY(0)}
-.nav-link{position:relative;padding:8px 18px;font-size:13px;font-weight:500;color:#6b8aaa;cursor:pointer;border-radius:6px;transition:all .3s var(--ease-out-expo);border:none;background:none;font-family:inherit}
-.nav-link:hover{color:#fff}
-.nav-link.active{color:#4da8ff;background:rgba(77,168,255,.1)}
-.nav-link::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleX(0);width:20px;height:2px;background:#4da8ff;border-radius:1px;transition:transform .3s var(--ease-out-expo)}
+.nav-link{position:relative;padding:8px 18px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer;border-radius:8px;transition:all .3s var(--ease-out-expo);border:none;background:none;font-family:inherit}
+.nav-link:hover{color:#f8fafc}
+.nav-link.active{color:#38bdf8;background:rgba(56,189,248,.08)}
+.nav-link::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleX(0);width:20px;height:2px;background:#38bdf8;border-radius:1px;transition:transform .3s var(--ease-out-expo)}
 .nav-link.active::after{transform:translateX(-50%) scaleX(1)}
 
 /* ======== PAGE TRANSITIONS ======== */
-.page{display:none;padding-top:52px;min-height:100vh;animation:fadeSlideIn .5s var(--ease-out-expo)}
+.page{display:none;padding-top:56px;min-height:100vh;animation:fadeSlideIn .5s var(--ease-out-expo)}
 .page.active{display:block}
 @keyframes fadeSlideIn{from{opacity:0;transform:translateY(16px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
 
 /* ======== SECTION ======== */
-.section{padding:80px 24px;max-width:1100px;margin:0 auto}
-.section-sm{padding:48px 24px}
+.section{padding:120px 24px;max-width:1100px;margin:0 auto}
+.section-sm{padding:64px 24px}
 
 /* ======== CARDS with 3D tilt ======== */
-.card{background:rgba(19,28,46,.7);backdrop-filter:blur(12px);border:1px solid rgba(77,168,255,.1);border-radius:16px;padding:32px;transition:transform .4s var(--ease-out-expo),box-shadow .4s var(--ease-out-expo),border-color .4s}
-.card-hover:hover{transform:translateY(-4px);border-color:rgba(77,168,255,.3);box-shadow:0 16px 48px rgba(0,0,0,.4),0 0 0 1px rgba(77,168,255,.1) inset}
+.card{background:rgba(16,24,40,.55);backdrop-filter:blur(20px) saturate(1.3);border:1px solid rgba(56,189,248,.08);border-radius:16px;padding:28px;transition:all .4s var(--ease-out-expo)}
+.card-hover:hover{transform:translateY(-6px);border-color:rgba(56,189,248,.18);box-shadow:0 24px 64px rgba(0,0,0,.45),0 0 0 1px rgba(56,189,248,.08) inset,0 0 60px rgba(56,189,248,.06)}
 
 /* ======== REVEAL ON SCROLL ======== */
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease-out-expo),transform .8s var(--ease-out-expo)}
@@ -60,41 +60,44 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .reveal-stagger.visible>*:nth-child(6){transition:all .6s var(--ease-out-expo) .5s;opacity:1;transform:translateY(0)}
 
 /* ======== HERO ======== */
-.hero-title{font-size:52px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.15}
+.hero-title{font-size:52px;font-weight:800;color:#f8fafc;letter-spacing:-1px;line-height:1.1;text-shadow:0 0 80px rgba(56,189,248,.15)}
 .hero-title .char{display:inline-block;opacity:0;animation:charIn .6s var(--ease-out-expo) forwards}
 @keyframes charIn{from{opacity:0;transform:translateY(40px) rotateX(-20deg)}to{opacity:1;transform:translateY(0) rotateX(0)}}
-.hero-orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbFloat 8s ease-in-out infinite}
-.hero-orb.large{width:500px;height:500px;top:20%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(77,168,255,.04) 0%,transparent 70%)}
-.hero-orb.small{width:250px;height:250px;bottom:30%;right:5%;background:radial-gradient(circle,rgba(41,128,255,.05) 0%,transparent 70%);animation-delay:4s}
-@keyframes orbFloat{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(0)}33%{transform:translate(-48%,-52%) scale(1.1) rotate(1deg)}66%{transform:translate(-52%,-48%) scale(.95) rotate(-1deg)}}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbFloat 10s ease-in-out infinite;filter:blur(60px)}
+.hero-orb.large{width:600px;height:600px;top:15%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(56,189,248,.07) 0%,transparent 70%)}
+.hero-orb.small{width:300px;height:300px;bottom:25%;right:8%;background:radial-gradient(circle,rgba(14,165,233,.06) 0%,transparent 70%);animation-delay:4s}
+.hero-orb.medium{width:400px;height:400px;top:60%;left:15%;background:radial-gradient(circle,rgba(2,132,199,.05) 0%,transparent 70%);animation-delay:2s;animation-duration:12s}
+@keyframes orbFloat{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(0)}33%{transform:translate(-48%,-54%) scale(1.08) rotate(1deg)}66%{transform:translate(-52%,-46%) scale(.96) rotate(-1deg)}}
 
 /* ======== BUTTONS ======== */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s var(--ease-out-expo);border:none;font-family:inherit;position:relative;overflow:hidden}
-.btn-primary{background:linear-gradient(135deg,#2980ff,#0066e0);color:#fff;box-shadow:0 4px 20px rgba(41,128,255,.25)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(41,128,255,.45)}
+.btn-primary{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;box-shadow:0 4px 24px rgba(14,165,233,.35);position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transition:left .6s}
+.btn-primary:hover::before{left:100%}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(14,165,233,.50),0 0 20px rgba(56,189,248,.15)}
 .btn-primary:active{transform:scale(.96)}
 .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-ghost{background:transparent;color:#6b8aaa;border:1px solid rgba(77,168,255,.15)}
-.btn-ghost:hover{border-color:#4da8ff;color:#4da8ff;background:rgba(77,168,255,.04)}
-.btn-outline{background:transparent;color:#4da8ff;border:1px solid rgba(77,168,255,.3)}
-.btn-outline:hover{background:rgba(77,168,255,.08)}
+.btn-ghost{background:transparent;color:#64748b;border:1px solid rgba(56,189,248,.12)}
+.btn-ghost:hover{border-color:#38bdf8;color:#38bdf8;background:rgba(56,189,248,.04)}
+.btn-outline{background:transparent;color:#38bdf8;border:1px solid rgba(56,189,248,.25)}
+.btn-outline:hover{background:rgba(56,189,248,.08)}
 .btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
 /* Ripple */
 .btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:ripple .6s ease-out;pointer-events:none}
 @keyframes ripple{to{transform:scale(4);opacity:0}}
 
 /* ======== INPUT ======== */
-input[type="text"]{background:rgba(10,14,23,.6);border:1px solid rgba(77,168,255,.15);border-radius:8px;color:#c8d6e5;padding:10px 14px;font-size:14px;width:100%;outline:none;transition:all .3s var(--ease-out-expo);font-family:inherit}
-input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,255,.1);transform:translateY(-1px)}
+input[type="text"]{background:rgba(8,12,20,.6);border:1px solid rgba(56,189,248,.12);border-radius:10px;color:#cbd5e1;padding:10px 14px;font-size:14px;width:100%;outline:none;transition:all .3s var(--ease-out-expo);font-family:inherit}
+input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.1);transform:translateY(-1px)}
 
 /* ======== PROGRESS ======== */
 .progress-wrap{background:rgba(10,14,23,.6);border-radius:4px;height:4px;overflow:hidden}
-.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#2980ff,#4da8ff,#2980ff);background-size:200% 100%;animation:shimmer 2s linear infinite;transition:width .6s var(--ease-out-expo)}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#0ea5e9,#38bdf8,#0ea5e9);background-size:200% 100%;animation:shimmer 2s linear infinite;transition:width .6s var(--ease-out-expo)}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* ======== STEPS ======== */
 .step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid rgba(77,168,255,.2);color:#4a6278;background:rgba(19,28,46,.8);transition:all .5s var(--ease-spring)}
-.step-dot.current{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 20px rgba(41,128,255,.5);animation:stepPulse 2s ease-in-out infinite}
+.step-dot.current{border-color:#38bdf8;background:#0ea5e9;color:#fff;box-shadow:0 0 20px rgba(14,165,233,.5);animation:stepPulse 2s ease-in-out infinite}
 .step-dot.done{border-color:#10b981;background:#10b981;color:#fff;animation:stepPop .5s var(--ease-spring)}
 @keyframes stepPulse{0%,100%{box-shadow:0 0 20px rgba(41,128,255,.5)}50%{box-shadow:0 0 40px rgba(41,128,255,.8)}}
 @keyframes stepPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
@@ -109,21 +112,21 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
 .log-step::before{content:'';position:absolute;left:10px;top:22px;bottom:-6px;width:1.5px;background:rgba(77,168,255,.1)}
 .log-step:last-child::before{display:none}
 .log-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;border:1.5px solid rgba(77,168,255,.2);background:#0a0e17;color:#4a6278;position:relative;z-index:1;transition:all .4s var(--ease-spring)}
-.log-dot.active{border-color:#4da8ff;background:#2980ff;color:#fff;box-shadow:0 0 12px rgba(41,128,255,.5);animation:dotPulse 1.5s ease-in-out infinite}
+.log-dot.active{border-color:#38bdf8;background:#0ea5e9;color:#fff;box-shadow:0 0 12px rgba(14,165,233,.5);animation:dotPulse 1.5s ease-in-out infinite}
 .log-dot.done{border-color:#10b981;background:#10b981;color:#fff;animation:stepPop .4s var(--ease-spring)}
 @keyframes dotPulse{0%,100%{box-shadow:0 0 12px rgba(41,128,255,.5)}50%{box-shadow:0 0 24px rgba(41,128,255,.9)}}
 
 /* ======== SUBJECT CARDS ======== */
-.subj-card{background:rgba(19,28,46,.7);border:1px solid rgba(77,168,255,.08);border-radius:12px;padding:20px;cursor:pointer;transition:all .35s var(--ease-out-expo);position:relative;overflow:hidden}
-.subj-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(77,168,255,.08) 0%,transparent 60%);opacity:0;transition:opacity .3s}
-.subj-card:hover{transform:translateY(-3px);border-color:rgba(77,168,255,.4);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.subj-card{background:rgba(16,24,40,.55);border:1px solid rgba(56,189,248,.08);border-radius:12px;padding:20px;cursor:pointer;transition:all .35s var(--ease-out-expo);position:relative;overflow:hidden}
+.subj-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(56,189,248,.08) 0%,transparent 60%);opacity:0;transition:opacity .3s}
+.subj-card:hover{transform:translateY(-3px);border-color:rgba(56,189,248,.35);box-shadow:0 12px 40px rgba(0,0,0,.35),0 0 40px rgba(56,189,248,.06)}
 .subj-card:hover::before{opacity:1}
-.subj-card.selected{border-color:#2980ff;background:rgba(41,128,255,.08);box-shadow:0 0 24px rgba(41,128,255,.15);animation:cardSelect .5s var(--ease-spring)}
+.subj-card.selected{border-color:#0ea5e9;background:rgba(14,165,233,.08);box-shadow:0 0 24px rgba(14,165,233,.15);animation:cardSelect .5s var(--ease-spring)}
 @keyframes cardSelect{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
 
 /* ======== DROP ZONE ======== */
 .drop-zone{transition:all .4s var(--ease-out-expo)}
-.drop-zone.drag-over{border-color:#4da8ff!important;background:rgba(41,128,255,.08)!important;transform:scale(1.02);box-shadow:0 0 40px rgba(41,128,255,.15)}
+.drop-zone.drag-over{border-color:#38bdf8!important;background:rgba(14,165,233,.08)!important;transform:scale(1.02);box-shadow:0 0 40px rgba(14,165,233,.15)}
 
 /* ======== RESULT SUCCESS ======== */
 .success-check{width:80px;height:80px;margin:0 auto 20px;position:relative}
@@ -143,10 +146,155 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
 .risk-tag.low{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2)}
 
 /* ======== SCROLLBAR ======== */
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(77,168,255,.15);border-radius:2px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(56,189,248,.15);border-radius:2px}
 
 /* Feature num */
-.feature-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;background:rgba(41,128,255,.1);color:#4da8ff;flex-shrink:0}
+.feature-num{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(14,165,233,.04));border:1px solid rgba(56,189,248,.12);color:#38bdf8;flex-shrink:0}
+
+/* ======== MESH GRADIENT BG ======== */
+.mesh-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.mesh-bg::before,.mesh-bg::after{content:'';position:absolute;border-radius:50%;filter:blur(80px);animation:meshMove 20s ease-in-out infinite}
+.mesh-bg::before{width:600px;height:600px;background:rgba(56,189,248,.06);top:-10%;left:-10%;animation-delay:0s}
+.mesh-bg::after{width:500px;height:500px;background:rgba(14,165,233,.05);bottom:-10%;right:-10%;animation-delay:-10s}
+@keyframes meshMove{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,100px) scale(.95)}}
+
+/* ======== GRADIENT TEXT ======== */
+.gradient-text{background:linear-gradient(135deg,#f8fafc 0%,#38bdf8 50%,#0ea5e9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ======== MARQUEE ======== */
+.marquee-wrap{overflow:hidden;white-space:nowrap;position:relative}
+.marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.marquee-wrap::before{left:0;background:linear-gradient(90deg,#080c14,transparent)}
+.marquee-wrap::after{right:0;background:linear-gradient(-90deg,#080c14,transparent)}
+.marquee-track{display:inline-flex;gap:64px;animation:marquee 30s linear infinite}
+.marquee-wrap:hover .marquee-track{animation-play-state:paused}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.marquee-item{display:flex;align-items:center;gap:16px;padding:18px 32px;border-radius:18px;background:rgba(16,24,40,.45);border:1px solid rgba(56,189,248,.08);color:#94a3b8;font-size:15px;font-weight:600;transition:all .35s var(--ease-out-expo);cursor:default}
+.marquee-item:hover{background:rgba(16,24,40,.7);border-color:rgba(56,189,248,.2);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.marquee-item .mi-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(14,165,233,.06));border:1px solid rgba(56,189,248,.18);color:#38bdf8;font-size:20px;flex-shrink:0;transition:all .35s var(--ease-out-expo)}
+.marquee-item:hover .mi-icon{transform:scale(1.1);box-shadow:0 0 20px rgba(56,189,248,.2)}
+
+/* ======== BENTO GRID ======== */
+.bento-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.bento-grid .bento-card:first-child{grid-column:span 2}
+.bento-card{background:rgba(16,24,40,.55);backdrop-filter:blur(20px) saturate(1.3);border:1px solid rgba(56,189,248,.08);border-radius:20px;padding:32px;transition:all .4s var(--ease-out-expo);position:relative;overflow:hidden;cursor:pointer}
+.bento-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(56,189,248,.1) 0%,transparent 60%);opacity:0;transition:opacity .3s}
+.bento-card:hover::before{opacity:1}
+.bento-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.2);box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 0 1px rgba(56,189,248,.08) inset}
+.bento-card .bento-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(14,165,233,.06));border:1px solid rgba(56,189,248,.15);color:#38bdf8;margin-bottom:16px}
+.bento-card h3{font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px}
+.bento-card p{font-size:13px;color:#64748b;line-height:1.6}
+.bento-glow{position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(56,189,248,.06);filter:blur(30px);pointer-events:none}
+
+/* ======== PROCESS STEPS ======== */
+.process-wrap{display:flex;align-items:flex-start;gap:0;position:relative}
+.process-step{flex:1;text-align:center;position:relative;z-index:1}
+.process-step .step-circle{width:56px;height:56px;border-radius:50%;background:rgba(16,24,40,.8);border:2px solid rgba(56,189,248,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px;color:#38bdf8;transition:all .5s var(--ease-spring);position:relative}
+.process-step.active .step-circle{border-color:#38bdf8;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;box-shadow:0 0 30px rgba(14,165,233,.4)}
+.process-step .step-title{font-size:14px;font-weight:600;color:#f1f5f9;margin-bottom:4px}
+.process-step .step-desc{font-size:12px;color:#64748b;line-height:1.5;max-width:160px;margin:0 auto}
+.process-line{position:absolute;top:28px;left:12.5%;right:12.5%;height:2px;background:rgba(56,189,248,.08);z-index:0}
+.process-line-fill{height:100%;background:linear-gradient(90deg,#0ea5e9,#38bdf8);width:0;transition:width 1.2s var(--ease-out-expo)}
+
+/* ======== SUBJECT WALL ======== */
+.subject-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.subject-tab{padding:8px 20px;border-radius:999px;font-size:13px;font-weight:500;color:#64748b;background:rgba(16,24,40,.4);border:1px solid rgba(56,189,248,.08);cursor:pointer;transition:all .3s var(--ease-out-expo)}
+.subject-tab:hover{color:#94a3b8}
+.subject-tab.active{color:#fff;background:linear-gradient(135deg,#0ea5e9,#0284c7);border-color:transparent;box-shadow:0 4px 20px rgba(14,165,233,.3)}
+.subject-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.subj-wall-card{background:rgba(16,24,40,.55);border:1px solid rgba(56,189,248,.08);border-radius:14px;padding:20px;cursor:pointer;transition:all .35s var(--ease-out-expo);position:relative;overflow:hidden}
+.subj-wall-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.25);box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.subj-wall-card .sw-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:12px}
+.subj-wall-card h4{font-size:14px;font-weight:600;color:#f1f5f9;margin-bottom:4px}
+.subj-wall-card p{font-size:12px;color:#64748b;line-height:1.5}
+.subj-wall-card .sw-link{position:absolute;bottom:16px;right:16px;font-size:12px;color:#38bdf8;opacity:0;transform:translateX(-8px);transition:all .3s var(--ease-out-expo)}
+.subj-wall-card:hover .sw-link{opacity:1;transform:translateX(0)}
+
+/* ======== ADVANTAGE CARDS ======== */
+.adv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.adv-card{background:rgba(16,24,40,.55);border:1px solid rgba(56,189,248,.08);border-radius:20px;padding:28px;cursor:pointer;transition:all .4s var(--ease-out-expo);position:relative;overflow:hidden}
+.adv-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.2);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.adv-card .adv-num{position:absolute;top:16px;right:16px;font-size:32px;font-weight:800;color:rgba(56,189,248,.08);line-height:1}
+.adv-card .adv-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(14,165,233,.06));border:1px solid rgba(56,189,248,.15);color:#38bdf8;margin-bottom:14px}
+.adv-card h3{font-size:15px;font-weight:600;color:#f1f5f9;margin-bottom:6px}
+.adv-card p{font-size:13px;color:#64748b;line-height:1.6;margin-bottom:14px}
+.adv-card .adv-link{font-size:12px;color:#38bdf8;font-weight:600;display:flex;align-items:center;gap:4px}
+.adv-card .adv-link i{font-size:10px;transition:transform .3s}
+.adv-card:hover .adv-link i{transform:translateX(4px)}
+
+/* ======== MODAL ======== */
+.modal-backdrop{position:fixed;inset:0;z-index:500;background:rgba(8,12,20,.85);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .4s var(--ease-out-expo)}
+.modal-backdrop.open{opacity:1;pointer-events:auto}
+.modal-card{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.95) translateY(20px);z-index:501;width:90%;max-width:640px;max-height:85vh;overflow-y:auto;background:rgba(16,24,40,.95);border:1px solid rgba(56,189,248,.12);border-radius:24px;padding:36px;opacity:0;pointer-events:none;transition:all .5s var(--ease-out-expo);box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(56,189,248,.06) inset}
+.modal-card.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1) translateY(0)}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:none;color:#64748b;cursor:pointer;transition:all .2s}
+.modal-close:hover{background:rgba(255,255,255,.1);color:#f8fafc}
+.modal-mock{width:100%;height:140px;border-radius:12px;background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(14,165,233,.04));border:1px solid rgba(56,189,248,.1);margin:16px 0;display:flex;align-items:center;justify-content:center;color:#38bdf8;font-size:13px}
+
+/* ======== DATA VIZ ======== */
+.viz-ring{width:140px;height:140px;transform:rotate(-90deg)}
+.viz-ring-bg{fill:none;stroke:rgba(56,189,248,.08);stroke-width:10}
+.viz-ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:10;stroke-linecap:round;stroke-dasharray:377;stroke-dashoffset:377;transition:stroke-dashoffset 1.5s var(--ease-out-expo)}
+.viz-bar-bg{width:100%;height:8px;border-radius:4px;background:rgba(56,189,248,.08);overflow:hidden}
+.viz-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#0ea5e9,#38bdf8);width:0;transition:width 1.5s var(--ease-out-expo)}
+
+/* ======== STATS BAR ======== */
+.stat-item{text-align:center}
+.stat-num{font-size:36px;font-weight:800;color:#f8fafc;line-height:1;letter-spacing:-1px}
+.stat-num .gradient-text{-webkit-text-fill-color:transparent}
+.stat-label{font-size:12px;color:#64748b;margin-top:6px;letter-spacing:1px;text-transform:uppercase}
+
+/* ======== SCENE CARDS ======== */
+.scene-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.scene-card{background:rgba(16,24,40,.55);border:1px solid rgba(56,189,248,.08);border-radius:16px;padding:24px;text-align:center;transition:all .4s var(--ease-out-expo);cursor:default}
+.scene-card:hover{border-color:rgba(56,189,248,.18);box-shadow:0 16px 40px rgba(0,0,0,.35);transform:translateY(-4px)}
+.scene-card .scene-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(14,165,233,.04));border:1px solid rgba(56,189,248,.12);color:#38bdf8;margin:0 auto 14px;transition:all .4s}
+.scene-card:hover .scene-icon{box-shadow:0 0 20px rgba(56,189,248,.2);transform:scale(1.05)}
+.scene-card h4{font-size:14px;font-weight:600;color:#f1f5f9;margin-bottom:6px}
+.scene-card p{font-size:12px;color:#64748b;line-height:1.6}
+
+/* ======== CTA SECTION ======== */
+.cta-section{position:relative;overflow:hidden;border-radius:24px;padding:80px 24px;text-align:center;background:linear-gradient(135deg,#0f172a,#0c1220);border:1px solid rgba(56,189,248,.1)}
+.cta-section::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(56,189,248,.06) 0%,transparent 50%),radial-gradient(circle at 80% 50%,rgba(14,165,233,.05) 0%,transparent 50%);animation:ctaPulse 8s ease-in-out infinite}
+@keyframes ctaPulse{0%,100%{opacity:.8}50%{opacity:1}}
+
+/* ======== FOOTER ======== */
+.site-footer{padding:64px 24px 32px;border-top:1px solid rgba(56,189,248,.08);background:rgba(8,12,20,.5)}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;max-width:1000px;margin:0 auto}
+.footer-brand .f-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.footer-brand p{font-size:13px;color:#64748b;line-height:1.7}
+.footer-col h4{font-size:12px;font-weight:700;color:#94a3b8;margin-bottom:14px;letter-spacing:1px;text-transform:uppercase}
+.footer-col a{display:block;font-size:13px;color:#64748b;padding:4px 0;transition:color .2s;text-decoration:none}
+.footer-col a:hover{color:#38bdf8}
+.footer-bottom{max-width:1000px;margin:40px auto 0;padding-top:24px;border-top:1px solid rgba(56,189,248,.06);display:flex;justify-content:space-between;align-items:center}
+.footer-bottom p{font-size:12px;color:#475569}
+
+/* ======== RESPONSIVE ======== */
+@media (max-width:900px){
+  .bento-grid{grid-template-columns:1fr 1fr}
+  .bento-grid .bento-card:first-child{grid-column:span 2}
+  .subject-wall{grid-template-columns:repeat(3,1fr)}
+  .adv-grid{grid-template-columns:1fr 1fr}
+  .scene-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .stat-num{font-size:28px}
+}
+@media (max-width:640px){
+  .hero-title{font-size:40px}
+  .bento-grid{grid-template-columns:1fr}
+  .bento-grid .bento-card:first-child{grid-column:span 1}
+  .subject-wall{grid-template-columns:repeat(2,1fr)}
+  .adv-grid{grid-template-columns:1fr}
+  .scene-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:24px}
+  .process-wrap{flex-direction:column;gap:24px}
+  .process-line{display:none}
+}
+
+/* ======== EXTRA ANIMATIONS ======== */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(56,189,248,.15)}50%{box-shadow:0 0 40px rgba(56,189,248,.35)}}
+@keyframes modalBackdrop{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
@@ -189,57 +337,319 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
 <!--  HOME PAGE -->
 <!-- ============================================================ -->
 <div class="page active" id="page-home">
-  <section style="position:relative;overflow:hidden;padding:120px 24px 80px;text-align:center">
-    <div class="hero-orb large"></div><div class="hero-orb small"></div>
+
+<!-- ======== HERO ======== -->
+<section style="position:relative;overflow:hidden;padding:160px 24px 120px;text-align:center;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+  <div class="hero-orb large"></div><div class="hero-orb small"></div><div class="hero-orb medium"></div>
+  <div class="mesh-bg"></div>
+  <div style="position:relative;z-index:1;max-width:800px">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 24px;border-radius:999px;border:1px solid rgba(56,189,248,.15);background:rgba(14,165,233,.06);box-shadow:0 0 20px rgba(56,189,248,.06);margin-bottom:32px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 1.0s forwards">
+      <span style="width:6px;height:6px;border-radius:50%;background:#38bdf8;box-shadow:0 0 8px rgba(56,189,248,.6);animation:glowPulse 2s ease-in-out infinite"></span>
+      <span style="font-size:12px;color:#64748b;letter-spacing:2px">AI-POWERED AUDIT SYSTEM</span>
+    </div>
+    <div class="hero-title" id="heroTitle" style="margin-bottom:16px;font-size:64px">审计<span style="color:#38bdf8;text-shadow:0 0 60px rgba(56,189,248,.3)">智能体</span></div>
+    <p style="font-size:20px;color:#94a3b8;margin-bottom:10px;font-weight:300;opacity:0;animation:revealUp .6s var(--ease-out-expo) 1.8s forwards">基于 DeepSeek AI 的审计工作底稿自动生成平台</p>
+    <p style="font-size:15px;color:#64748b;margin-bottom:48px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.0s forwards">上传原始财务数据 → AI 自动执行审计程序 → 输出专业底稿与审计日志</p>
+    <div style="display:flex;gap:16px;justify-content:center;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.2s forwards">
+      <button class="btn btn-primary" style="font-size:16px;padding:16px 40px;border-radius:12px" onclick="document.getElementById('nav-workspace').click()">开始审计 <i class="fas fa-arrow-right"></i></button>
+      <button class="btn btn-ghost" style="font-size:16px;padding:16px 32px;border-radius:12px" onclick="document.getElementById('nav-workspace').click();setTimeout(()=>showDemo(),300)">查看演示</button>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div style="position:relative;z-index:1;display:flex;gap:48px;justify-content:center;margin-top:80px;flex-wrap:wrap;opacity:0;animation:revealUp .8s var(--ease-out-expo) 2.6s forwards">
+    <div class="stat-item"><div class="stat-num"><span class="gradient-text" data-count="16">0</span></div><div class="stat-label">审计科目</div></div>
+    <div class="stat-item"><div class="stat-num"><span class="gradient-text" data-count="6">0</span></div><div class="stat-label">审计程序</div></div>
+    <div class="stat-item"><div class="stat-num"><span class="gradient-text" data-count="100">0</span><span style="font-size:20px">%</span></div><div class="stat-label">自动化</div></div>
+    <div class="stat-item"><div class="stat-num"><span class="gradient-text" data-count="2026">0</span></div><div class="stat-label">准则标准</div></div>
+  </div>
+</section>
+
+<!-- ======== TRUST MARQUEE ======== -->
+<div style="padding:48px 0;border-top:1px solid rgba(56,189,248,.06);border-bottom:1px solid rgba(56,189,248,.06);background:rgba(8,12,20,.4)">
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-shield-halved"></i></div> 中注协 2026 审计模板标准</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-brain"></i></div> DeepSeek V4 Pro AI 引擎</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-file-shield"></i></div> 审计准则合规输出</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-bolt"></i></div> SSE 实时流式输出</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-lock"></i></div> 数据本地处理不上云</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-scale-balanced"></i></div> 风险分级预警体系</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-shield-halved"></i></div> 中注协 2026 审计模板标准</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-brain"></i></div> DeepSeek V4 Pro AI 引擎</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-file-shield"></i></div> 审计准则合规输出</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-bolt"></i></div> SSE 实时流式输出</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-lock"></i></div> 数据本地处理不上云</div>
+      <div class="marquee-item"><div class="mi-icon"><i class="fas fa-scale-balanced"></i></div> 风险分级预警体系</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== BENTO GRID ======== -->
+<div class="section-sm" style="max-width:1100px;margin:0 auto">
+  <div class="text-center mb-12">
+    <h2 class="reveal" style="font-size:32px;font-weight:700;color:#f8fafc;margin-bottom:8px">核心能力</h2>
+    <p class="reveal" style="color:#64748b;font-size:15px">覆盖审计全流程的智能工具链</p>
+  </div>
+  <div class="bento-grid reveal-stagger" id="bentoGrid">
+    <div class="bento-card">
+      <div class="bento-glow"></div>
+      <div class="bento-icon"><i class="fas fa-magnifying-glass-chart"></i></div>
+      <h3>智能科目识别</h3>
+      <p>自动解析 Excel 科目余额表与明细账结构，精准匹配 16 个审计科目，无需手动配置映射关系</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-glow"></div>
+      <div class="bento-icon"><i class="fas fa-calculator"></i></div>
+      <h3>自动计算分析</h3>
+      <p>周转率、变动率、账龄结构、利息测算等核心指标由 Python 引擎确定性计算，结果精准可复现</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-glow"></div>
+      <div class="bento-icon"><i class="fas fa-shield-halved"></i></div>
+      <h3>风险自动识别</h3>
+      <p>异常波动、大额交易、逾期款项、未达账项、关联方资金占用等风险点自动标注分级</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-glow"></div>
+      <div class="bento-icon"><i class="fas fa-file-excel"></i></div>
+      <h3>底稿一键生成</h3>
+      <p>按中注协 2026 参考模板输出规范 Excel 底稿，审定表、明细表、程序表、函证汇总表结构完整</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-glow"></div>
+      <div class="bento-icon"><i class="fas fa-clipboard-check"></i></div>
+      <h3>审计日志追溯</h3>
+      <p>输出 Word 格式审计日志，记录每一步审计程序、发现与结论，满足监管合规与质控复核要求</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-glow"></div>
+      <div class="bento-icon"><i class="fas fa-book-open"></i></div>
+      <h3>准则实时加载</h3>
+      <p>内置《中国注册会计师审计准则》与 CLAUDE.md 审计程序规范，LLM 按准则执行分析性复核</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PROCESS ======== -->
+<div class="section-sm" style="max-width:900px;margin:0 auto">
+  <div class="text-center mb-12">
+    <h2 class="reveal" style="font-size:32px;font-weight:700;color:#f8fafc;margin-bottom:8px">审计流程</h2>
+    <p class="reveal" style="color:#64748b;font-size:15px">四步完成专业审计底稿输出</p>
+  </div>
+  <div class="reveal" style="position:relative">
+    <div class="process-wrap" id="processWrap">
+      <div class="process-line"><div class="process-line-fill" id="processLineFill"></div></div>
+      <div class="process-step active">
+        <div class="step-circle"><i class="fas fa-cloud-upload-alt"></i></div>
+        <div class="step-title">上传数据</div>
+        <div class="step-desc">拖拽 Excel 科目余额表与明细账，支持多文件批量上传</div>
+      </div>
+      <div class="process-step">
+        <div class="step-circle"><i class="fas fa-brain"></i></div>
+        <div class="step-title">AI 分析</div>
+        <div class="step-desc">DeepSeek 执行审计程序，实时 SSE 流式返回进度与发现</div>
+      </div>
+      <div class="process-step">
+        <div class="step-circle"><i class="fas fa-file-excel"></i></div>
+        <div class="step-title">底稿生成</div>
+        <div class="step-desc">Python 模板引擎渲染规范 Excel 底稿，含审计结论与调整</div>
+      </div>
+      <div class="process-step">
+        <div class="step-circle"><i class="fas fa-file-lines"></i></div>
+        <div class="step-title">日志输出</div>
+        <div class="step-desc">同步生成 Word 审计日志，风险清单与程序轨迹完整记录</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== SUBJECT WALL ======== -->
+<div class="section-sm" style="max-width:1100px;margin:0 auto">
+  <div class="text-center mb-12">
+    <h2 class="reveal" style="font-size:32px;font-weight:700;color:#f8fafc;margin-bottom:8px">16 科目全景</h2>
+    <p class="reveal" style="color:#64748b;font-size:15px">覆盖资产、负债、权益核心审计领域</p>
+  </div>
+  <div class="reveal">
+    <div class="subject-tabs" id="subjectTabs">
+      <button class="subject-tab active" onclick="filterSubjects('asset',this)">资产类</button>
+      <button class="subject-tab" onclick="filterSubjects('liability',this)">负债类</button>
+      <button class="subject-tab" onclick="filterSubjects('all',this)">全部科目</button>
+    </div>
+    <div class="subject-wall" id="subjectWall"></div>
+  </div>
+</div>
+
+<!-- ======== ADVANTAGES ======== -->
+<div class="section-sm" style="max-width:1100px;margin:0 auto">
+  <div class="text-center mb-12">
+    <h2 class="reveal" style="font-size:32px;font-weight:700;color:#f8fafc;margin-bottom:8px">产品优势</h2>
+    <p class="reveal" style="color:#64748b;font-size:15px">为什么选择审计智能体</p>
+  </div>
+  <div class="adv-grid reveal-stagger" id="advGrid">
+    <div class="adv-card" onclick="openModal('adv1')">
+      <div class="adv-num">01</div>
+      <div class="adv-icon"><i class="fas fa-layer-group"></i></div>
+      <h3>多科目深度覆盖</h3>
+      <p>货币资金、应收票据、其他应收款、预付账款、存货、固定资产、无形资产等 16 个核心科目</p>
+      <div class="adv-link">了解更多 <i class="fas fa-arrow-right"></i></div>
+    </div>
+    <div class="adv-card" onclick="openModal('adv2')">
+      <div class="adv-num">02</div>
+      <div class="adv-icon"><i class="fas fa-robot"></i></div>
+      <h3>全流程零干预</h3>
+      <p>从数据解析到底稿输出全程自动化，无需手动调整公式或排版，释放审计人员精力</p>
+      <div class="adv-link">了解更多 <i class="fas fa-arrow-right"></i></div>
+    </div>
+    <div class="adv-card" onclick="openModal('adv3')">
+      <div class="adv-num">03</div>
+      <div class="adv-icon"><i class="fas fa-shield-halved"></i></div>
+      <h3>合规日志追溯</h3>
+      <p>审计程序、取证过程、风险判断完整留痕，满足事务所质控复核与监管检查要求</p>
+      <div class="adv-link">了解更多 <i class="fas fa-arrow-right"></i></div>
+    </div>
+    <div class="adv-card" onclick="openModal('adv4')">
+      <div class="adv-num">04</div>
+      <div class="adv-icon"><i class="fas fa-file-contract"></i></div>
+      <h3>准则标准排版</h3>
+      <p>严格遵循中注协 2026 年修订版参考模板，表头、数据、结论结构统一，可直接归档</p>
+      <div class="adv-link">了解更多 <i class="fas fa-arrow-right"></i></div>
+    </div>
+    <div class="adv-card" onclick="openModal('adv5')">
+      <div class="adv-num">05</div>
+      <div class="adv-icon"><i class="fas fa-triangle-exclamation"></i></div>
+      <h3>实时风险预警</h3>
+      <p>红黄蓝三级风险分级体系，异常波动、逾期挂账、利息差异等自动标红提示</p>
+      <div class="adv-link">了解更多 <i class="fas fa-arrow-right"></i></div>
+    </div>
+    <div class="adv-card" onclick="openModal('adv6')">
+      <div class="adv-num">06</div>
+      <div class="adv-icon"><i class="fas fa-server"></i></div>
+      <h3>离线批量执行</h3>
+      <p>支持完全离线环境运行，无需联网即可批量生成 16 科目全部底稿，保障数据安全</p>
+      <div class="adv-link">了解更多 <i class="fas fa-arrow-right"></i></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== DATA VIZ ======== -->
+<div class="section-sm" style="max-width:900px;margin:0 auto">
+  <div class="card reveal" style="padding:40px">
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:40px;align-items:center">
+      <div style="text-align:center">
+        <svg class="viz-ring" viewBox="0 0 140 140">
+          <defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient></defs>
+          <circle class="viz-ring-bg" cx="70" cy="70" r="60"/>
+          <circle class="viz-ring-fill" id="ringFill" cx="70" cy="70" r="60"/>
+        </svg>
+        <p style="font-size:13px;color:#64748b;margin-top:12px">风险分布概览</p>
+      </div>
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:24px"><i class="fas fa-chart-simple" style="color:#38bdf8;margin-right:8px"></i>效率提升数据</h3>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:#94a3b8">底稿生成效率</span><span style="font-size:13px;font-weight:700;color:#38bdf8" id="barLabel1">0%</span></div>
+            <div class="viz-bar-bg"><div class="viz-bar-fill" data-width="92" id="barFill1"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:#94a3b8">风险检出率</span><span style="font-size:13px;font-weight:700;color:#38bdf8" id="barLabel2">0%</span></div>
+            <div class="viz-bar-bg"><div class="viz-bar-fill" data-width="87" id="barFill2"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:#94a3b8">人工耗时降低</span><span style="font-size:13px;font-weight:700;color:#38bdf8" id="barLabel3">0%</span></div>
+            <div class="viz-bar-bg"><div class="viz-bar-fill" data-width="76" id="barFill3"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== SCENES ======== -->
+<div class="section-sm" style="max-width:1100px;margin:0 auto">
+  <div class="text-center mb-12">
+    <h2 class="reveal" style="font-size:32px;font-weight:700;color:#f8fafc;margin-bottom:8px">适用场景</h2>
+    <p class="reveal" style="color:#64748b;font-size:15px">多维度满足审计业务需求</p>
+  </div>
+  <div class="scene-grid reveal-stagger">
+    <div class="scene-card">
+      <div class="scene-icon"><i class="fas fa-clipboard-list"></i></div>
+      <h4>年报审计</h4>
+      <p>快速生成各科目实质性程序底稿，覆盖货币资金、往来款项、借款等核心领域</p>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon"><i class="fas fa-magnifying-glass"></i></div>
+      <h4>专项审计</h4>
+      <p>针对特定科目深入审计，自动识别异常交易、关联方占用与风险点</p>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon"><i class="fas fa-building"></i></div>
+      <h4>中小企业审计</h4>
+      <p>降低审计成本，标准化底稿输出，显著提升事务所项目执行效率</p>
+    </div>
+    <div class="scene-card">
+      <div class="scene-icon"><i class="fas fa-graduation-cap"></i></div>
+      <h4>审计教学演示</h4>
+      <p>内置演示数据与完整案例，直观展示审计程序执行过程与底稿规范</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== CTA ======== -->
+<div class="section-sm" style="max-width:1100px;margin:0 auto;padding-bottom:0">
+  <div class="cta-section reveal">
     <div style="position:relative;z-index:1">
-      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:20px;border:1px solid rgba(77,168,255,.2);background:rgba(41,128,255,.05);margin-bottom:28px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 1.2s forwards">
-        <span style="width:6px;height:6px;border-radius:50%;background:#4da8ff;box-shadow:0 0 6px #4da8ff"></span>
-        <span style="font-size:12px;color:#6b8aaa;letter-spacing:2px">AI-POWERED AUDIT SYSTEM</span>
-      </div>
-      <div class="hero-title" id="heroTitle" style="margin-bottom:12px">审计<span style="color:#4da8ff">智能体</span></div>
-      <p style="font-size:20px;color:#6b8aaa;margin-bottom:8px;font-weight:300;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.0s forwards">新一代 AI 驱动审计工作底稿生成平台</p>
-      <p style="font-size:14px;color:#3a5068;margin-bottom:40px;opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.2s forwards">上传原始财务数据 → AI 自动执行审计程序 → 输出专业底稿与审计日志</p>
-      <div style="opacity:0;animation:revealUp .6s var(--ease-out-expo) 2.4s forwards">
-        <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="document.getElementById('nav-workspace').click()">
-          开始审计 <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-sm" style="text-align:center">
-    <h2 class="reveal" style="font-size:32px;font-weight:700;color:#e0e8f0;margin-bottom:8px">核心功能</h2>
-    <p class="reveal" style="color:#4a6278;margin-bottom:40px">覆盖审计全流程的智能工具链</p>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 reveal-stagger" id="featureGrid" style="display:grid">
-      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-magnifying-glass-chart"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">智能科目识别</h3><p style="font-size:13px;color:#4a6278">自动识别科目余额表结构，精准筛选审计科目</p></div>
-      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-calculator"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">自动计算分析</h3><p style="font-size:13px;color:#4a6278">周转率·变动率·账龄结构·利息测算</p></div>
-      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-shield-halved"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">风险自动识别</h3><p style="font-size:13px;color:#4a6278">异常波动·大额交易·逾期款项·未达账项</p></div>
-      <div class="card card-hover text-center"><div class="feature-num" style="margin:0 auto 16px"><i class="fas fa-file-excel"></i></div><h3 style="font-weight:700;margin-bottom:6px;color:#e0e8f0">底稿一键生成</h3><p style="font-size:13px;color:#4a6278">规范排版·审计结论·可追溯日志</p></div>
-    </div>
-  </div>
-
-  <div class="section reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-    <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-bullseye" style="color:#4da8ff;margin-right:8px"></i>适用场景</h3>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">📋</span><div><strong style="color:#c8d6e5">年报审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">快速生成各科目实质性程序底稿，覆盖货币资金、往来款项、借款等</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🔍</span><div><strong style="color:#c8d6e5">专项审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">针对特定科目深入审计，自动识别异常交易与风险点</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🏢</span><div><strong style="color:#c8d6e5">中小企业审计</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">降低审计成本，标准化底稿输出，提升事务所效率</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><span style="color:#4da8ff;font-size:18px">🎓</span><div><strong style="color:#c8d6e5">审计教学演示</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">内置演示数据与案例，直观展示审计程序执行过程</p></div></div>
-      </div>
-    </div>
-    <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-star" style="color:#4da8ff;margin-right:8px"></i>产品优势</h3>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">1</div><div><strong style="color:#c8d6e5">多科目覆盖</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">货币资金·应收票据·其他应收款·预付账款·预收账款·短期借款</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">2</div><div><strong style="color:#c8d6e5">全流程自动化</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">上传数据→配置参数→AI分析→底稿输出，无需手动干预</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">3</div><div><strong style="color:#c8d6e5">审计日志追溯</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">每一步操作可追溯，风险数据分级标注，满足监管合规要求</p></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px"><div class="feature-num" style="width:32px;height:32px;font-size:14px">4</div><div><strong style="color:#c8d6e5">规范底稿排版</strong><p style="font-size:13px;color:#4a6278;margin-top:2px">按审计准则格式输出，表头·数据·结论结构统一，可直接归档</p></div></div>
+      <h2 style="font-size:36px;font-weight:800;color:#f8fafc;margin-bottom:12px;letter-spacing:-1px">开启智能审计新时代</h2>
+      <p style="font-size:16px;color:#94a3b8;margin-bottom:32px">让 AI 承担繁琐的底稿工作，您专注于专业判断</p>
+      <div style="display:flex;gap:16px;justify-content:center">
+        <button class="btn btn-primary" style="font-size:16px;padding:14px 36px;border-radius:12px" onclick="document.getElementById('nav-workspace').click()">立即体验 <i class="fas fa-arrow-right"></i></button>
       </div>
     </div>
   </div>
+</div>
 
-  <div style="text-align:center;padding:40px 24px;border-top:1px solid rgba(77,168,255,.08);margin-top:40px">
-    <p style="font-size:12px;color:#2a4058">审计智能体 v2.0 · AI Audit Agent · 基于大语言模型的专业审计工具</p>
+<!-- ======== FOOTER ======== -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="f-logo">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(56,189,248,.12);display:flex;align-items:center;justify-content:center"><i class="fas fa-scale-balanced" style="color:#38bdf8;font-size:16px"></i></div>
+        <span style="font-weight:800;font-size:16px;color:#f8fafc">审计智能体</span>
+      </div>
+      <p>基于大语言模型的专业审计工具，<br>助力注册会计师高效完成审计工作。</p>
+    </div>
+    <div class="footer-col">
+      <h4>导航</h4>
+      <a href="#" onclick="switchPage('home');return false">主页</a>
+      <a href="#" onclick="switchPage('workspace');return false">工作界面</a>
+      <a href="#" onclick="switchPage('tech');return false">技术原理</a>
+      <a href="#" onclick="switchPage('dashboard');return false">用户面板</a>
+    </div>
+    <div class="footer-col">
+      <h4>资源</h4>
+      <a href="#">中注协底稿模板</a>
+      <a href="#">中国注册会计师审计准则</a>
+      <a href="#">更新日志</a>
+    </div>
+    <div class="footer-col">
+      <h4>系统</h4>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="width:7px;height:7px;border-radius:50%;background:#10b981"></span><span style="font-size:13px;color:#64748b">服务运行正常</span></div>
+      <p style="font-size:12px;color:#475569">v2.0 · AI Audit Agent</p>
+    </div>
   </div>
+  <div class="footer-bottom">
+    <p>审计智能体 v2.0 · 基于 DeepSeek AI 与 FastAPI 构建</p>
+    <p>符合中注协 2026 年底稿参考模板规范</p>
+  </div>
+</footer>
+
+</div>
+
+<!-- ======== MODALS ======== -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()"></div>
+<div class="modal-card" id="modalCard">
+  <button class="modal-close" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+  <div id="modalContent"></div>
 </div>
 
 <!-- ============================================================ -->
@@ -503,98 +913,156 @@ async function loadRisks(){
   };
 })();
 
-// ==================== SPLASH SCREEN - KPMG Particle Convergence ====================
+// ==================== SPLASH SCREEN - Neural Network Pulse ====================
 (function initSplash(){
   const canvas=document.getElementById('splashCanvas'),ctx=canvas.getContext('2d');
-  let w,h,particles=[],targets=[],phase=0,phaseStart=0,animId;
+  let w,h,nodes=[],packets=[],phase=0,phaseStart=0,animId;
 
   function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
-  resize();window.addEventListener('resize',()=>{resize();generateTargets()});
+  resize();window.addEventListener('resize',resize);
 
-  function generateTargets(){
-    targets=[];
-    const off=document.createElement('canvas');off.width=w;off.height=h;
-    const oc=off.getContext('2d');
-    // KPMG main text
-    const fontSize=Math.min(w/5,140);
-    oc.fillStyle='#fff';
-    oc.font=`900 ${fontSize}px "Inter","Segoe UI","Microsoft YaHei",sans-serif`;
-    oc.textAlign='center';oc.textBaseline='middle';
-    oc.fillText('KPMG',w/2,h/2-10);
-    // Subtitle
-    oc.font=`${Math.min(w/22,28)}px "Inter","Microsoft YaHei",sans-serif`;
-    oc.fillText('AUDIT · TAX · ADVISORY',w/2,h/2+fontSize/2+10);
+  const NODE_COUNT=140;
+  const PALETTE=['rgba(56,189,248,','rgba(14,165,233,','rgba(34,211,238,','rgba(96,165,250,'];
 
-    const img=oc.getImageData(0,0,w,h).data;
-    const step=5; // bigger step = fewer points = faster
-    for(let y=0;y<h;y+=step){
-      for(let x=0;x<w;x+=step){
-        if(img[(y*w+x)*4+3]>100)targets.push({x,y});
-      }
+  function initNodes(){
+    nodes=[];
+    for(let i=0;i<NODE_COUNT;i++){
+      const angle=Math.random()*Math.PI*2;
+      const dist=Math.random()*Math.max(w,h)*0.8;
+      nodes.push({
+        x:w/2+Math.cos(angle)*dist,
+        y:h/2+Math.sin(angle)*dist,
+        ox:w/2+Math.cos(angle)*dist,
+        oy:h/2+Math.sin(angle)*dist,
+        r:Math.random()*1.8+1,
+        vx:0,vy:0,
+        o:Math.random()*0.35+0.35,
+        color:PALETTE[Math.floor(Math.random()*PALETTE.length)],
+        pulseOffset:Math.random()*Math.PI*2
+      });
     }
-    if(targets.length<30)for(let i=0;i<100;i++)targets.push({x:w/2+Math.random()*200-100,y:h/2+Math.random()*80-40});
   }
-  generateTargets();
+  initNodes();
 
-  // Fewer particles, better distributed
-  const N=Math.min(150,Math.floor(targets.length*1.5));
-  for(let i=0;i<N;i++){
-    const angle=Math.random()*Math.PI*2,dist=Math.random()*Math.max(w,h)*.8;
-    particles.push({
-      x:w/2+Math.cos(angle)*dist,
-      y:h/2+Math.sin(angle)*dist,
-      r:Math.random()*2.5+1.5,
-      o:Math.random()*.35+.35,
-      tid:Math.floor(Math.random()*targets.length),
-      sx:0,sy:0 // stored start position for lerp
-    });
+  function spawnPacket(){
+    if(nodes.length<2)return;
+    const a=nodes[Math.floor(Math.random()*nodes.length)];
+    const b=nodes[Math.floor(Math.random()*nodes.length)];
+    if(a===b)return;
+    const dx=a.x-b.x,dy=a.y-b.y;
+    if(Math.sqrt(dx*dx+dy*dy)>220)return;
+    packets.push({a,b,progress:0,speed:0.008+Math.random()*0.015});
   }
 
   function draw(ts){
     animId=requestAnimationFrame(draw);
     ctx.clearRect(0,0,w,h);
 
-    if(phase===0&&ts>1000){phase=1;phaseStart=ts;particles.forEach(p=>{p.sx=p.x;p.sy=p.y})}
-    if(phase===1&&ts-phaseStart>1800){phase=2;phaseStart=ts}
-    if(phase===2&&ts-phaseStart>700){phase=3}
+    if(phase===0&&ts>600){phase=1;phaseStart=ts;nodes.forEach(n=>{n.vx=0;n.vy=0})}
+    if(phase===1&&ts-phaseStart>2400){phase=2;phaseStart=ts}
+    if(phase===2&&ts-phaseStart>800){phase=3;phaseStart=ts}
+    if(phase===3&&ts-phaseStart>200){phase=4}
 
-    const ctx2=ctx;
-    particles.forEach(p=>{
+    const cx=w/2,cy=h/2;
+    const maxDist=phase===0?240:phase===1?150:80;
+    const gravity=phase===0?0:phase===1?0.025:phase===2?0.12:0;
+    const friction=0.92;
+
+    // Update nodes
+    nodes.forEach(n=>{
       if(phase===0){
-        p.x+=Math.sin(ts*.0015+p.tid)*.4;
-        p.y+=Math.cos(ts*.0018+p.tid)*.4;
+        n.x=n.ox+Math.sin(ts*0.001+n.pulseOffset)*8;
+        n.y=n.oy+Math.cos(ts*0.0012+n.pulseOffset)*8;
       }else if(phase===1){
-        const t=targets[p.tid%targets.length];
-        const prog=Math.min(1,(ts-phaseStart)/1800);
-        const e=prog<.5?2*prog*prog:-1+(4-2*prog)*prog; // ease in-out quad
-        p.x=p.sx+(t.x-p.sx)*e;
-        p.y=p.sy+(t.y-p.sy)*e;
+        const dx=cx-n.x,dy=cy-n.y;
+        n.vx+=dx*gravity;n.vy+=dy*gravity;
+        n.vx*=friction;n.vy*=friction;
+        n.x+=n.vx;n.y+=n.vy;
       }else if(phase===2){
-        const t=targets[p.tid%targets.length];
-        p.x=t.x+Math.sin(ts*.008+p.tid)*.8;
-        p.y=t.y+Math.cos(ts*.009+p.tid)*.8;
+        const dx=cx-n.x,dy=cy-n.y;
+        n.vx+=dx*gravity;n.vy+=dy*gravity;
+        n.x+=n.vx;n.y+=n.vy;
+        n.o*=0.94;n.r*=0.97;
       }else{
-        p.x+=p.x>w/2?2:-2;p.y+=(Math.random()-.5)*3;
-        p.o=Math.max(0,p.o-.003);
+        n.o*=0.88;
       }
-
-      if(p.x<0)p.x=0;if(p.x>w)p.x=w;if(p.y<0)p.y=0;if(p.y>h)p.y=h;
-
-      ctx2.beginPath();ctx2.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx2.fillStyle=`rgba(77,168,255,${p.o})`;ctx2.fill();
     });
 
-    // Draw subtle particle trails during convergence
-    if(phase===1){
-      ctx2.globalAlpha=.15;
-      particles.forEach(p=>{
-        const t=targets[p.tid%targets.length];
-        ctx2.beginPath();ctx2.moveTo(p.sx,p.sy);ctx2.lineTo(p.x,p.y);
-        ctx2.strokeStyle='#4da8ff';ctx2.lineWidth=.5;ctx2.stroke();
-      });
-      ctx2.globalAlpha=1;
+    // Draw connections
+    if(phase<3){
+      for(let i=0;i<nodes.length;i++){
+        for(let j=i+1;j<nodes.length;j++){
+          const a=nodes[i],b=nodes[j];
+          const dx=a.x-b.x,dy=a.y-b.y;
+          const dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<maxDist){
+            const alpha=(1-dist/maxDist)*0.22*Math.min(a.o,b.o);
+            ctx.strokeStyle=`rgba(56,189,248,${alpha})`;
+            ctx.lineWidth=0.6;
+            ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Spawn & draw packets
+    if(phase===1&&Math.random()<0.35)spawnPacket();
+    packets=packets.filter(pk=>{
+      pk.progress+=pk.speed;
+      if(pk.progress>=1)return false;
+      const x=pk.a.x+(pk.b.x-pk.a.x)*pk.progress;
+      const y=pk.a.y+(pk.b.y-pk.a.y)*pk.progress;
+      // glow trail
+      ctx.beginPath();ctx.arc(x,y,8,0,Math.PI*2);
+      ctx.fillStyle=`rgba(56,189,248,${0.12*(1-pk.progress)})`;
+      ctx.fill();
+      // core
+      ctx.beginPath();ctx.arc(x,y,2.2,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,240,255,${0.9*(1-pk.progress)})`;
+      ctx.fill();
+      return true;
+    });
+
+    // Center glow during phase 2
+    if(phase===2){
+      const t=(ts-phaseStart)/800;
+      const pulse=Math.sin(ts*0.012)*0.25+0.75;
+      const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(w,h)*0.28);
+      grd.addColorStop(0,`rgba(56,189,248,${0.18*pulse*(1-t)})`);
+      grd.addColorStop(0.4,`rgba(14,165,233,${0.08*pulse*(1-t)})`);
+      grd.addColorStop(1,'rgba(56,189,248,0)');
+      ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);
+    }
+
+    // Draw nodes
+    nodes.forEach(n=>{
+      if(n.o<0.01)return;
+      const pulse=Math.sin(ts*0.005+n.pulseOffset)*0.3+0.7;
+      // outer glow
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r*4,0,Math.PI*2);
+      ctx.fillStyle=n.color+(n.o*0.08*pulse)+')';
+      ctx.fill();
+      // inner glow
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r*2,0,Math.PI*2);
+      ctx.fillStyle=n.color+(n.o*0.25*pulse)+')';
+      ctx.fill();
+      // core
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle=n.color+(n.o*pulse)+')';
+      ctx.fill();
+    });
+
+    // Phase 3 subtle ring burst
+    if(phase===3||phase===4){
+      const t=phase===3?(ts-phaseStart)/200:1;
+      const ringR=(Math.min(w,h)*0.15)*t;
+      ctx.beginPath();ctx.arc(cx,cy,ringR,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(56,189,248,${0.15*(1-t)})`;
+      ctx.lineWidth=2;
+      ctx.stroke();
     }
   }
+
   animId=requestAnimationFrame(draw);
 
   setTimeout(()=>{
@@ -603,7 +1071,8 @@ async function loadRisks(){
     document.getElementById('navbar').classList.add('visible');
     setTimeout(()=>document.getElementById('splash').style.display='none',800);
     animateHeroTitle();
-  },3400);
+    animateStats();
+  },4000);
 })();
 
 function animateHeroTitle(){
@@ -612,6 +1081,19 @@ function animateHeroTitle(){
   const text=el.textContent,html=[];
   for(let i=0;i<text.length;i++)html.push(`<span class="char" style="animation-delay:${i*.04}s">${text[i]===' '?'&nbsp;':text[i]}</span>`);
   el.innerHTML=html.join('');
+}
+
+function animateStats(){
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const target=+el.dataset.count,duration=1500,start=performance.now();
+    function update(now){
+      const p=Math.min(1,(now-start)/duration);
+      const e=1-Math.pow(1-p,3);
+      el.textContent=Math.floor(target*e);
+      if(p<1)requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
 }
 
 // ==================== PAGE SWITCH ====================
@@ -809,6 +1291,97 @@ async function checkHealth(){
 // First check after a delay to let server start
 setTimeout(checkHealth,2000);
 setInterval(checkHealth,30000);
+
+// ==================== HOME PAGE INTERACTIONS ====================
+
+// Subject wall
+const SUBJECT_CATS={asset:['C','D','E','F','I','O','P','Q'],liability:['G','H','J','K','L','M','N','R'],all:['C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R']};
+function renderSubjectWall(filter){
+  const ids=SUBJECT_CATS[filter]||SUBJECT_CATS.all;
+  const items=ids.map(id=>SUBJECTS.find(s=>s.id===id)).filter(Boolean);
+  document.getElementById('subjectWall').innerHTML=items.map(s=>`
+    <div class="subj-wall-card" onclick="goSubject('${s.id}')">
+      <div class="sw-icon" style="background:${s.color}15;color:${s.color}"><i class="fas ${s.icon}"></i></div>
+      <h4>${s.id} · ${s.name}</h4>
+      <p>${s.desc}</p>
+      <div class="sw-link">查看详情 →</div>
+    </div>`).join('');
+}
+function filterSubjects(cat,btn){
+  document.querySelectorAll('.subject-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSubjectWall(cat);
+}
+function goSubject(id){
+  selectedSubject=id;
+  switchPage('workspace');
+  wsGo(2);
+}
+renderSubjectWall('asset');
+
+// Modal system
+const MODAL_DATA={
+  adv1:{title:'多科目深度覆盖',icon:'fa-layer-group',content:'<p style="color:#94a3b8;line-height:1.8;margin-bottom:16px">审计智能体覆盖财务报表审计中最核心的 16 个科目，从货币资金到长期借款，涵盖资产、负债与权益的主要领域。</p><div class="modal-mock">16 科目审计程序总览</div><ul style="color:#94a3b8;font-size:14px;line-height:2;padding-left:18px"><li>资产类：货币资金、应收票据、其他应收款、预付账款、应收账款、存货、固定资产、无形资产</li><li>负债类：预收账款、短期借款、应付账款、应付票据、应付职工薪酬、应交税费、其他应付款、长期借款</li><li>每个科目包含审定表、明细表、程序表、函证汇总表、审计结论</li></ul>'},
+  adv2:{title:'全流程零干预',icon:'fa-robot',content:'<p style="color:#94a3b8;line-height:1.8;margin-bottom:16px">从原始 Excel 数据到规范底稿输出，全流程无需人工干预。Python 引擎负责确定性计算，LLM 负责专业判断，分工明确。</p><div class="modal-mock">审计流程自动化示意</div><ul style="color:#94a3b8;font-size:14px;line-height:2;padding-left:18px"><li>Step 1：openpyxl 自动解析多 Sheet Excel</li><li>Step 2：数据序列化为结构化文本输入 LLM</li><li>Step 3：DeepSeek V4 Pro 执行审计准则分析</li><li>Step 4：JSON 结构化提取审计数据</li><li>Step 5：Python 模板渲染规范 Excel 底稿</li><li>Step 6：同步输出 Word 审计日志</li></ul>'},
+  adv3:{title:'合规日志追溯',icon:'fa-shield-halved',content:'<p style="color:#94a3b8;line-height:1.8;margin-bottom:16px">审计智能体生成完整的审计轨迹记录，满足事务所内部质控复核与外部监管检查的双重需求。</p><div class="modal-mock">审计日志文档预览</div><ul style="color:#94a3b8;font-size:14px;line-height:2;padding-left:18px"><li>每步审计程序记录执行时间与结果</li><li>风险事项按 error/warning/info 三级标注</li><li>审计发现与结论独立归档</li><li>输出 Word 格式便于打印与签章</li></ul>'},
+  adv4:{title:'准则标准排版',icon:'fa-file-contract',content:'<p style="color:#94a3b8;line-height:1.8;margin-bottom:16px">严格依据《财务报表审计工作底稿参考模版（2026年修订）》设计底稿结构，确保输出成果可直接用于审计档案。</p><div class="modal-mock">底稿模板规范示意</div><ul style="color:#94a3b8;font-size:14px;line-height:2;padding-left:18px"><li>审定表：科目余额汇总、审计调整、审定数</li><li>明细表：按维度展开的明细数据</li><li>程序表：实际执行的审计程序记录</li><li>函证汇总表：函证发出/收回/差异汇总</li><li>审计结论：每个子表的独立审计结论</li></ul>'},
+  adv5:{title:'实时风险预警',icon:'fa-triangle-exclamation',content:'<p style="color:#94a3b8;line-height:1.8;margin-bottom:16px">内置红黄蓝三级风险预警体系，基于确定性计算规则自动标记异常，无需依赖 LLM 判断的稳定性。</p><div class="modal-mock">风险预警面板示意</div><ul style="color:#94a3b8;font-size:14px;line-height:2;padding-left:18px"><li>🔴 红色：变动率>50%、关联方未披露、逾期票据/借款、银行未达账项>重要性水平</li><li>🟡 黄色：变动率>30%、长期挂账>1年、函证回收率<80%</li><li>🔵 蓝色：一般提示性信息</li><li>利息差异>重要性水平自动标红需调整</li></ul>'},
+  adv6:{title:'离线批量执行',icon:'fa-server',content:'<p style="color:#94a3b8;line-height:1.8;margin-bottom:16px">支持完全离线环境运行，通过 generate_all_papers.py 脚本批量生成全部 16 科目底稿，无需调用外部 API。</p><div class="modal-mock">批量生成控制台</div><ul style="color:#94a3b8;font-size:14px;line-height:2;padding-left:18px"><li>本地 Python 引擎确定性计算，结果 100% 可复现</li><li>批量模式支持顺序或并行执行</li><li>LLM 判断部分可替换为本地模型或规则引擎</li><li>适用于涉密环境或网络受限场景</li></ul>'}
+};
+function openModal(key){
+  const d=MODAL_DATA[key];if(!d)return;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="flex items-center gap-3 mb-4"><div class="adv-icon" style="margin:0"><i class="fas ${d.icon}"></i></div><h2 style="font-size:22px;font-weight:700;color:#f8fafc">${d.title}</h2></div>
+    ${d.content}`;
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.getElementById('modalCard').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.getElementById('modalCard').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// Mouse tracking for bento cards
+document.addEventListener('mousemove',function(e){
+  document.querySelectorAll('.bento-card,.subj-wall-card').forEach(card=>{
+    const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    card.style.setProperty('--mx',(x/r.width*100)+'%');card.style.setProperty('--my',(y/r.height*100)+'%');
+  });
+});
+
+// Process line animation
+const processObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.getElementById('processLineFill').style.width='100%';
+      document.querySelectorAll('.process-step').forEach((s,i)=>{setTimeout(()=>s.classList.add('active'),i*400)});
+      processObs.unobserve(e.target);
+    }
+  });
+},{threshold:.4});
+if(document.getElementById('processWrap'))processObs.observe(document.getElementById('processWrap'));
+
+// Data viz animation
+const vizObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.getElementById('ringFill').style.strokeDashoffset='60';
+      ['barFill1','barFill2','barFill3'].forEach((id,i)=>{
+        const el=document.getElementById(id),target=el.dataset.width;
+        setTimeout(()=>{el.style.width=target+'%'},i*200);
+      });
+      ['barLabel1','barLabel2','barLabel3'].forEach((id,i)=>{
+        const el=document.getElementById(id),target=document.getElementById(id.replace('Label','Fill')).dataset.width;
+        let v=0;const iv=setInterval(()=>{v++;el.textContent=v+'%';if(v>=+target)clearInterval(iv)},18);
+      });
+      vizObs.unobserve(e.target);
+    }
+  });
+},{threshold:.5});
+if(document.getElementById('ringFill'))vizObs.observe(document.getElementById('ringFill').closest('.card'));
 </script>
 </body>
 </html>
