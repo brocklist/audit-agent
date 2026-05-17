@@ -882,41 +882,186 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 <!-- ============================================================ -->
 <!--  TECH PAGE -->
 <!-- ============================================================ -->
+<style>
+.arch-layer-label{font-size:11px;color:#4a6278;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;text-align:center}
+.arch-node{position:relative;background:rgba(16,24,40,.7);border:1px solid rgba(77,168,255,.12);border-radius:12px;padding:16px 14px;text-align:center;cursor:pointer;transition:all .35s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(4px)}
+.arch-node:hover{border-color:rgba(77,168,255,.45);box-shadow:0 0 20px rgba(77,168,255,.15),inset 0 0 20px rgba(77,168,255,.04);transform:translateY(-3px)}
+.arch-node .icon{font-size:22px;margin-bottom:8px;display:block}
+.arch-node .name{font-size:12px;font-weight:600;color:#e0e8f0;margin-bottom:2px}
+.arch-node .meta{font-size:10px;color:#4a6278}
+.arch-tooltip{position:absolute;left:50%;bottom:calc(100%+10px);transform:translateX(-50%) scale(.95);width:220px;background:rgba(8,12,20,.95);border:1px solid rgba(77,168,255,.2);border-radius:10px;padding:12px 14px;opacity:0;pointer-events:none;transition:all .25s ease;z-index:10;text-align:left}
+.arch-node:hover .arch-tooltip{opacity:1;transform:translateX(-50%) scale(1);pointer-events:auto}
+.arch-tooltip h4{font-size:12px;color:#4da8ff;margin-bottom:6px;font-weight:600}
+.arch-tooltip p{font-size:11px;color:#6b8aaa;line-height:1.6;margin:0}
+.arch-tooltip .tag{display:inline-block;font-size:10px;color:#4da8ff;background:rgba(77,168,255,.08);padding:2px 6px;border-radius:4px;margin-top:6px}
+@keyframes flow{0%{offset-distance:0%;opacity:0}10%{opacity:1}90%{opacity:1}100%{offset-distance:100%;opacity:0}}
+.flow-dot{offset-path:path('M0,0 L0,80');animation:flow 2.5s linear infinite;width:5px;height:5px;border-radius:50%;position:absolute}
+.flow-dot.d1{animation-delay:0s}
+.flow-dot.d2{animation-delay:.8s}
+.flow-dot.d3{animation-delay:1.6s}
+.sse-bar{height:3px;background:rgba(77,168,255,.08);border-radius:2px;overflow:hidden;position:relative}
+.sse-bar::after{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;background:rgba(77,168,255,.6);border-radius:2px;animation:sseFlow 2s ease-in-out infinite}
+@keyframes sseFlow{0%{left:-40%}100%{left:100%}}
+.arch-connector{position:relative;height:80px;margin:4px 0}
+.arch-connector svg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible}
+.arch-connector line{stroke:rgba(77,168,255,.18);stroke-width:1.5}
+.arch-connector .glow{stroke:rgba(77,168,255,.5);stroke-width:2;filter:drop-shadow(0 0 3px rgba(77,168,255,.4));stroke-dasharray:6 4;animation:dashMove 1.2s linear infinite}
+@keyframes dashMove{to{stroke-dashoffset:-20}}
+</style>
+
 <div class="page" id="page-tech">
   <div class="section">
-    <h2 style="font-size:32px;font-weight:700;color:#e0e8f0;text-align:center;margin-bottom:6px">技术原理</h2>
-    <p style="text-align:center;color:#4a6278;margin-bottom:40px">AI 审计智能体的底层架构与运行逻辑</p>
-    <div class="card mb-6 reveal">
-      <h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:24px"><i class="fas fa-diagram-project" style="color:#4da8ff;margin-right:8px"></i>运行流程</h3>
-      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center;margin-bottom:24px">
-        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📂</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">1. 数据读取</div><div style="font-size:11px;color:#4a6278">openpyxl 解析<br>多Sheet识别</div></div>
-        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">🔤</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">2. 数据序列化</div><div style="font-size:11px;color:#4a6278">Excel → 结构化<br>文本表示</div></div>
-        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">🧠</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">3. AI 分析</div><div style="font-size:11px;color:#4a6278">加载审计准则<br>LLM 推理计算</div></div>
-        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📊</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">4. 结果解析</div><div style="font-size:11px;color:#4a6278">JSON 结构化<br>提取审计数据</div></div>
-        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📝</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">5. 模板渲染</div><div style="font-size:11px;color:#4a6278">Python 模板<br>生成规范Excel</div></div>
-        <div class="card card-hover" style="padding:20px 12px"><div style="font-size:24px;margin-bottom:8px">📋</div><div style="font-weight:700;font-size:13px;color:#e0e8f0;margin-bottom:4px">6. 日志输出</div><div style="font-size:11px;color:#4a6278">审计轨迹文件<br>风险数据清单</div></div>
+    <h2 style="font-size:32px;font-weight:700;color:#e0e8f0;text-align:center;margin-bottom:6px">系统架构</h2>
+    <p style="text-align:center;color:#4a6278;margin-bottom:36px">AI 审计智能体的三层架构拓扑与数据流向</p>
+
+    <!-- Layer 3: AI Intelligence -->
+    <div class="arch-layer-label"><i class="fas fa-brain" style="margin-right:6px;color:#818cf8"></i>智能层 Intelligence Layer</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:720px;margin:0 auto 0 auto">
+      <div class="arch-node">
+        <span class="icon" style="color:#818cf8">🧠</span>
+        <div class="name">DeepSeek V4 Pro</div>
+        <div class="meta">1M 上下文 · 推理引擎</div>
+        <div class="arch-tooltip"><h4>DeepSeek V4 Pro</h4><p>基于 Anthropic API 兼容接口调用，temperature=0.05，关闭 thinking 模式，确保审计结论的确定性。</p><span class="tag">模型: deepseek-v4-pro[1m]</span></div>
       </div>
-      <p style="font-size:13px;color:#4a6278;line-height:1.8">用户上传原始财务数据后，系统通过 <strong style="color:#4da8ff">openpyxl</strong> 解析 Excel，序列化为结构化文本。加载预置审计准则（CLAUDE.md），组装 Prompt 通过 <strong style="color:#4da8ff">DeepSeek API</strong> 调用大语言模型。LLM 依据中国注册会计师审计准则执行分析性复核、函证检查等程序，返回结构化审计数据。服务端 Python 模板引擎渲染为排版规范的 Excel 底稿，同时输出 Markdown 审计日志。</p>
+      <div class="arch-node">
+        <span class="icon" style="color:#818cf8">📜</span>
+        <div class="name">审计准则引擎</div>
+        <div class="meta">CLAUDE.md · 16 科目</div>
+        <div class="arch-tooltip"><h4>审计准则引擎</h4><p>预置中注协 2026 版底稿参考模版，涵盖 16 个审计科目的完整程序表、审定表、明细表规范。</p><span class="tag">16 科目 · 55 张底稿</span></div>
+      </div>
+      <div class="arch-node">
+        <span class="icon" style="color:#818cf8">🛡️</span>
+        <div class="name">JSON 修复器</div>
+        <div class="meta">json-repair · 容错解析</div>
+        <div class="arch-tooltip"><h4>JSON 修复器</h4><p>LLM 输出可能包含 markdown 代码块标记或格式错误，双重提取策略（regex + json-repair）提高成功率。</p><span class="tag">容错率 > 95%</span></div>
+      </div>
+      <div class="arch-node">
+        <span class="icon" style="color:#818cf8">⚡</span>
+        <div class="name">SSE 心跳</div>
+        <div class="meta">StreamingResponse</div>
+        <div class="arch-tooltip"><h4>SSE 实时流</h4><p>Server-Sent Events 分阶段推送审计进度，heartbeat 注释保持长连接，600s 超时支持复杂审计。</p><span class="tag">实时 · 6 阶段进度</span></div>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="reveal">
-      <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-code" style="color:#4da8ff;margin-right:8px"></i>技术栈</h3>
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">后端框架</span><span style="font-size:13px;color:#4da8ff">Python · FastAPI · uvicorn</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">Excel 处理</span><span style="font-size:13px;color:#4da8ff">openpyxl · 模板渲染引擎</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">AI 模型</span><span style="font-size:13px;color:#4da8ff">DeepSeek V4 Pro · Anthropic API</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">实时通信</span><span style="font-size:13px;color:#4da8ff">Server-Sent Events (SSE)</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">前端</span><span style="font-size:13px;color:#4da8ff">HTML5 · Tailwind CSS · Font Awesome</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">JSON 修复</span><span style="font-size:13px;color:#4da8ff">json-repair</span></div>
-        </div>
+
+    <!-- Connector 2→3 -->
+    <div class="arch-connector" style="max-width:720px;margin:0 auto">
+      <svg><line x1="25%" y1="0" x2="25%" y2="80"/><line x1="50%" y1="0" x2="50%" y2="80"/><line x1="75%" y1="0" x2="75%" y2="80"/>
+      <line x1="25%" y1="0" x2="25%" y2="80" class="glow"/><line x1="50%" y1="0" x2="50%" y2="80" class="glow"/><line x1="75%" y1="0" x2="75%" y2="80" class="glow"/>
+      </svg>
+      <div class="flow-dot d1" style="offset-path:path('M 180,0 L 180,80');background:#818cf8;left:25%"></div>
+      <div class="flow-dot d2" style="offset-path:path('M 360,0 L 360,80');background:#818cf8;left:50%"></div>
+      <div class="flow-dot d3" style="offset-path:path('M 540,0 L 540,80');background:#818cf8;left:75%"></div>
+    </div>
+
+    <!-- Layer 2: Service -->
+    <div class="arch-layer-label"><i class="fas fa-server" style="margin-right:6px;color:#4da8ff"></i>服务层 Service Layer</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:720px;margin:0 auto 0 auto">
+      <div class="arch-node">
+        <span class="icon" style="color:#4da8ff">⚙️</span>
+        <div class="name">FastAPI</div>
+        <div class="meta">uvicorn · port 8800</div>
+        <div class="arch-tooltip"><h4>FastAPI 服务端</h4><p>异步 Python 后端，处理文件上传、SSE 流式审计、模板管理、健康检查等 10+ API 端点。</p><span class="tag">Python 3.12</span></div>
       </div>
-      <div class="card"><h3 style="font-size:18px;font-weight:700;color:#e0e8f0;margin-bottom:20px"><i class="fas fa-tools" style="color:#4da8ff;margin-right:8px"></i>开发工具</h3>
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">开发环境</span><span style="font-size:13px;color:#4da8ff">VS Code · Windows 11</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">AI 协作</span><span style="font-size:13px;color:#4da8ff">Claude Code (VS Code 插件)</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">版本控制</span><span style="font-size:13px;color:#4da8ff">Git</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">Python 版本</span><span style="font-size:13px;color:#4da8ff">3.12</span></div><div style="height:1px;background:rgba(77,168,255,.05)"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600">审计准则</span><span style="font-size:13px;color:#4da8ff">中国注册会计师审计准则</span></div>
+      <div class="arch-node">
+        <span class="icon" style="color:#4da8ff">📊</span>
+        <div class="name">ExcelBuilder</div>
+        <div class="meta">openpyxl · 底稿渲染</div>
+        <div class="arch-tooltip"><h4>ExcelBuilder</h4><p>专业审计底稿渲染引擎：蓝色主题表头、4 行统一表头、条件着色、斑马纹、数字千分位格式化。</p><span class="tag">中注协 2026 规范</span></div>
+      </div>
+      <div class="arch-node">
+        <span class="icon" style="color:#4da8ff">📄</span>
+        <div class="name">AuditLogger</div>
+        <div class="meta">python-docx · 审计日志</div>
+        <div class="arch-tooltip"><h4>AuditLogger</h4><p>生成 Word 格式审计轨迹文件，含 7 个章节：基本信息、数据来源、执行时间线、风险清单、审计发现、结论、签字。</p><span class="tag">.docx 输出</span></div>
+      </div>
+      <div class="arch-node">
+        <span class="icon" style="color:#4da8ff">🧮</span>
+        <div class="name">计算引擎</div>
+        <div class="meta">audit_engine.py</div>
+        <div class="arch-tooltip"><h4>审计计算引擎</h4><p>双引擎架构：server.py（LLM 全权处理）+ audit_engine.py（Python 计算 + LLM 判断），覆盖 16 个科目。</p><span class="tag">双引擎 · v2+v4</span></div>
+      </div>
+    </div>
+
+    <!-- Connector 1→2 -->
+    <div class="arch-connector" style="max-width:720px;margin:0 auto">
+      <svg><line x1="25%" y1="0" x2="25%" y2="80"/><line x1="50%" y1="0" x2="50%" y2="80"/><line x1="75%" y1="0" x2="75%" y2="80"/>
+      <line x1="25%" y1="0" x2="25%" y2="80" class="glow"/><line x1="50%" y1="0" x2="50%" y2="80" class="glow"/><line x1="75%" y1="0" x2="75%" y2="80" class="glow"/>
+      </svg>
+      <div class="flow-dot d1" style="offset-path:path('M 180,0 L 180,80');background:#4da8ff;left:25%"></div>
+      <div class="flow-dot d2" style="offset-path:path('M 360,0 L 360,80');background:#4da8ff;left:50%"></div>
+      <div class="flow-dot d3" style="offset-path:path('M 540,0 L 540,80');background:#4da8ff;left:75%"></div>
+    </div>
+
+    <!-- Layer 1: User -->
+    <div class="arch-layer-label"><i class="fas fa-desktop" style="margin-right:6px;color:#34d399"></i>用户层 User Layer</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:720px;margin:0 auto 24px auto">
+      <div class="arch-node">
+        <span class="icon" style="color:#34d399">🌐</span>
+        <div class="name">SPA 前端</div>
+        <div class="meta">HTML5 · Tailwind CSS</div>
+        <div class="arch-tooltip"><h4>单页应用前端</h4><p>4 页面 SPA：主页（动画入场）、工作界面（4 步向导）、技术原理、用户面板。无框架，纯原生 JS + Fetch API。</p><span class="tag">vanilla JS</span></div>
+      </div>
+      <div class="arch-node">
+        <span class="icon" style="color:#34d399">📤</span>
+        <div class="name">分块上传</div>
+        <div class="meta">16 科目 · 55 need</div>
+        <div class="arch-tooltip"><h4>分类型文件上传</h4><p>每科目按需求动态渲染上传区块（余额表、明细账、申报表等），独立拖拽区 + 范例预览。</p><span class="tag">55 个 need 区块</span></div>
+      </div>
+      <div class="arch-node">
+        <span class="icon" style="color:#34d399">📥</span>
+        <div class="name">底稿下载</div>
+        <div class="meta">.xlsx · .docx</div>
+        <div class="arch-tooltip"><h4>审计成果下载</h4><p>自动生成中注协规范格式的 Excel 审计底稿 + Word 审计日志，支持模板自定义上传。</p><span class="tag">标准底稿格式</span></div>
+      </div>
+      <div class="arch-node">
+        <span class="icon" style="color:#34d399">📂</span>
+        <div class="name">范例数据</div>
+        <div class="meta">55 文件 · 16 科目</div>
+        <div class="arch-tooltip"><h4>内置范例数据</h4><p>为 16 个科目生成 55 个拟真范例 Excel 文件，覆盖全部 need 区块，支持预览下载。</p><span class="tag">拟真数据</span></div>
+      </div>
+    </div>
+
+    <!-- Bottom: SSE Stream Visualizer -->
+    <div class="card reveal" style="max-width:720px;margin:0 auto;padding:18px 22px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399"></div>
+          <span style="font-size:12px;font-weight:600;color:#e0e8f0">SSE 实时通信通道</span>
         </div>
+        <span style="font-size:11px;color:#4a6278">heartbeat every 15s · timeout 600s</span>
+      </div>
+      <div class="sse-bar" style="margin-bottom:10px"></div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;text-align:center">
+        <div style="font-size:10px;color:#4a6278"><span style="color:#4da8ff;font-weight:600">①</span> 数据读取</div>
+        <div style="font-size:10px;color:#4a6278"><span style="color:#4da8ff;font-weight:600">②</span> 序列化</div>
+        <div style="font-size:10px;color:#4a6278"><span style="color:#4da8ff;font-weight:600">③</span> Prompt 组装</div>
+        <div style="font-size:10px;color:#4a6278"><span style="color:#4da8ff;font-weight:600">④</span> AI 分析</div>
+        <div style="font-size:10px;color:#4a6278"><span style="color:#4da8ff;font-weight:600">⑤</span> JSON 解析</div>
+        <div style="font-size:10px;color:#4a6278"><span style="color:#4da8ff;font-weight:600">⑥</span> 底稿渲染</div>
+      </div>
+    </div>
+
+    <!-- Tech Stack Mini Cards -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:720px;margin:24px auto 0 auto" class="reveal">
+      <div class="card" style="padding:16px;text-align:center">
+        <div style="font-size:20px;margin-bottom:6px">🐍</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e8f0">Python 3.12</div>
+        <div style="font-size:10px;color:#4a6278;margin-top:2px">FastAPI · uvicorn</div>
+      </div>
+      <div class="card" style="padding:16px;text-align:center">
+        <div style="font-size:20px;margin-bottom:6px">🤖</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e8f0">DeepSeek V4</div>
+        <div style="font-size:10px;color:#4a6278;margin-top:2px">1M context · API</div>
+      </div>
+      <div class="card" style="padding:16px;text-align:center">
+        <div style="font-size:20px;margin-bottom:6px">📊</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e8f0">openpyxl</div>
+        <div style="font-size:10px;color:#4a6278;margin-top:2px">Excel 渲染引擎</div>
+      </div>
+      <div class="card" style="padding:16px;text-align:center">
+        <div style="font-size:20px;margin-bottom:6px">🌐</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e8f0">Tailwind CSS</div>
+        <div style="font-size:10px;color:#4a6278;margin-top:2px">SPA · Font Awesome</div>
       </div>
     </div>
   </div>
