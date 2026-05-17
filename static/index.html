@@ -310,12 +310,15 @@ input[type="text"]:focus{border-color:#4da8ff;box-shadow:0 0 0 3px rgba(77,168,2
           <span id="progressPhase">准备中...</span>
           <span id="progressElapsed"></span>
         </div>
-        <div class="rounded-xl p-3" style="background:rgba(10,14,23,.4);border:1px solid rgba(77,168,255,.06)">
+        <div class="rounded-xl p-3 mb-3" style="background:rgba(10,14,23,.4);border:1px solid rgba(77,168,255,.06)">
           <p class="text-xs font-semibold mb-2" style="color:#4a6278">执行日志</p>
           <div class="max-h-80 overflow-y-auto" id="phaseLog">
             <p class="text-xs" style="color:#3a5068">等待开始...</p>
           </div>
         </div>
+        <button class="btn btn-primary w-full" id="viewResultBtn" style="display:none" onclick="viewResult()">
+          <i class="fas fa-arrow-right mr-1"></i> 查看审计结果
+        </button>
       </div>
     </div>
 
@@ -672,7 +675,7 @@ const SUBJECTS=[
   {id:'Q',name:'无形资产',icon:'fa-lightbulb',color:'#14b8a6',desc:'专利权·软件·摊销·减值',codes:'1701'},
   {id:'R',name:'长期借款',icon:'fa-building-columns',color:'#ef4444',desc:'信用/抵押借款·利息·重分类',codes:'2501'},
 ];
-let selectedSubject='C',uploadedFiles=[],selectedFiles=[],wsPanel=1;
+let selectedSubject='C',uploadedFiles=[],selectedFiles=[],wsPanel=1,resultData=null;
 
 function wsGo(n){
   wsPanel=n;
@@ -737,9 +740,16 @@ async function runAudit(){
   try{
     const resp=await fetch(API+'/api/audit-stream?'+p.toString());const reader=resp.body.getReader();
     const dec=new TextDecoder();let buf='',cevent='';
-    while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const parts=buf.split('\n\n');buf=parts.pop();
+    while(true){const{done,value}=await reader.read();
+      if(value)buf+=dec.decode(value,{stream:!done});
+      if(done){
+        // 流结束，处理 buf 中最后的事件
+        if(buf.trim()){const lines=buf.split('\n');let data='';for(const l of lines){if(l.startsWith('event:'))cevent=l.slice(6).trim();if(l.startsWith('data:'))data=l.slice(5).trim()}if(data)try{const d=JSON.parse(data);if(cevent==='progress')updateProgress(d);if(cevent==='result'){resultData=d;updateProgress({pct:100,phase:'complete',step:'审计完成',detail:'',status:'done',elapsed:d.elapsed_total});const btn=document.getElementById('viewResultBtn');if(btn)btn.style.display=''}if(cevent==='error')showError(d.msg)}catch(e){}}
+        break;
+      }
+      const parts=buf.split('\n\n');buf=parts.pop();
       for(const part of parts){const lines=part.split('\n');let data='';for(const l of lines){if(l.startsWith('event:'))cevent=l.slice(6).trim();if(l.startsWith('data:'))data=l.slice(5).trim()}if(!data)continue;
-        try{const d=JSON.parse(data);if(cevent==='progress')updateProgress(d);if(cevent==='result'){updateProgress({pct:100,phase:'complete',step:'审计完成',detail:'',status:'done',elapsed:d.elapsed_total});setTimeout(()=>showResult(d),300)}if(cevent==='error')showError(d.msg)}catch(e){}
+        try{const d=JSON.parse(data);if(cevent==='progress')updateProgress(d);if(cevent==='result'){resultData=d;updateProgress({pct:100,phase:'complete',step:'审计完成',detail:'',status:'done',elapsed:d.elapsed_total});const btn=document.getElementById('viewResultBtn');if(btn)btn.style.display=''}if(cevent==='error')showError(d.msg)}catch(e){}
       }
     }
   }catch(e){showError('连接失败: '+e.message)}
@@ -758,7 +768,8 @@ function updateProgress(d){
 }
 function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m>0?`${m}m${sec}s`:`${sec}s`}
 
-async function showDemo(){const r=await fetch(API+'/api/demo-result?subject='+selectedSubject);const d=await r.json();document.getElementById('entityName').value=d.entity_name||'';document.getElementById('period').value=d.period||'2024-12-31';showResult(d);wsGo(4)}
+function viewResult(){if(!resultData)return;document.getElementById('viewResultBtn').style.display='none';showResult(resultData)}
+async function showDemo(){const r=await fetch(API+'/api/demo-result?subject='+selectedSubject);const d=await r.json();document.getElementById('entityName').value=d.entity_name||'';document.getElementById('period').value=d.period||'2024-12-31';resultData=d;showResult(d)}
 function showResult(d){
   document.getElementById('summaryText').textContent=d.summary||'';document.getElementById('outputPath').textContent=d.output_file||'';
   document.getElementById('riskCount').textContent=d.risk_count||0;document.getElementById('logPath').textContent=d.log_file||'';
@@ -768,8 +779,13 @@ function showResult(d){
   document.getElementById('resultHeader').innerHTML=`<div class="success-check"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 42l10 10 22-22"/></svg></div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险</p>`;
   document.getElementById('sheetGrid').innerHTML=(d.sheets||[]).map((s,i)=>`<div class="flex items-center gap-2 p-3 rounded-lg" style="background:rgba(19,28,46,.6);border:1px solid rgba(77,168,255,.06)"><i class="fas ${['fa-chart-pie','fa-coins','fa-building-columns','fa-envelope','fa-magnifying-glass-chart','fa-file-lines'][i%6]}" style="color:#4da8ff;font-size:13px"></i><span class="text-sm" style="color:#8a9bb5">${s}</span></div>`).join('');
   if(d.audit_findings?.length)document.getElementById('findingsArea').innerHTML=`<h4 class="text-sm font-bold mb-2" style="color:#e0e8f0"><i class="fas fa-magnifying-glass mr-1" style="color:#f59e0b"></i>审计发现</h4>`+d.audit_findings.map(f=>`<div class="risk-tag ${f.severity==='error'?'high':f.severity==='warning'?'mid':'low'}"><span>${f.severity==='error'?'🔴':f.severity==='warning'?'🟡':'🔵'}</span><span>${f.msg}</span></div>`).join('');
+  switchPage('workspace');
+  wsGo(4);
+  // 强制显示结果面板（跳过reveal观察器延迟）
+  const wsp4 = document.getElementById('wsp4');
+  if(wsp4){wsp4.classList.add('visible');wsp4.style.opacity='1';wsp4.style.transform='none';}
 }
-function showError(m){document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${m}</p>`;document.getElementById('summaryText').textContent=m;wsGo(4)}
+function showError(m){switchPage('workspace');document.getElementById('resultHeader').innerHTML=`<div class="text-4xl mb-3" style="color:#ef4444">✗</div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">执行失败</h2><p class="text-sm mt-1" style="color:#4a6278">${m}</p>`;document.getElementById('summaryText').textContent=m;wsGo(4)}
 
 let healthFailCount=0;
 async function checkHealth(){

@@ -510,7 +510,7 @@ async def audit_with_progress(req: AuditRequest):
         return f"event: progress\ndata: " + json.dumps({
             "pct": pct, "phase": phase, "step": step, "detail": detail,
             "status": status, "elapsed": round(e, 1)
-        }, ensure_ascii=False) + "\n\n"
+        }, ensure_ascii=False) + "\n\n: heartbeat\n\n"
 
     # Phase 1: 读文件
     logger.log("file_read", "info", "开始读取数据源", f"共 {len(req.files)} 个文件")
@@ -618,21 +618,27 @@ async def audit_with_progress(req: AuditRequest):
     llm_start = time.time()
     llm_task = asyncio.create_task(call_llm(rules, user_prompt))
 
-    stages = [(8,28,"科目余额分析"), (12,33,"明细账审查"), (15,40,"对账单核对"),
-              (18,48,"函证检查"), (20,55,"编制审定表"), (22,62,"编制明细表"),
-              (25,70,"编写审计发现"), (28,78,"编写审计结论"), (30,84,"最终整理")]
+    # 模拟进度分阶段推进（LLM真正在后台运行）
+    stages = [(5,28,"科目余额分析"), (8,33,"明细账审查"), (10,40,"对账单核对"),
+              (12,48,"函证检查"), (14,55,"编制审定表"), (16,62,"编制明细表"),
+              (18,70,"编写审计发现"), (20,78,"编写审计结论"), (22,84,"最终整理")]
     for delay, pct, step in stages:
-        await asyncio.sleep(delay)
+        for _ in range(delay):
+            await asyncio.sleep(1)
+            if llm_task.done(): break
+            yield ": heartbeat\n\n"
         if llm_task.done(): break
         logger.log("ai_analysis", "active", step, "AI深度分析中")
         yield emit(pct, "ai_analysis", step, "AI深度分析中...")
 
     extra = 0
     while not llm_task.done() and extra < 360:
-        await asyncio.sleep(20); extra += 20
+        await asyncio.sleep(3); extra += 3
         if llm_task.done(): break
-        logger.log("ai_analysis", "active", "AI深度分析中", f"已等待 {int(time.time()-llm_start)} 秒")
-        yield emit(min(85, 80+extra//20), "ai_analysis", "AI深度分析中...", f"已等待 {int(time.time()-start_time)} 秒")
+        yield ": heartbeat\n\n"
+        if extra % 15 == 0:
+            logger.log("ai_analysis", "active", "AI深度分析中", f"已等待 {int(time.time()-llm_start)} 秒")
+            yield emit(min(85, 80+extra//20), "ai_analysis", "AI深度分析中...", f"已等待 {int(time.time()-start_time)} 秒")
 
     try:
         llm_response = await llm_task
@@ -699,6 +705,18 @@ async def audit_with_progress(req: AuditRequest):
     yield emit(100, "complete", "审计任务完成",
                f"{sheet_count} 张底稿 · {len(logger.risk_items)} 条风险 · {elapsed:.0f}秒", "done")
 
+    # 读取日志内容（.docx文件需要特殊处理）
+    log_preview = ""
+    try:
+        if log_path.endswith('.docx'):
+            from docx import Document
+            doc = Document(log_path)
+            log_preview = "\n".join([p.text for p in doc.paragraphs[:15]])[:3000]
+        else:
+            log_preview = open(log_path, encoding='utf-8').read()[:3000]
+    except Exception:
+        log_preview = ""
+
     yield "event: result\ndata: " + json.dumps({
         "success": True,
         "output_file": out_path,
@@ -706,7 +724,8 @@ async def audit_with_progress(req: AuditRequest):
         "summary": audit_result.get("summary", ""),
         "sheets": [s["title"] for s in audit_result.get("sheets", [])],
         "risk_count": len(logger.risk_items),
-        "log_content": open(log_path, encoding='utf-8').read()[:3000],
+        "audit_findings": [{"severity": r.get("level","info"), "msg": f"{r.get('item','')}: {r.get('reason','')}（{r.get('amount','')}）"} for r in logger.risk_items],
+        "log_content": log_preview,
         "elapsed_total": round(elapsed, 1)
     }, ensure_ascii=False) + "\n\n"
 
@@ -810,7 +829,7 @@ async def demo_result(subject: str = "C"):
     # 优先使用实际生成的底稿和日志
     DEMO_DIR = BASE_DIR / "demo_outputs"
     actual_xlsx = list(DEMO_DIR.glob(f"{subject}_*审计底稿*.xlsx")) if DEMO_DIR.exists() else []
-    actual_logs = list(DEMO_DIR.glob(f"{subject}_*审计日志*.md")) if DEMO_DIR.exists() else []
+    actual_logs = list(DEMO_DIR.glob(f"{subject}_*审计日志*.docx")) if DEMO_DIR.exists() else []
     if actual_xlsx:
         actual_xlsx.sort(key=lambda p: p.stat().st_mtime, reverse=True)
         result["output_file"] = str(actual_xlsx[0]); result["is_actual"] = True
@@ -819,10 +838,12 @@ async def demo_result(subject: str = "C"):
     if actual_logs:
         actual_logs.sort(key=lambda p: p.stat().st_mtime, reverse=True)
         result["log_file"] = str(actual_logs[0])
-        result["log_content"] = actual_logs[0].read_text(encoding="utf-8")[:3000] if actual_logs[0].exists() else ""
     else:
-        result["log_file"] = ""; result["log_content"] = ""
+        result["log_file"] = ""
+    result["log_content"] = ""
     result["risk_count"] = len(result.get("audit_findings", []))
+    return result
+    return result
     return result
 
 @app.get("/api/demo-files")
