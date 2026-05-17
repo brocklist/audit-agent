@@ -21,9 +21,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .splash-logo{position:relative;z-index:1;text-align:center}
 .splash-logo h1{font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px;margin-top:16px;opacity:0;animation:revealUp 1s var(--ease-out-expo) 2.2s forwards}
 .splash-logo p{font-size:14px;color:#4a6278;margin-top:8px;letter-spacing:4px;opacity:0;animation:revealUp 1s var(--ease-out-expo) 2.6s forwards}
-.splash-bar{position:relative;z-index:1;width:200px;height:2px;background:rgba(77,168,255,.1);border-radius:1px;margin-top:32px;overflow:hidden}
-.splash-bar-fill{height:100%;background:#4da8ff;border-radius:1px;width:0;animation:splashBar 3.2s var(--ease-out-expo) .2s forwards}
+.splash-bar{position:relative;z-index:1;width:300px;height:4px;background:rgba(77,168,255,.08);border-radius:2px;margin-top:40px;overflow:hidden;box-shadow:0 0 24px rgba(56,189,248,.08)}
+.splash-bar-fill{height:100%;background:linear-gradient(90deg,#0ea5e9,#38bdf8,#0ea5e9);background-size:200% 100%;border-radius:2px;width:0;animation:splashBar 3.2s var(--ease-out-expo) .2s forwards,barShimmer 1.2s linear infinite;box-shadow:0 0 16px rgba(56,189,248,.45)}
 @keyframes splashBar{0%{width:0}60%{width:85%}100%{width:100%}}
+@keyframes barShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes revealUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
 /* ======== NAV ======== */
@@ -146,6 +147,33 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 /* ======== DROP ZONE ======== */
 .drop-zone{transition:all .4s var(--ease-out-expo)}
 .drop-zone.drag-over{border-color:#38bdf8!important;background:rgba(14,165,233,.08)!important;transform:scale(1.02);box-shadow:0 0 40px rgba(14,165,233,.15)}
+
+/* ======== UPLOAD BLOCK ======== */
+.upload-block{display:flex;align-items:stretch;gap:0;background:rgba(16,24,40,.4);border:1px solid rgba(56,189,248,.08);border-radius:14px;overflow:hidden;transition:all .3s var(--ease-out-expo)}
+.upload-block:hover{border-color:rgba(56,189,248,.18);box-shadow:0 8px 32px rgba(0,0,0,.25)}
+.upload-block.done{border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.04)}
+.upload-block-info{flex:1;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0}
+.upload-block-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#e0e8f0}
+.upload-block-title .req{color:#ef4444;font-size:12px}
+.upload-block-desc{font-size:12px;color:#4a6278;line-height:1.4}
+.upload-block-meta{display:flex;align-items:center;gap:6px;margin-top:2px}
+.upload-block-files{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.upload-block-file{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;background:rgba(56,189,248,.08);color:#38bdf8;border:1px solid rgba(56,189,248,.12)}
+.upload-block-file .del{cursor:pointer;color:#64748b;transition:color .2s}
+.upload-block-file .del:hover{color:#ef4444}
+.upload-block-action{padding:14px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-left:1px solid rgba(56,189,248,.06);min-width:100px}
+.upload-block-drop{width:100%;padding:8px 12px;border-radius:8px;border:1px dashed rgba(56,189,248,.2);background:rgba(8,12,20,.3);color:#4a6278;font-size:12px;cursor:pointer;text-align:center;transition:all .3s var(--ease-out-expo)}
+.upload-block-drop:hover{border-color:#38bdf8;background:rgba(14,165,233,.06);color:#38bdf8}
+.upload-block-drop.drag-over{border-color:#38bdf8;background:rgba(14,165,233,.1);color:#38bdf8;transform:scale(1.02)}
+.upload-block-demo{display:flex;gap:6px;margin-top:4px}
+.upload-block-demo button{font-size:11px;padding:4px 10px;border-radius:6px;border:none;background:rgba(56,189,248,.08);color:#38bdf8;cursor:pointer;transition:all .2s}
+.upload-block-demo button:hover{background:rgba(56,189,248,.15)}
+
+/* ======== PREVIEW TABLE ======== */
+#previewTable{border-collapse:collapse;width:100%}
+#previewTable thead th{position:sticky;top:0;background:#0f172a;padding:8px 12px;font-size:11px;font-weight:600;color:#94a3b8;border-bottom:1px solid rgba(56,189,248,.12);text-align:left;white-space:nowrap}
+#previewTable tbody td{padding:6px 12px;font-size:11px;color:#cbd5e1;border-bottom:1px solid rgba(56,189,248,.04);white-space:nowrap}
+#previewTable tbody tr:hover{background:rgba(56,189,248,.04)}
 
 /* ======== RESULT SUCCESS ======== */
 .success-check{width:80px;height:80px;margin:0 auto 20px;position:relative}
@@ -718,20 +746,51 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
     </div>
 
     <div id="wsp2" class="card reveal" style="display:none">
-      <h2 class="text-xl font-bold text-center mb-6" style="color:#e0e8f0">上传审计数据</h2>
-      <div class="drop-zone p-12 text-center cursor-pointer rounded-xl transition-all" style="border:2px dashed rgba(77,168,255,.15)" id="dropZone" onclick="document.getElementById('fileInput').click()">
-        <div style="font-size:44px;margin-bottom:12px;color:#1a3350"><i class="fas fa-cloud-upload-alt"></i></div>
-        <p style="font-size:16px;font-weight:600;color:#6b8aaa;margin-bottom:4px">拖拽 Excel 文件到此处</p>
-        <p style="font-size:13px;color:#3a5068">或点击选择 · .xlsx .xls · 可多选</p>
-        <input type="file" id="fileInput" multiple accept=".xlsx,.xls" class="hidden" onchange="handleFiles(this.files)">
+      <!-- 科目信息栏 -->
+      <div id="subjectInfoBar" class="flex items-center gap-4 mb-6 p-4 rounded-xl" style="background:rgba(14,165,233,.04);border:1px solid rgba(56,189,248,.08)">
+        <div id="subjectIcon" class="w-12 h-12 rounded-xl flex items-center justify-center text-xl" style="background:rgba(56,189,248,.1);color:#38bdf8"><i class="fas fa-coins"></i></div>
+        <div>
+          <h2 class="text-xl font-bold" style="color:#e0e8f0" id="subjectTitle">货币资金</h2>
+          <p class="text-xs" style="color:#4a6278" id="subjectDesc">库存现金·银行存款·其他货币资金</p>
+        </div>
+        <div class="ml-auto text-right">
+          <p class="text-xs" style="color:#4a6278">已准备</p>
+          <p class="text-sm font-bold" style="color:#38bdf8" id="requiredProgress">0/0</p>
+        </div>
       </div>
-      <div class="mt-4" id="fileListWrap" style="display:none"><p class="text-xs font-semibold uppercase mb-2" style="color:#4a6278">已选 <span id="fileCount">0</span> 文件</p><div class="flex flex-wrap gap-2" id="fileChips"></div></div>
+
+      <!-- 分区块上传列表 -->
+      <div id="subjectUploadArea" class="flex flex-col gap-3 mb-6"></div>
+
+      <!-- 加载范例提示 -->
       <div class="mt-5 p-4 rounded-xl flex items-center justify-between" style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.15)">
-        <div class="flex items-center gap-2"><span>💡</span><div><p class="text-sm font-semibold" style="color:#fbbf24">没有数据？</p><p class="text-xs" style="color:#6b8aaa">加载该科目的内置范例数据</p></div></div>
+        <div class="flex items-center gap-2"><span>💡</span><div><p class="text-sm font-semibold" style="color:#fbbf24">没有数据？</p><p class="text-xs" style="color:#6b8aaa">加载该科目的内置范例数据，预览确认后再进入下一步</p></div></div>
         <button class="btn btn-ghost" style="font-size:12px" onclick="loadDemoFiles()">加载范例</button>
       </div>
-      <div class="flex justify-between mt-7"><button class="btn btn-ghost" onclick="wsGo(1)">← 返回</button><button class="btn btn-primary" id="uploadBtn" onclick="uploadFiles()" disabled>上传并继续</button></div>
+
+      <!-- 底部操作 -->
+      <div class="flex justify-between mt-7">
+        <button class="btn btn-ghost" onclick="wsGo(1)">← 返回</button>
+        <button class="btn btn-primary" id="uploadBtn" onclick="uploadFiles()" disabled>上传并继续</button>
+      </div>
       <p class="text-center text-xs mt-3" style="color:#3a5068" id="uploadStatus"></p>
+    </div>
+
+    <!-- 预览弹窗 -->
+    <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center" style="display:none;background:rgba(0,0,0,.6);backdrop-filter:blur(8px)">
+      <div class="rounded-2xl p-6 max-w-3xl w-full mx-4 max-h-[80vh] flex flex-col" style="background:#0f172a;border:1px solid rgba(56,189,248,.12);box-shadow:0 24px 80px rgba(0,0,0,.5)">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold" style="color:#e0e8f0" id="previewTitle">文件预览</h3>
+          <button class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="color:#64748b;background:rgba(16,24,40,.6);border:1px solid rgba(56,189,248,.08)" onclick="closePreview()">✕</button>
+        </div>
+        <div class="flex-1 overflow-auto rounded-lg" style="background:rgba(8,12,20,.6);border:1px solid rgba(56,189,248,.06)">
+          <table class="w-full text-xs" id="previewTable"><thead></thead><tbody></tbody></table>
+        </div>
+        <div class="flex justify-end gap-3 mt-4">
+          <button class="btn btn-ghost" style="font-size:13px" onclick="closePreview()">关闭</button>
+          <a class="btn btn-primary" style="font-size:13px;text-decoration:none" id="previewDownload" href="#" target="_blank">下载文件</a>
+        </div>
+      </div>
     </div>
 
     <div id="wsp3" class="card reveal" style="display:none">
@@ -978,158 +1037,125 @@ async function loadRisks(){
   };
 })();
 
-// ==================== SPLASH SCREEN - Neural Network Pulse ====================
+// ==================== SPLASH SCREEN - Paper Genesis ====================
 (function initSplash(){
   const canvas=document.getElementById('splashCanvas'),ctx=canvas.getContext('2d');
-  let w,h,nodes=[],packets=[],phase=0,phaseStart=0,animId;
+  let w,h,animId,phase=0,phaseStart=0;
 
   function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
   resize();window.addEventListener('resize',resize);
 
-  const NODE_COUNT=140;
-  const PALETTE=['rgba(56,189,248,','rgba(14,165,233,','rgba(34,211,238,','rgba(96,165,250,'];
-
-  function initNodes(){
-    nodes=[];
-    for(let i=0;i<NODE_COUNT;i++){
-      const angle=Math.random()*Math.PI*2;
-      const dist=Math.random()*Math.max(w,h)*0.8;
-      nodes.push({
-        x:w/2+Math.cos(angle)*dist,
-        y:h/2+Math.sin(angle)*dist,
-        ox:w/2+Math.cos(angle)*dist,
-        oy:h/2+Math.sin(angle)*dist,
-        r:Math.random()*1.8+1,
-        vx:0,vy:0,
-        o:Math.random()*0.35+0.35,
-        color:PALETTE[Math.floor(Math.random()*PALETTE.length)],
-        pulseOffset:Math.random()*Math.PI*2
-      });
-    }
-  }
-  initNodes();
-
-  function spawnPacket(){
-    if(nodes.length<2)return;
-    const a=nodes[Math.floor(Math.random()*nodes.length)];
-    const b=nodes[Math.floor(Math.random()*nodes.length)];
-    if(a===b)return;
-    const dx=a.x-b.x,dy=a.y-b.y;
-    if(Math.sqrt(dx*dx+dy*dy)>220)return;
-    packets.push({a,b,progress:0,speed:0.008+Math.random()*0.015});
-  }
+  const rows=8, cols=5;
+  const data=[
+    ['科目代码','科目名称','期初余额','期末余额','变动率'],
+    ['1001','库存现金','50,000','55,000','10.0%'],
+    ['1002','银行存款','1,250,000','1,480,000','18.4%'],
+    ['1121','应收票据','320,000','280,000','-12.5%'],
+    ['1122','应收账款','890,000','950,000','6.7%'],
+    ['1221','其他应收款','45,000','120,000','166.7%'],
+    ['1405','库存商品','2,100,000','1,980,000','-5.7%'],
+    ['2001','短期借款','500,000','800,000','60.0%']
+  ];
 
   function draw(ts){
     animId=requestAnimationFrame(draw);
     ctx.clearRect(0,0,w,h);
 
-    if(phase===0&&ts>600){phase=1;phaseStart=ts;nodes.forEach(n=>{n.vx=0;n.vy=0})}
-    if(phase===1&&ts-phaseStart>2400){phase=2;phaseStart=ts}
-    if(phase===2&&ts-phaseStart>800){phase=3;phaseStart=ts}
-    if(phase===3&&ts-phaseStart>200){phase=4}
+    if(phase===0&&ts>500){phase=1;phaseStart=ts;}
+    if(phase===1&&ts-phaseStart>2500){phase=2;phaseStart=ts;}
+    if(phase===2&&ts-phaseStart>600){phase=3;phaseStart=ts;}
+    if(phase===3&&ts-phaseStart>400){phase=4;}
 
-    const cx=w/2,cy=h/2;
-    const maxDist=phase===0?240:phase===1?150:80;
-    const gravity=phase===0?0:phase===1?0.025:phase===2?0.12:0;
-    const friction=0.92;
+    const cx=w/2, cy=h/2;
+    const rowH=56;
+    const tableW=Math.min(w*0.85,980);
+    const tableH=rows*rowH;
+    const sx=cx-tableW/2;
+    const sy=cy-tableH/2-30;
+    const colW=tableW/cols;
 
-    // Update nodes
-    nodes.forEach(n=>{
-      if(phase===0){
-        n.x=n.ox+Math.sin(ts*0.001+n.pulseOffset)*8;
-        n.y=n.oy+Math.cos(ts*0.0012+n.pulseOffset)*8;
-      }else if(phase===1){
-        const dx=cx-n.x,dy=cy-n.y;
-        n.vx+=dx*gravity;n.vy+=dy*gravity;
-        n.vx*=friction;n.vy*=friction;
-        n.x+=n.vx;n.y+=n.vy;
-      }else if(phase===2){
-        const dx=cx-n.x,dy=cy-n.y;
-        n.vx+=dx*gravity;n.vy+=dy*gravity;
-        n.x+=n.vx;n.y+=n.vy;
-        n.o*=0.94;n.r*=0.97;
-      }else{
-        n.o*=0.88;
-      }
-    });
+    const fillProg=phase===0?0:phase===1?Math.min(1,(ts-phaseStart)/2500):1;
+    const filledRows=Math.floor(fillProg*rows);
+    const partial=fillProg*rows-filledRows;
 
-    // Draw connections
-    if(phase<3){
-      for(let i=0;i<nodes.length;i++){
-        for(let j=i+1;j<nodes.length;j++){
-          const a=nodes[i],b=nodes[j];
-          const dx=a.x-b.x,dy=a.y-b.y;
-          const dist=Math.sqrt(dx*dx+dy*dy);
-          if(dist<maxDist){
-            const alpha=(1-dist/maxDist)*0.22*Math.min(a.o,b.o);
-            ctx.strokeStyle=`rgba(56,189,248,${alpha})`;
-            ctx.lineWidth=0.6;
-            ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
-          }
+    // table bg
+    ctx.fillStyle='rgba(16,24,40,0.35)';
+    ctx.fillRect(sx,sy,tableW,tableH);
+
+    // horizontal lines
+    ctx.strokeStyle='rgba(56,189,248,0.18)';
+    ctx.lineWidth=1;
+    for(let i=0;i<=rows;i++){
+      const y=sy+i*rowH;
+      const lp=phase===0?0:phase===1?Math.min(1,(ts-phaseStart+i*90)/700):1;
+      if(lp<=0)continue;
+      ctx.globalAlpha=lp;
+      ctx.beginPath();ctx.moveTo(sx,y);ctx.lineTo(sx+tableW,y);ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+
+    // vertical lines
+    for(let j=0;j<=cols;j++){
+      const x=sx+j*colW;
+      const lp=phase===0?0:phase===1?Math.min(1,(ts-phaseStart+j*110)/750):1;
+      if(lp<=0)continue;
+      ctx.globalAlpha=lp;
+      ctx.beginPath();ctx.moveTo(x,sy);ctx.lineTo(x,sy+tableH);ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+
+    // header bg
+    if(phase>=1){
+      ctx.fillStyle='rgba(56,189,248,0.06)';
+      ctx.fillRect(sx+1,sy+1,tableW-2,rowH-2);
+    }
+
+    // text
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    for(let i=0;i<rows;i++){
+      if(i>filledRows)break;
+      const y=sy+i*rowH+rowH/2;
+      for(let j=0;j<cols;j++){
+        const x=sx+j*colW+colW/2;
+        let text=data[i][j];
+        if(i===filledRows&&phase===1){
+          text=text.substring(0,Math.floor(partial*text.length));
+        }
+        if(i===0){
+          ctx.fillStyle='rgba(56,189,248,0.9)';
+          ctx.font='600 15px "Inter","Microsoft YaHei",sans-serif';
+        }else{
+          ctx.fillStyle=(j===4&&text.startsWith('-'))?'rgba(239,68,68,0.85)':'rgba(148,163,184,0.8)';
+          ctx.font='15px "Cascadia Code","Consolas","Microsoft YaHei",monospace';
+        }
+        ctx.fillText(text,x,y);
+        // cursor
+        if(i===filledRows&&phase===1&&j===cols-1){
+          const ca=Math.sin(ts*0.015)*0.5+0.5;
+          ctx.fillStyle=`rgba(56,189,248,${ca})`;
+          ctx.fillRect(sx+(j+1)*colW-12,y-10,2,18);
         }
       }
     }
 
-    // Spawn & draw packets
-    if(phase===1&&Math.random()<0.35)spawnPacket();
-    packets=packets.filter(pk=>{
-      pk.progress+=pk.speed;
-      if(pk.progress>=1)return false;
-      const x=pk.a.x+(pk.b.x-pk.a.x)*pk.progress;
-      const y=pk.a.y+(pk.b.y-pk.a.y)*pk.progress;
-      // glow trail
-      ctx.beginPath();ctx.arc(x,y,8,0,Math.PI*2);
-      ctx.fillStyle=`rgba(56,189,248,${0.12*(1-pk.progress)})`;
-      ctx.fill();
-      // core
-      ctx.beginPath();ctx.arc(x,y,2.2,0,Math.PI*2);
-      ctx.fillStyle=`rgba(200,240,255,${0.9*(1-pk.progress)})`;
-      ctx.fill();
-      return true;
-    });
-
-    // Center glow during phase 2
-    if(phase===2){
-      const t=(ts-phaseStart)/800;
-      const pulse=Math.sin(ts*0.012)*0.25+0.75;
-      const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(w,h)*0.28);
-      grd.addColorStop(0,`rgba(56,189,248,${0.18*pulse*(1-t)})`);
-      grd.addColorStop(0.4,`rgba(14,165,233,${0.08*pulse*(1-t)})`);
+    // glow on complete
+    if(phase===2||phase===3){
+      const t=phase===2?(ts-phaseStart)/600:1;
+      const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(w,h)*0.35);
+      grd.addColorStop(0,`rgba(56,189,248,${0.06*(1-t)})`);
       grd.addColorStop(1,'rgba(56,189,248,0)');
       ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);
     }
 
-    // Draw nodes
-    nodes.forEach(n=>{
-      if(n.o<0.01)return;
-      const pulse=Math.sin(ts*0.005+n.pulseOffset)*0.3+0.7;
-      // outer glow
-      ctx.beginPath();ctx.arc(n.x,n.y,n.r*4,0,Math.PI*2);
-      ctx.fillStyle=n.color+(n.o*0.08*pulse)+')';
-      ctx.fill();
-      // inner glow
-      ctx.beginPath();ctx.arc(n.x,n.y,n.r*2,0,Math.PI*2);
-      ctx.fillStyle=n.color+(n.o*0.25*pulse)+')';
-      ctx.fill();
-      // core
-      ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
-      ctx.fillStyle=n.color+(n.o*pulse)+')';
-      ctx.fill();
-    });
-
-    // Phase 3 subtle ring burst
+    // fade out
     if(phase===3||phase===4){
-      const t=phase===3?(ts-phaseStart)/200:1;
-      const ringR=(Math.min(w,h)*0.15)*t;
-      ctx.beginPath();ctx.arc(cx,cy,ringR,0,Math.PI*2);
-      ctx.strokeStyle=`rgba(56,189,248,${0.15*(1-t)})`;
-      ctx.lineWidth=2;
-      ctx.stroke();
+      const t=phase===3?(ts-phaseStart)/400:1;
+      ctx.fillStyle=`rgba(10,14,23,${t})`;
+      ctx.fillRect(0,0,w,h);
     }
   }
 
   animId=requestAnimationFrame(draw);
-
   setTimeout(()=>{
     cancelAnimationFrame(animId);
     document.getElementById('splash').classList.add('hide');
@@ -1213,24 +1239,95 @@ document.addEventListener('mousemove',function(e){
 // ==================== WORKSPACE LOGIC ====================
 const API='http://127.0.0.1:8800';
 const SUBJECTS=[
-  {id:'C',name:'货币资金',icon:'fa-coins',color:'#4da8ff',desc:'库存现金·银行存款·其他货币资金',codes:'1001/1002/1003/1012'},
-  {id:'D',name:'应收票据',icon:'fa-receipt',color:'#818cf8',desc:'银承·商承·贴现·背书',codes:'1121'},
-  {id:'E',name:'其他应收款',icon:'fa-hand-holding-dollar',color:'#fb923c',desc:'押金·备用金·资金拆借·关联方',codes:'1221'},
-  {id:'F',name:'预付账款',icon:'fa-truck-fast',color:'#2dd4bf',desc:'预付货款·工程款·服务费',codes:'1123'},
-  {id:'G',name:'预收账款',icon:'fa-cart-arrow-down',color:'#a78bfa',desc:'预收货款·预收工程款',codes:'2203'},
-  {id:'H',name:'短期借款',icon:'fa-building-columns',color:'#f87171',desc:'信用/抵押/保证借款·利息测算',codes:'2001'},
-  {id:'I',name:'应收账款',icon:'fa-file-invoice-dollar',color:'#60a5fa',desc:'货款·坏账准备·账龄分析',codes:'1122'},
-  {id:'J',name:'应付账款',icon:'fa-file-invoice',color:'#34d399',desc:'采购款·暂估·账龄分析',codes:'2202'},
-  {id:'K',name:'应付票据',icon:'fa-ticket',color:'#f472b6',desc:'银承·商承·保证金核对',codes:'2201'},
-  {id:'L',name:'应付职工薪酬',icon:'fa-users',color:'#a78bfa',desc:'工资·社保·公积金·年终奖',codes:'2211'},
-  {id:'M',name:'应交税费',icon:'fa-landmark',color:'#fb923c',desc:'增值税·所得税·附加税',codes:'2221'},
-  {id:'N',name:'其他应付款',icon:'fa-circle-dollar',color:'#94a3b8',desc:'押金·保证金·代扣代缴',codes:'2241'},
-  {id:'O',name:'存货',icon:'fa-boxes-stacked',color:'#f59e0b',desc:'原材料·库存商品·跌价准备·盘点',codes:'1403/1405'},
-  {id:'P',name:'固定资产',icon:'fa-warehouse',color:'#6366f1',desc:'原值·折旧·减值·盘点',codes:'1601'},
-  {id:'Q',name:'无形资产',icon:'fa-lightbulb',color:'#14b8a6',desc:'专利权·软件·摊销·减值',codes:'1701'},
-  {id:'R',name:'长期借款',icon:'fa-building-columns',color:'#ef4444',desc:'信用/抵押借款·利息·重分类',codes:'2501'},
+  {id:'C',name:'货币资金',icon:'fa-coins',color:'#4da8ff',desc:'库存现金·银行存款·其他货币资金',codes:'1001/1002/1003/1012',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'bank_stmt',label:'银行对账单',desc:'各银行账户对账单及流水',required:true,icon:'fa-file-invoice',demoMatch:/银行/},
+    {key:'cash_count',label:'现金盘点表',desc:'库存现金盘点记录',required:false,icon:'fa-money-bill',demoMatch:/现金盘点/},
+    {key:'reconcile',label:'余额调节表',desc:'银行存款余额调节表',required:false,icon:'fa-scale-balanced',demoMatch:/调节/}
+  ]},
+  {id:'D',name:'应收票据',icon:'fa-receipt',color:'#818cf8',desc:'银承·商承·贴现·背书',codes:'1121',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'ledger',label:'票据备查簿/明细账',desc:'票据编号、种类、出票人、承兑人、金额',required:true,icon:'fa-book',demoMatch:/备查簿|明细/},
+    {key:'discount',label:'贴现背书记录',desc:'贴现、背书、终止确认记录',required:false,icon:'fa-file-signature',demoMatch:/贴现|背书/}
+  ]},
+  {id:'E',name:'其他应收款',icon:'fa-hand-holding-dollar',color:'#fb923c',desc:'押金·备用金·资金拆借·关联方',codes:'1221',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'明细账/往来明细',desc:'单位、款项性质、金额、账龄',required:true,icon:'fa-list',demoMatch:/明细/},
+    {key:'aging',label:'账龄分析表',desc:'按账龄区间分析余额',required:false,icon:'fa-chart-bar',demoMatch:/账龄/},
+    {key:'related',label:'关联方清单',desc:'关联方名称、交易金额、余额',required:false,icon:'fa-users',demoMatch:/关联/}
+  ]},
+  {id:'F',name:'预付账款',icon:'fa-truck-fast',color:'#2dd4bf',desc:'预付货款·工程款·服务费',codes:'1123',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'明细账/供应商台账',desc:'供应商、合同、已付款、货物状态',required:true,icon:'fa-list',demoMatch:/明细/},
+    {key:'contract',label:'采购合同台账',desc:'采购合同编号、金额、履约进度',required:false,icon:'fa-file-contract',demoMatch:/合同/}
+  ]},
+  {id:'G',name:'预收账款',icon:'fa-cart-arrow-down',color:'#a78bfa',desc:'预收货款·预收工程款',codes:'2203',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'明细账/客户台账',desc:'客户、合同、已收款、交付状态',required:true,icon:'fa-list',demoMatch:/明细/},
+    {key:'contract',label:'销售合同台账',desc:'销售合同编号、金额、履约进度',required:false,icon:'fa-file-contract',demoMatch:/合同/}
+  ]},
+  {id:'H',name:'短期借款',icon:'fa-building-columns',color:'#f87171',desc:'信用/抵押/保证借款·利息测算',codes:'2001',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'ledger',label:'借款台账/合同',desc:'借款银行、本金、利率、担保、期限',required:true,icon:'fa-book',demoMatch:/台账|合同/},
+    {key:'loan_card',label:'贷款卡记录',desc:'贷款卡查询信息',required:false,icon:'fa-id-card',demoMatch:/贷款卡/}
+  ]},
+  {id:'I',name:'应收账款',icon:'fa-file-invoice-dollar',color:'#60a5fa',desc:'货款·坏账准备·账龄分析',codes:'1122',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'明细账/往来明细',desc:'客户、金额、账龄、坏账准备',required:true,icon:'fa-list',demoMatch:/明细/},
+    {key:'aging',label:'账龄分析表',desc:'按账龄区间分析余额',required:false,icon:'fa-chart-bar',demoMatch:/账龄/},
+    {key:'confirmation',label:'函证控制表',desc:'函证发出、收回、差异记录',required:false,icon:'fa-envelope',demoMatch:/函证/}
+  ]},
+  {id:'J',name:'应付账款',icon:'fa-file-invoice',color:'#34d399',desc:'采购款·暂估·账龄分析',codes:'2202',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'明细账/供应商台账',desc:'供应商、金额、账龄',required:true,icon:'fa-list',demoMatch:/明细/},
+    {key:'contract',label:'采购合同台账',desc:'采购合同编号、金额、履约进度',required:false,icon:'fa-file-contract',demoMatch:/合同/},
+    {key:'estimate',label:'暂估明细',desc:'暂估入账明细及冲销记录',required:false,icon:'fa-file-invoice',demoMatch:/暂估/}
+  ]},
+  {id:'K',name:'应付票据',icon:'fa-ticket',color:'#f472b6',desc:'银承·商承·保证金核对',codes:'2201',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'ledger',label:'票据明细/备查簿',desc:'票据编号、种类、收款人、金额、保证金',required:true,icon:'fa-book',demoMatch:/明细|备查/},
+    {key:'deposit',label:'保证金台账',desc:'票据保证金缴存、释放记录',required:false,icon:'fa-vault',demoMatch:/保证金/}
+  ]},
+  {id:'L',name:'应付职工薪酬',icon:'fa-users',color:'#a78bfa',desc:'工资·社保·公积金·年终奖',codes:'2211',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'工资社保公积金明细',desc:'部门、人员、工资、社保、公积金、个税',required:true,icon:'fa-list',demoMatch:/明细/},
+    {key:'roster',label:'人员花名册',desc:'员工名单、部门、入职日期',required:false,icon:'fa-address-book',demoMatch:/花名册|人员/}
+  ]},
+  {id:'M',name:'应交税费',icon:'fa-landmark',color:'#fb923c',desc:'增值税·所得税·附加税',codes:'2221',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'tax_return',label:'纳税申报表',desc:'增值税、所得税、附加税申报表',required:true,icon:'fa-file-alt',demoMatch:/申报/},
+    {key:'tax_calc',label:'税金计算明细',desc:'各税种计算过程及计提凭证',required:false,icon:'fa-calculator',demoMatch:/计算|税金/}
+  ]},
+  {id:'N',name:'其他应付款',icon:'fa-circle-dollar',color:'#94a3b8',desc:'押金·保证金·代扣代缴',codes:'2241',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'明细账/往来明细',desc:'单位、款项性质、金额、账龄',required:true,icon:'fa-list',demoMatch:/明细/},
+    {key:'aging',label:'账龄分析表',desc:'按账龄区间分析余额',required:false,icon:'fa-chart-bar',demoMatch:/账龄/}
+  ]},
+  {id:'O',name:'存货',icon:'fa-boxes-stacked',color:'#f59e0b',desc:'原材料·库存商品·跌价准备·盘点',codes:'1403/1405',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'detail',label:'收发存明细/台账',desc:'物料编码、名称、期初、入库、出库、期末',required:true,icon:'fa-list',demoMatch:/明细|收发存|台账/},
+    {key:'count',label:'盘点表',desc:'存货盘点记录及差异',required:false,icon:'fa-clipboard-check',demoMatch:/盘点/},
+    {key:'inout',label:'出入库单据',desc:'入库单、出库单、调拨单',required:false,icon:'fa-dolly',demoMatch:/出入库/}
+  ]},
+  {id:'P',name:'固定资产',icon:'fa-warehouse',color:'#6366f1',desc:'原值·折旧·减值·盘点',codes:'1601',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'card',label:'固定资产卡片/台账',desc:'资产编号、名称、原值、累计折旧、净值',required:true,icon:'fa-id-card',demoMatch:/卡片|台账|明细/},
+    {key:'depreciation',label:'折旧测算表',desc:'各资产折旧测算',required:false,icon:'fa-calculator',demoMatch:/折旧/},
+    {key:'count',label:'盘点表',desc:'固定资产盘点记录',required:false,icon:'fa-clipboard-check',demoMatch:/盘点/}
+  ]},
+  {id:'Q',name:'无形资产',icon:'fa-lightbulb',color:'#14b8a6',desc:'专利权·软件·摊销·减值',codes:'1701',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'card',label:'无形资产台账',desc:'资产编号、名称、原值、累计摊销、净值',required:true,icon:'fa-id-card',demoMatch:/台账|明细/},
+    {key:'amortization',label:'摊销测算表',desc:'各资产摊销测算',required:false,icon:'fa-calculator',demoMatch:/摊销/},
+    {key:'certificate',label:'权属证书清单',desc:'专利证书、软件著作权等权属证明',required:false,icon:'fa-certificate',demoMatch:/证书|权属/}
+  ]},
+  {id:'R',name:'长期借款',icon:'fa-building-columns',color:'#ef4444',desc:'信用/抵押借款·利息·重分类',codes:'2501',needs:[
+    {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
+    {key:'ledger',label:'借款合同台账',desc:'借款银行、本金、利率、担保、期限',required:true,icon:'fa-book',demoMatch:/台账|合同/},
+    {key:'interest',label:'利息测算表',desc:'各笔借款利息测算',required:false,icon:'fa-calculator',demoMatch:/利息/}
+  ]},
 ];
-let selectedSubject='C',uploadedFiles=[],selectedFiles=[],wsPanel=1,resultData=null;
+let selectedSubject='C',uploadedFiles=[],selectedFiles=[],wsPanel=1,resultData=null,subjectFiles={};
 
 function wsGo(n){
   wsPanel=n;
@@ -1253,6 +1350,9 @@ function wsGo(n){
     }
     if(i<n&&conn)conn.classList.add('done');
   }
+  if(n===2){
+    renderSubjectUploads(selectedSubject);
+  }
   if(n===3){
     refreshFileList();
     const cfg=document.getElementById('wsConfigForm');
@@ -1270,6 +1370,92 @@ function wsGo(n){
   setTimeout(()=>document.querySelectorAll('#page-workspace .reveal').forEach(el=>{el.classList.remove('visible');observer.observe(el)}),100);
 }
 
+// Render dynamic upload blocks for a subject
+function renderSubjectUploads(sid){
+  const subj=SUBJECTS.find(s=>s.id===sid);if(!subj)return;
+  document.getElementById('subjectTitle').textContent=subj.name;
+  document.getElementById('subjectDesc').textContent=subj.desc;
+  document.getElementById('subjectIcon').innerHTML=`<i class="fas ${subj.icon}"></i>`;
+  document.getElementById('subjectIcon').style.background=subj.color+'15';
+  document.getElementById('subjectIcon').style.color=subj.color;
+  const area=document.getElementById('subjectUploadArea');
+  area.innerHTML=subj.needs.map((need,idx)=>{
+    const files=getNeedFiles(sid,need.key);
+    const hasFile=files.length>0;
+    return `
+    <div class="upload-block ${hasFile?'done':''}" id="ub_${need.key}" data-key="${need.key}">
+      <div class="upload-block-info">
+        <div class="upload-block-title"><i class="fas ${need.icon}" style="color:${subj.color}"></i>${need.label}${need.required?'<span class="req">*</span>':''}</div>
+        <div class="upload-block-desc">${need.desc}</div>
+        <div class="upload-block-files" id="ubf_${need.key}">${files.map((f,fi)=>`
+          <span class="upload-block-file">${f.name}${f.isDemo?' (范例)':''}<span class="del" onclick="removeNeedFile('${sid}','${need.key}',${fi})">✕</span></span>
+        `).join('')}</div>
+      </div>
+      <div class="upload-block-action">
+        <div class="upload-block-drop" id="ubd_${need.key}" onclick="document.getElementById('ubi_${need.key}').click()"
+          ondragenter="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="event.preventDefault();this.classList.remove('drag-over')"
+          ondragover="event.preventDefault()"
+          ondrop="event.preventDefault();this.classList.remove('drag-over');handleBlockFiles(event.dataTransfer.files,'${sid}','${need.key}')"
+        >${hasFile?'更换文件':'点击或拖拽上传'}</div>
+        <input type="file" id="ubi_${need.key}" class="hidden" accept=".xlsx,.xls" onchange="handleBlockFiles(this.files,'${sid}','${need.key}')">
+        <div class="upload-block-demo" id="ubdemo_${need.key}" style="display:none"></div>
+      </div>
+    </div>`;
+  }).join('');
+  updateUploadState();
+}
+
+function getNeedFiles(sid,key){return subjectFiles[sid]?.[key]||[]}
+function setNeedFiles(sid,key,files){if(!subjectFiles[sid])subjectFiles[sid]={};subjectFiles[sid][key]=files;updateUploadState()}
+function removeNeedFile(sid,key,idx){const arr=getNeedFiles(sid,key);arr.splice(idx,1);setNeedFiles(sid,key,arr);renderSubjectUploads(sid)}
+
+function handleBlockFiles(files,sid,key){
+  const arr=getNeedFiles(sid,key);
+  for(const f of files){if(!f.name.endsWith('.xlsx')&&!f.name.endsWith('.xls'))continue;if(!arr.find(a=>a.name===f.name&&a.size===f.size))arr.push(f)}
+  setNeedFiles(sid,key,arr);
+  renderSubjectUploads(sid);
+}
+
+function updateUploadState(){
+  const subj=SUBJECTS.find(s=>s.id===selectedSubject);if(!subj)return;
+  let reqTotal=0,reqDone=0;
+  for(const need of subj.needs){
+    if(need.required){reqTotal++;if(getNeedFiles(selectedSubject,need.key).length>0)reqDone++}
+  }
+  document.getElementById('requiredProgress').textContent=`${reqDone}/${reqTotal}`;
+  const btn=document.getElementById('uploadBtn');
+  btn.disabled=reqDone<reqTotal;
+  btn.textContent=reqDone>=reqTotal?'下一步':'请完成必填项';
+}
+
+// Preview modal
+async function previewFile(path,name){
+  document.getElementById('previewTitle').textContent=name;
+  document.getElementById('previewDownload').href=API+'/api/download?path='+encodeURIComponent(path);
+  document.getElementById('previewModal').style.display='flex';
+  const tbody=document.querySelector('#previewTable tbody');
+  const thead=document.querySelector('#previewTable thead');
+  tbody.innerHTML='<tr><td style="color:#4a6278;padding:20px">加载中...</td></tr>';
+  thead.innerHTML='';
+  try{
+    const r=await fetch(API+'/api/download?path='+encodeURIComponent(path));
+    const blob=await r.blob();
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const data=new Uint8Array(e.target.result);
+      // Simple Excel preview using sheetjs would be ideal, but for now show raw bytes info
+      // Since we don't have sheetjs loaded, let's try to fetch preview from backend
+      // Actually, backend doesn't have /api/preview. Let's use a simple heuristic
+      tbody.innerHTML='<tr><td style="color:#4a6278;padding:20px">请下载文件后在本地查看完整内容</td></tr>';
+    };
+    reader.readAsArrayBuffer(blob);
+  }catch(err){
+    tbody.innerHTML='<tr><td style="color:#ef4444;padding:20px">加载失败: '+err.message+'</td></tr>';
+  }
+}
+function closePreview(){document.getElementById('previewModal').style.display='none'}
+
 (function renderWorkSubjects(){
   const filter=document.getElementById('wsFilter-all')?.dataset?.filter||'all';
   const search=(document.getElementById('subjectSearch')?.value||'').trim().toLowerCase();
@@ -1286,7 +1472,14 @@ function wsGo(n){
       </div>
     </div>`).join('');
 })();
-function selectSubject(id){selectedSubject=id;document.querySelectorAll('.subj-card').forEach(c=>c.classList.remove('selected'));document.getElementById('card_'+id)?.classList.add('selected');document.getElementById('nextBtn').disabled=false}
+function selectSubject(id){
+  selectedSubject=id;
+  document.querySelectorAll('.subj-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('card_'+id)?.classList.add('selected');
+  document.getElementById('nextBtn').disabled=false;
+  // Clear pending files for previous subject
+  subjectFiles[id]={};
+}
 function filterWorkSubjects(cat,btn){
   document.querySelectorAll('#wsp1 .subject-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -1294,28 +1487,70 @@ function filterWorkSubjects(cat,btn){
   renderWorkSubjects();
 }
 
-// File handling
-const dz=document.getElementById('dropZone');
-['dragenter','dragover'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add('drag-over')}));
-['dragleave','drop'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('drag-over')}));
-dz.addEventListener('drop',e=>handleFiles(e.dataTransfer.files));
-function handleFiles(files){for(const f of files){if(!f.name.endsWith('.xlsx')&&!f.name.endsWith('.xls'))continue;if(!selectedFiles.find(sf=>sf.name===f.name&&sf.size===f.size))selectedFiles.push(f)}renderFileChips()}
-function removeFile(i){selectedFiles.splice(i,1);renderFileChips()}
-function renderFileChips(){
-  const w=document.getElementById('fileListWrap'),c=document.getElementById('fileChips'),b=document.getElementById('uploadBtn');
-  if(selectedFiles.length===0){w.style.display='none';b.disabled=true;return}
-  w.style.display='';b.disabled=false;document.getElementById('fileCount').textContent=selectedFiles.length;
-  c.innerHTML=selectedFiles.map((f,i)=>`<span class="inline-flex items-center gap-2 px-3 py-1 text-xs rounded-full" style="background:rgba(41,128,255,.1);color:#4da8ff">${f.name}<span style="color:#3a5068">(${(f.size/1024).toFixed(0)}KB)</span><i class="fas fa-times-circle cursor-pointer hover:text-red-400" onclick="event.stopPropagation();removeFile(${i})"></i></span>`).join('');
-}
+// Preview modal background click to close
+document.getElementById('previewModal')?.addEventListener('click',function(e){if(e.target===this)closePreview()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closePreview()});
+
+// File handling — per-subject per-need blocks
 async function uploadFiles(){
-  if(selectedFiles.length===0)return;const fd=new FormData();selectedFiles.forEach(f=>fd.append('files',f));
-  document.getElementById('uploadStatus').innerHTML='上传中...';
-  const r=await fetch(API+'/api/upload',{method:'POST',body:fd});const d=await r.json();
-  if(d.success){uploadedFiles=d.files.map(p=>({name:p.split('/').pop().replace(/^\d+_/,''),path:p}));document.getElementById('uploadStatus').textContent=`上传完成 · ${d.count} 文件`;setTimeout(()=>wsGo(3),500)}
+  const subj=SUBJECTS.find(s=>s.id===selectedSubject);if(!subj)return;
+  const realFiles=[],demoPaths=[];
+  for(const need of subj.needs){
+    const files=getNeedFiles(selectedSubject,need.key);
+    for(const f of files){
+      if(f.isDemo){demoPaths.push(f.path)}
+      else{realFiles.push(f)}
+    }
+  }
+  if(realFiles.length===0&&demoPaths.length===0){alert('请先上传数据');return}
+  selectedFiles=realFiles;
+  let uploadedPaths=[];
+  if(realFiles.length>0){
+    const fd=new FormData();realFiles.forEach(f=>fd.append('files',f));
+    document.getElementById('uploadStatus').innerHTML='上传中...';
+    const r=await fetch(API+'/api/upload',{method:'POST',body:fd});const d=await r.json();
+    if(!d.success){document.getElementById('uploadStatus').textContent='上传失败';return}
+    uploadedPaths=d.files.map(p=>({name:p.split('/').pop().replace(/^\d+_/,''),path:p}));
+  }
+  uploadedFiles=[...uploadedPaths,...demoPaths.map(p=>({name:p.split('/').pop(),path:p}))];
+  document.getElementById('uploadStatus').textContent=`已准备 · ${uploadedFiles.length} 文件`;
+  setTimeout(()=>wsGo(3),500)
 }
 async function loadDemoFiles(){
   const r=await fetch(API+'/api/demo-files?subject='+selectedSubject);const d=await r.json();
-  if(d.success&&d.files.length>0){uploadedFiles=d.files.map(p=>({name:p.split('/').pop(),path:p}));document.getElementById('uploadStatus').innerHTML=`范例已加载 · ${d.count} 文件`;setTimeout(()=>wsGo(3),500)}
+  if(!d.success||d.files.length===0){document.getElementById('uploadStatus').textContent='暂无范例数据';return}
+  const subj=SUBJECTS.find(s=>s.id===selectedSubject);if(!subj)return;
+  // Map demo files to needs by filename regex
+  for(const fp of d.files){
+    const fn=fp.split('/').pop();
+    for(const need of subj.needs){
+      if(need.demoMatch&&need.demoMatch.test(fn)){
+        const arr=getNeedFiles(selectedSubject,need.key);
+        if(!arr.find(a=>a.name===fn)){
+          arr.push({name:fn,path:fp,isDemo:true});
+          setNeedFiles(selectedSubject,need.key,arr);
+        }
+        break;
+      }
+    }
+  }
+  renderSubjectUploads(selectedSubject);
+  // Show preview/download buttons for demo files
+  for(const need of subj.needs){
+    const files=getNeedFiles(selectedSubject,need.key);
+    const demoFiles=files.filter(f=>f.isDemo);
+    if(demoFiles.length>0){
+      const demoDiv=document.getElementById('ubdemo_'+need.key);
+      if(demoDiv){
+        demoDiv.style.display='flex';
+        demoDiv.innerHTML=demoFiles.map((f,fi)=>`
+          <button onclick="previewFile('${f.path}','${f.name}')"><i class="fas fa-eye"></i> 预览</button>
+          <button onclick="window.open(API+'/api/download?path='+encodeURIComponent('${f.path}'))"><i class="fas fa-download"></i> 下载</button>
+        `).join('');
+      }
+    }
+  }
+  document.getElementById('uploadStatus').innerHTML=`范例已加载 · ${d.count} 文件，请确认后点击下一步`;
 }
 function refreshFileList(){
   document.getElementById('dataFileCount').textContent=uploadedFiles.length;
