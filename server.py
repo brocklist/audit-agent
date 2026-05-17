@@ -850,22 +850,22 @@ async def demo_result(subject: str = "C"):
 async def demo_files(subject: str = "C"):
     SAMPLE_DIR = BASE_DIR / "samples"
     fm = {
-        "C":["C_科目余额表.xlsx","C_明细账.xlsx","C_银行对账单.xlsx","C_现金盘点表.xlsx"],
-        "D":["D_科目余额表.xlsx","D_应收票据备查簿.xlsx"],
-        "E":["E_科目余额表.xlsx","E_其他应收款明细表.xlsx"],
-        "F":["F_科目余额表.xlsx","F_预付账款明细表.xlsx"],
-        "G":["G_科目余额表.xlsx","G_预收账款明细表.xlsx"],
-        "H":["H_科目余额表.xlsx","H_短期借款台账.xlsx"],
-        "I":["I_科目余额表.xlsx","I_应收账款明细表.xlsx"],
-        "J":["J_科目余额表.xlsx","J_应付账款明细表.xlsx"],
-        "K":["K_科目余额表.xlsx","K_应付票据明细表.xlsx"],
-        "L":["L_科目余额表.xlsx","L_应付职工薪酬明细表.xlsx"],
-        "M":["M_科目余额表.xlsx","M_应交税费明细表.xlsx"],
-        "N":["N_科目余额表.xlsx","N_其他应付款明细表.xlsx"],
-        "O":["O_科目余额表.xlsx","O_存货明细表.xlsx"],
-        "P":["P_科目余额表.xlsx","P_固定资产明细表.xlsx"],
-        "Q":["Q_科目余额表.xlsx","Q_无形资产明细表.xlsx"],
-        "R":["R_科目余额表.xlsx","R_长期借款明细表.xlsx"],
+        "C":["C_科目余额表.xlsx","C_银行对账单.xlsx","C_现金盘点表.xlsx","C_余额调节表.xlsx"],
+        "D":["D_科目余额表.xlsx","D_应收票据备查簿.xlsx","D_贴现背书记录.xlsx"],
+        "E":["E_科目余额表.xlsx","E_其他应收款明细表.xlsx","E_账龄分析表.xlsx","E_关联方清单.xlsx"],
+        "F":["F_科目余额表.xlsx","F_预付账款明细表.xlsx","F_采购合同台账.xlsx"],
+        "G":["G_科目余额表.xlsx","G_预收账款明细表.xlsx","G_销售合同台账.xlsx"],
+        "H":["H_科目余额表.xlsx","H_短期借款台账.xlsx","H_贷款卡记录.xlsx"],
+        "I":["I_科目余额表.xlsx","I_应收账款明细表.xlsx","I_账龄分析表.xlsx","I_函证控制表.xlsx"],
+        "J":["J_科目余额表.xlsx","J_应付账款明细表.xlsx","J_采购合同台账.xlsx","J_暂估明细.xlsx"],
+        "K":["K_科目余额表.xlsx","K_应付票据明细表.xlsx","K_保证金台账.xlsx"],
+        "L":["L_科目余额表.xlsx","L_应付职工薪酬明细表.xlsx","L_人员花名册.xlsx"],
+        "M":["M_科目余额表.xlsx","M_纳税申报表.xlsx","M_税金计算明细.xlsx"],
+        "N":["N_科目余额表.xlsx","N_其他应付款明细表.xlsx","N_账龄分析表.xlsx"],
+        "O":["O_科目余额表.xlsx","O_存货明细表.xlsx","O_盘点表.xlsx","O_出入库单据.xlsx"],
+        "P":["P_科目余额表.xlsx","P_固定资产明细表.xlsx","P_折旧测算表.xlsx","P_固定资产盘点表.xlsx"],
+        "Q":["Q_科目余额表.xlsx","Q_无形资产明细表.xlsx","Q_摊销测算表.xlsx","Q_权属证书清单.xlsx"],
+        "R":["R_科目余额表.xlsx","R_长期借款明细表.xlsx","R_利息测算表.xlsx"],
     }
     files = fm.get(subject, [])
     paths = [str(SAMPLE_DIR/f) for f in files if (SAMPLE_DIR/f).exists()]
