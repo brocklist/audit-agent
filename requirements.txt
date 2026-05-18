@@ -1,0 +1,8 @@
+easyocr>=1.7
+Pillow>=10.0
+openpyxl>=3.1
+python-docx>=1.1
+fastapi>=0.115
+uvicorn>=0.30
+python-multipart>=0.0.12
+json-repair>=0.25

@@ -2,7 +2,7 @@
 审计智能体 - FastAPI 后端 v4
 LLM分析数据 → 服务端模板渲染Excel → 输出审计日志
 """
-import json, os, re, io, asyncio, time
+import json, os, re, io, asyncio, time, sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -114,7 +114,7 @@ class AuditLogger:
         self.output_log = str(path)
         return str(path)
 from openpyxl.utils import get_column_letter
-from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi import FastAPI, Form, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 import httpx
@@ -567,13 +567,32 @@ async def audit_with_progress(req: AuditRequest):
     yield emit(20, "prompt", "构建审计指令", "组装系统提示与用户数据...")
     await asyncio.sleep(0.1)
 
+    # 查询 OCR 凭证数据
+    ocr_text = ""
+    subject_id = None
+    for sid, info in SUBJECT_MAP.items():
+        if info['name'] == subj['name']:
+            subject_id = sid
+            break
+    if subject_id:
+        with sqlite3.connect(str(OCR_DB)) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute("SELECT * FROM vouchers WHERE subject_id=? ORDER BY created_at DESC", (subject_id,)).fetchall()
+            if rows:
+                ocr_records = []
+                for r in rows:
+                    d = dict(r)
+                    d['structured_data'] = json.loads(d['structured_data']) if d['structured_data'] else {}
+                    ocr_records.append({"type": d['voucher_type'], "fields": d['structured_data'], "raw": d['raw_text'][:500]})
+                ocr_text = f"\n## 原始凭证数据（OCR识别）\n{json.dumps(ocr_records, ensure_ascii=False, indent=2)}\n"
+
     user_prompt = f"""## 审计任务
 **被审计单位**: {req.entity_name or '未指定'}
 **审计科目**: {subj['name']}（科目代码: {','.join(subj['codes'])}）
 **会计期间**: {req.period}
 **审核员**: {req.auditor or 'AI审计智能体'}
 **事务所**: {req.firm_name or 'XX会计师事务所'}
-
+{ocr_text}
 ## 原始数据
 {data_text}
 
@@ -874,12 +893,61 @@ async def demo_files(subject: str = "C"):
 @app.get("/api/download")
 async def download(path: str):
     if not os.path.exists(path): raise HTTPException(404, "文件不存在")
-    return FileResponse(path, filename=os.path.basename(path),
-                        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    fname = os.path.basename(path)
+    ext = fname.rsplit('.', 1)[-1].lower() if '.' in fname else ''
+    mime_map = {
+        'xlsx': "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        'xls': "application/vnd.ms-excel",
+        'docx': "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        'png': "image/png", 'jpg': "image/jpeg", 'jpeg': "image/jpeg",
+        'pdf': "application/pdf", 'bmp': "image/bmp", 'webp': "image/webp",
+    }
+    return FileResponse(path, filename=fname, media_type=mime_map.get(ext, "application/octet-stream"))
+
+@app.get("/api/ocr/image/{vid}")
+async def ocr_image(vid: int):
+    """返回凭证原件图片"""
+    with sqlite3.connect(str(OCR_DB)) as conn:
+        row = conn.execute("SELECT image_path FROM vouchers WHERE id=?", (vid,)).fetchone()
+    if not row: raise HTTPException(404, "记录不存在")
+    fpath = row[0]
+    if not os.path.exists(fpath): raise HTTPException(404, "图片文件不存在")
+    fname = os.path.basename(fpath)
+    ext = fname.rsplit('.', 1)[-1].lower() if '.' in fname else 'png'
+    return FileResponse(fpath, filename=fname, media_type=f"image/{ext}")
 
 # ==================== 用户面板 API ====================
 TEMPLATE_DIR = BASE_DIR / "templates"
 TEMPLATE_DIR.mkdir(exist_ok=True)
+OCR_DIR = BASE_DIR / "ocr_data"
+OCR_DIR.mkdir(exist_ok=True)
+OCR_IMAGES = OCR_DIR / "images"
+OCR_IMAGES.mkdir(exist_ok=True)
+OCR_DB = OCR_DIR / "vouchers.db"
+
+def init_ocr_db():
+    with sqlite3.connect(str(OCR_DB)) as conn:
+        conn.execute("""CREATE TABLE IF NOT EXISTS vouchers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            voucher_type TEXT NOT NULL,
+            subject_id TEXT DEFAULT 'M',
+            image_path TEXT NOT NULL,
+            raw_text TEXT,
+            structured_data TEXT,
+            created_at TEXT DEFAULT (datetime('now','localtime')),
+            updated_at TEXT DEFAULT (datetime('now','localtime'))
+        )""")
+        conn.commit()
+init_ocr_db()
+
+# EasyOCR 懒加载
+_ocr_reader = None
+def get_ocr_reader():
+    global _ocr_reader
+    if _ocr_reader is None:
+        import easyocr
+        _ocr_reader = easyocr.Reader(['ch_sim'], gpu=False, verbose=False)
+    return _ocr_reader
 
 @app.post("/api/templates/upload")
 async def upload_template(subject: str = "C", file: UploadFile = None):
@@ -997,6 +1065,133 @@ async def dashboard_stats():
 @app.get("/api/health")
 async def health():
     return {"status":"ok","model":ANTHROPIC_MODEL,"subjects":list(SUBJECT_MAP.keys())}
+
+# ==================== OCR 凭证识别 ====================
+
+VOUCHER_PATTERNS = {
+    "完税凭证": [
+        ("税种", r"(增值税|企业所得税|城建税|印花税|教育费附加|地方教育附加|消费税|个人所得税|房产税|土地使用税)"),
+        ("缴款金额", r"¥?\s*([\d,]+\.?\d*)"),
+        ("缴款日期", r"(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日|\d{4}-\d{2}-\d{2}|\d{4}/\d{2}/\d{2})"),
+        ("凭证号", r"([A-Z]{2}\d{10,20})"),
+        ("税务机关", r"(国家税务\S*局[\S]{0,10})"),
+        ("税款所属期", r"(\d{4}\s*年\d{1,2}\s*月\d{1,2}\s*日至\s*\d{4}\s*年\d{1,2}\s*月\d{1,2}\s*日|\d{4}\s*年\s*[第Q\d]*季度)"),
+    ],
+    "纳税申报表": [
+        ("税种", r"(增值税|企业所得税|城建税|印花税|教育费附加|地方教育附加|消费税|个人所得税)"),
+        ("计税依据", r"(?:计税依据|收入|应纳税所得额|利润总额).*?([\d,]+\.?\d*)"),
+        ("税率", r"(\d{1,2}%)"),
+        ("应纳税额", r"(?:应纳税额|应纳所得税额).*?([\d,]+\.?\d*)"),
+        ("已纳税额", r"(?:已预缴|已纳).*?([\d,]+\.?\d*)"),
+        ("应补退税额", r"(?:应补|应退).*?([\d,]+\.?\d*)"),
+        ("申报期间", r"(\d{4}\s*年\d{1,2}\s*月\d{1,2}\s*日至\s*\d{4}\s*年\d{1,2}\s*月\d{1,2}\s*日|\d{4}\s*年\s*[第Q\d]*季度)"),
+    ],
+    "增值税发票": [
+        ("发票代码", r"(?:发票代码|代码)[：:\s]*(\d{10,12})"),
+        ("发票号码", r"(?:发票号码|号码)[：:\s]*(\d{8,10})"),
+        ("开票日期", r"(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日|\d{4}-\d{2}-\d{2})"),
+        ("购买方", r"(?:购买方|购\s*买\s*方)[名称：:\s]*(.{2,30}有限公司|.{2,20}公司)"),
+        ("销售方", r"(?:销售方|销\s*售\s*方)[名称：:\s]*(.{2,30}有限公司|.{2,20}公司)"),
+        ("金额", r"(?:金额|不含税金额)[：:\s]*([\d,]+\.?\d*)"),
+        ("税率", r"(\d{1,2}%)"),
+        ("税额", r"(?:税额|增值税额)[：:\s]*([\d,]+\.?\d*)"),
+        ("价税合计", r"(?:价税合计|大写).*?([\d,]+\.?\d*)"),
+    ],
+}
+
+def extract_fields(raw_text, voucher_type):
+    """用正则从 OCR 文本中提取结构化字段"""
+    patterns = VOUCHER_PATTERNS.get(voucher_type, [])
+    # 规范化文本：英文冒号替换为中文，合并空白
+    text = raw_text.replace(':', '：').replace('(', '（').replace(')', '）')
+    text = re.sub(r'\s+', ' ', text)
+    result = {}
+    for key, pattern in patterns:
+        matches = re.findall(pattern, text)
+        if matches:
+            val = str(matches[0]).strip().replace(',', '')
+            result[key] = val
+    # 特殊提取：从整段文本找金额和日期
+    if not result.get('缴款金额'):
+        m = re.search(r'(?:缴款金额|金额).*?¥?\s*([\d,]+\.?\d*)', text)
+        if m: result['缴款金额'] = m.group(1).strip().replace(',', '')
+    if not result.get('缴款日期'):
+        m = re.search(r'(\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)', text)
+        if m: result['缴款日期'] = m.group(1)
+    if not result.get('税种'):
+        for tax in ['增值税','企业所得税','城建税','印花税','教育费附加','地方教育附加','消费税','个人所得税']:
+            if tax in text:
+                result['税种'] = tax
+                break
+    return result
+
+@app.post("/api/ocr/scan")
+async def ocr_scan(voucher_type: str = Form(...), subject_id: str = Form("M"), file: UploadFile = File(...)):
+    """上传凭证图片，OCR 识别后存入数据库"""
+    import uuid
+    ext = file.filename.rsplit('.', 1)[-1] if '.' in file.filename else 'png'
+    fname = f"{uuid.uuid4().hex}.{ext}"
+    fpath = OCR_IMAGES / fname
+    fpath.write_bytes(await file.read())
+
+    # OCR 识别
+    reader = get_ocr_reader()
+    results = reader.readtext(str(fpath), detail=0)
+    raw_text = '\n'.join(results)
+
+    # 结构化提取
+    structured = extract_fields(raw_text, voucher_type)
+
+    with sqlite3.connect(str(OCR_DB)) as conn:
+        cursor = conn.execute(
+            "INSERT INTO vouchers (voucher_type, subject_id, image_path, raw_text, structured_data) VALUES (?,?,?,?,?)",
+            (voucher_type, subject_id, str(fpath), raw_text, json.dumps(structured, ensure_ascii=False))
+        )
+        vid = cursor.lastrowid
+        conn.commit()
+
+    return {"id": vid, "voucher_type": voucher_type, "subject_id": subject_id, "raw_text": raw_text, "structured_data": structured, "image_path": str(fpath)}
+
+@app.get("/api/ocr/records")
+async def ocr_records(subject_id: str = "", voucher_type: str = ""):
+    """查询 OCR 凭证记录"""
+    with sqlite3.connect(str(OCR_DB)) as conn:
+        conn.row_factory = sqlite3.Row
+        sql = "SELECT * FROM vouchers WHERE 1=1"
+        params = []
+        if subject_id:
+            sql += " AND subject_id=?"
+            params.append(subject_id)
+        if voucher_type:
+            sql += " AND voucher_type=?"
+            params.append(voucher_type)
+        sql += " ORDER BY created_at DESC LIMIT 100"
+        rows = conn.execute(sql, params).fetchall()
+    records = []
+    for r in rows:
+        d = dict(r)
+        d['structured_data'] = json.loads(d['structured_data']) if d['structured_data'] else {}
+        records.append(d)
+    return {"records": records, "total": len(records)}
+
+@app.put("/api/ocr/records/{vid}")
+async def ocr_update(vid: int, data: dict):
+    """人工修正结构化字段"""
+    with sqlite3.connect(str(OCR_DB)) as conn:
+        conn.execute(
+            "UPDATE vouchers SET structured_data=?, updated_at=datetime('now','localtime') WHERE id=?",
+            (json.dumps(data, ensure_ascii=False), vid)
+        )
+        conn.commit()
+    return {"success": True}
+
+@app.delete("/api/ocr/records/{vid}")
+async def ocr_delete(vid: int):
+    """删除凭证记录"""
+    with sqlite3.connect(str(OCR_DB)) as conn:
+        conn.execute("DELETE FROM vouchers WHERE id=?", (vid,))
+        conn.commit()
+    return {"success": True}
 
 @app.get("/")
 async def root():
