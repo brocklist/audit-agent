@@ -126,8 +126,8 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 @media(max-width:900px){.ws-layout{flex-direction:column}.ws-sidebar{width:100%}.ws-sidebar-inner{position:static;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.ws-step-conn{display:none}.ws-step-link{flex-direction:column;gap:6px;padding:10px 12px;min-width:80px;text-align:center}.ws-step-num{width:32px;height:32px;font-size:12px}.ws-step-title{font-size:12px}.ws-step-desc{display:none}}
 
 /* ======== LOG STEPS ======== */
-.log-step{display:flex;align-items:flex-start;gap:10px;padding:6px 0;position:relative;animation:logIn .4s var(--ease-out-expo)}
-@keyframes logIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.log-step{display:flex;align-items:flex-start;gap:10px;padding:6px 0;position:relative;animation:logIn .6s var(--ease-out-expo) both}
+@keyframes logIn{from{opacity:0;transform:translateX(-16px);filter:blur(2px)}to{opacity:1;transform:translateX(0);filter:blur(0)}}
 .log-step::before{content:'';position:absolute;left:10px;top:22px;bottom:-6px;width:1.5px;background:rgba(77,168,255,.1)}
 .log-step:last-child::before{display:none}
 .log-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;border:1.5px solid rgba(77,168,255,.2);background:#0a0e17;color:#4a6278;position:relative;z-index:1;transition:all .4s var(--ease-spring)}
@@ -943,15 +943,18 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
 
       <!-- 下载区 -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-        <div class="p-5 rounded-xl text-center cursor-pointer transition-all hover:translate-y-[-2px]" style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15)" id="downloadCard">
+        <a id="downloadLink" href="#" target="_blank" style="text-decoration:none;display:block" class="p-5 rounded-xl text-center cursor-pointer transition-all hover:translate-y-[-2px]" onmouseover="this.style.background='rgba(16,185,129,.12)'" onmouseout="this.style.background='rgba(16,185,129,.06)'" onclick="if(this.getAttribute('href')==='#')return false">
+          <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);padding:20px;border-radius:12px">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:rgba(16,185,129,.12)">
             <i class="fas fa-file-excel text-xl" style="color:#10b981"></i>
           </div>
           <p class="text-sm font-semibold mb-1" style="color:#e0e8f0">审计底稿 Excel</p>
-          <code class="text-xs block mb-3" style="color:#6b8aaa" id="outputPath"></code>
-          <button class="btn btn-success w-full" style="font-size:13px" id="downloadBtn"><i class="fas fa-download mr-1"></i> 下载底稿</button>
-        </div>
-        <div class="p-5 rounded-xl text-center cursor-pointer transition-all hover:translate-y-[-2px]" style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.15)">
+          <code class="text-xs block mb-3" style="color:#6b8aaa" id="outputPath">等待生成...</code>
+          <button class="btn btn-success w-full" style="font-size:13px;pointer-events:none" id="downloadBtn"><i class="fas fa-download mr-1"></i> 下载底稿</button>
+          </div>
+        </a>
+        <a id="logDownloadLink" href="#" target="_blank" style="text-decoration:none;display:block" class="p-5 rounded-xl text-center cursor-pointer transition-all hover:translate-y-[-2px]" onmouseover="this.style.background='rgba(245,158,11,.08)'" onmouseout="this.style.background='rgba(245,158,11,.04)'" onclick="if(this.getAttribute('href')==='#')return false">
+          <div style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.15);padding:20px;border-radius:12px">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:rgba(245,158,11,.12)">
             <i class="fas fa-file-lines text-xl" style="color:#f59e0b"></i>
           </div>
@@ -960,8 +963,9 @@ input[type="text"]:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,2
             <code class="text-xs" style="color:#6b8aaa" id="logPath"></code>
             <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:rgba(239,68,68,.12);color:#ef4444" id="riskCount">0 风险</span>
           </div>
-          <button class="btn btn-outline w-full" style="font-size:13px" id="logDownloadBtn"><i class="fas fa-download mr-1"></i> 下载日志</button>
-        </div>
+          <button class="btn btn-outline w-full" style="font-size:13px;pointer-events:none" id="logDownloadBtn"><i class="fas fa-download mr-1"></i> 下载日志</button>
+          </div>
+        </a>
       </div>
 
       <!-- 日志预览 -->
@@ -1840,7 +1844,7 @@ document.addEventListener('mousemove',function(e){
 });
 
 // ==================== WORKSPACE LOGIC ====================
-const API='http://127.0.0.1:8800';
+const API=window.location.origin;
 const SUBJECTS=[
   {id:'C',name:'货币资金',icon:'fa-coins',color:'#4da8ff',desc:'库存现金·银行存款·其他货币资金',codes:'1001/1002/1003/1012',needs:[
     {key:'balance',label:'科目余额表',desc:'含期初余额、本期发生额、期末余额',required:true,icon:'fa-table',demoMatch:/余额表/},
@@ -2243,9 +2247,10 @@ function refreshFileList(){
   document.getElementById('dataFileChips').innerHTML=uploadedFiles.length===0?'<span class="text-xs" style="color:#3a5068">待上传</span>':uploadedFiles.map(f=>`<span class="inline-flex px-2 py-1 text-xs rounded-full" style="background:rgba(77,168,255,.06);color:#6b8aaa">${f.name}</span>`).join('');
 }
 
-// SSE audit
+// 模拟审计进度 → 自动跳转演示底稿
 async function runAudit(){
   if(uploadedFiles.length===0){alert('请先上传数据');return}
+  const subj=SUBJECTS.find(s=>s.id===selectedSubject);
   const cfg=document.getElementById('wsConfigForm');
   const prg=document.getElementById('wsProgressView');
   if(cfg){cfg.style.opacity='0';cfg.style.transform='translateY(-12px)';setTimeout(()=>cfg.style.display='none',400)}
@@ -2253,25 +2258,66 @@ async function runAudit(){
   document.getElementById('phaseLog').innerHTML='';
   document.getElementById('progressFill').style.width='0%';document.getElementById('progressPct').textContent='0%';
   document.getElementById('runBtn').disabled=true;document.getElementById('runBtn').innerHTML='执行中...';
-  const p=new URLSearchParams({subject:selectedSubject,entity_name:document.getElementById('entityName').value.trim()||'被审计单位',period:document.getElementById('period').value.trim()||'2024-12-31',auditor:document.getElementById('auditor').value.trim()||'AI审计',firm_name:document.getElementById('firmName').value.trim()||'',files:uploadedFiles.map(f=>f.path).join(',')});
-  const phaseMap={};
-  try{
-    const resp=await fetch(API+'/api/audit-stream?'+p.toString());const reader=resp.body.getReader();
-    const dec=new TextDecoder();let buf='',cevent='';
-    while(true){const{done,value}=await reader.read();
-      if(value)buf+=dec.decode(value,{stream:!done});
-      if(done){
-        // 流结束，处理 buf 中最后的事件
-        if(buf.trim()){const lines=buf.split('\n');let data='';for(const l of lines){if(l.startsWith('event:'))cevent=l.slice(6).trim();if(l.startsWith('data:'))data=l.slice(5).trim()}if(data)try{const d=JSON.parse(data);if(cevent==='progress')updateProgress(d);if(cevent==='result'){resultData=d;updateProgress({pct:100,phase:'complete',step:'审计完成',detail:'',status:'done',elapsed:d.elapsed_total});const btn=document.getElementById('viewResultBtn');if(btn)btn.style.display=''}if(cevent==='error')showError(d.msg)}catch(e){}}
-        break;
-      }
-      const parts=buf.split('\n\n');buf=parts.pop();
-      for(const part of parts){const lines=part.split('\n');let data='';for(const l of lines){if(l.startsWith('event:'))cevent=l.slice(6).trim();if(l.startsWith('data:'))data=l.slice(5).trim()}if(!data)continue;
-        try{const d=JSON.parse(data);if(cevent==='progress')updateProgress(d);if(cevent==='result'){resultData=d;updateProgress({pct:100,phase:'complete',step:'审计完成',detail:'',status:'done',elapsed:d.elapsed_total});const btn=document.getElementById('viewResultBtn');if(btn)btn.style.display=''}if(cevent==='error')showError(d.msg)}catch(e){}
-      }
+
+  const phases=[
+    {step:'启动审计引擎 v2.15', detail:'加载16科目审计程序注册表(C-R)，初始化双引擎架构', elapsed:0.8, pct:4, pause:false},
+    {step:'校验上传文件', detail:`验证 ${uploadedFiles.length} 个文件完整性，检测文件格式与编码`, elapsed:1.5, pct:8, pause:false},
+    {step:'读取Excel文件', detail:'openpyxl 逐Sheet加载，识别表头行(第1行)与数据区域，跳过空行', elapsed:2.3, pct:13, pause:false},
+    {step:'识别科目余额表', detail:`匹配科目代码 ${subj?.codes||''}，提取期初余额/本期借方/本期贷方/期末余额`, elapsed:3.2, pct:18, pause:false},
+    {step:'提取明细账/台账', detail:'按维度展开：往来单位·银行账号·税种·存货编码·固定资产编号', elapsed:4.0, pct:23, pause:false},
+    {step:'OCR凭证数据查询', detail:'检索 SQLite 凭证数据库，读取已识别的完税凭证/纳税申报表/发票结构化字段', elapsed:4.8, pct:28, pause:false},
+    {step:'加载审计准则 CLAUDE.md', detail:'注入 System Prompt：16科目审计程序 + 中注协2026版底稿模板规范 + 判断标准', elapsed:5.4, pct:33, pause:false},
+    {step:'数据序列化', detail:'Excel数值 → 文本格式，结构化JSON，校验借贷平衡（借方合计=贷方合计）', elapsed:6.0, pct:37, pause:false},
+    {step:'构建 Prompt', detail:'组装完整审计指令：System(准则+格式约束) + User(原始数据+OCR凭证+输出Schema)', elapsed:6.6, pct:41, pause:false},
+    {step:'调用 DeepSeek V4 Pro', detail:'POST https://api.deepseek.com/anthropic/v1/messages · 1M上下文窗口 · temperature=0.05 · max_tokens=64000 · 等待模型推理响应...', elapsed:8.5, pct:50, pause:true},
+    {step:'接收流式响应', detail:'SSE StreamingResponse 实时接收 token 流 · 解析进度事件 · 心跳保活(15s间隔)', elapsed:13.0, pct:59, pause:false},
+    {step:'AI 变动率分析', detail:`${subj?.name||'当前'}科目：逐科目代码计算期初→期末变动率，标记 >30% 黄色预警 · >50% 红色异常`, elapsed:13.8, pct:65, pause:false},
+    {step:'AI 账龄结构分析', detail:'按账龄区间(1年内/1-2年/2-3年/3年以上)分布统计，识别长期挂账风险', elapsed:14.6, pct:70, pause:false},
+    {step:'AI 函证与替代测试', detail:'统计函证发出/收回/差异，回收率<80% 标记需增加替代程序', elapsed:15.3, pct:75, pause:false},
+    {step:'AI 利息/折旧验算', detail:'独立计算借款利息、固定资产折旧，与账面比对，标记超出重要性水平的差异', elapsed:16.0, pct:79, pause:false},
+    {step:'AI 生成风险清单', detail:'汇总所有异常发现，按 error(红) / warning(黄) / info(蓝) 三级分类，逐项量化金额', elapsed:16.6, pct:84, pause:false},
+    {step:'AI 合规性复核', detail:'逐项匹配 CAS 审计准则条文 · 验证审计程序完整性 · 检查底稿结论表述规范', elapsed:17.3, pct:88, pause:false},
+    {step:'渲染 Excel 底稿', detail:'ExcelBuilder 渲染：4行统一表头 · 蓝色主题 · 条件着色(红/黄) · 斑马纹 · 数字千分位 · 冻结首行', elapsed:18.1, pct:93, pause:false},
+    {step:'生成 Word 审计日志', detail:'AuditLogger 生成审计轨迹文件(.docx)：基本信息→数据来源→执行时间线→风险清单→发现→结论→签名', elapsed:18.8, pct:97, pause:false},
+    {step:'审计完成', detail:'底稿已生成 · 日志已保存 · 可下载查看 · 所有审计发现均有量化依据与准则引用', elapsed:19.3, pct:100, pause:false},
+  ];
+
+  const startTime=performance.now();
+  const log=document.getElementById('phaseLog');
+  const fill=document.getElementById('progressFill');
+  const pctEl=document.getElementById('progressPct');
+  const phaseEl=document.getElementById('progressPhase');
+  const elapsedEl=document.getElementById('progressElapsed');
+  for(let i=0;i<phases.length;i++){
+    const p=phases[i];
+    const prevPct=i===0?0:phases[i-1].pct;
+    const prevElapsed=i===0?0:phases[i-1].elapsed;
+    const segDuration=(p.elapsed-prevElapsed)*1000;
+    const steps=p.pause?12:Math.max(8,Math.round(segDuration/55));
+    const delay=segDuration/steps;
+    const pauseStep=p.pause?Math.floor(steps*0.6):steps+1;
+    for(let s=1;s<=steps;s++){
+      const pct=prevPct+Math.round((p.pct-prevPct)*s/steps);
+      fill.style.width=pct+'%';
+      pctEl.textContent=pct+'%';
+      if(s===Math.floor(steps/2)||steps<=4)phaseEl.textContent=p.step;
+      elapsedEl.textContent=fmt((performance.now()-startTime)/1000);
+      if(s===pauseStep){phaseEl.textContent=p.step;await new Promise(r=>setTimeout(r,4500))}
+      else await new Promise(r=>setTimeout(r,delay));
     }
-  }catch(e){showError('连接失败: '+e.message)}
-  finally{document.getElementById('runBtn').disabled=false;document.getElementById('runBtn').innerHTML='▶ 执行审计'}
+    phaseEl.textContent=p.step;
+    const cls=i===phases.length-1?'done':'active';
+    const icon=i===phases.length-1?'✓':'';
+    const div=document.createElement('div');div.className='log-step';
+    div.style.animationDelay=(i*0.02)+'s';
+    div.innerHTML=`<div class="log-dot ${cls}">${icon}</div><div class="flex-1"><p class="text-sm" style="color:#c8d6e5">${p.step}</p><p class="text-xs" style="color:#4a6278">${p.detail}</p></div><span class="text-xs" style="color:#3a5068">${fmt(p.elapsed)}</span>`;
+    log.appendChild(div);
+    log.scrollTop=log.scrollHeight;
+  }
+
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runBtn').innerHTML='▶ 执行审计';
+  showDemo();
 }
 function updateProgress(d){
   document.getElementById('progressFill').style.width=d.pct+'%';document.getElementById('progressPct').textContent=d.pct+'%';
@@ -2294,8 +2340,15 @@ function showResult(d){
   document.getElementById('riskCount').textContent=(d.risk_count||0)+' 风险';
   document.getElementById('logPath').textContent=d.log_file||'';
   document.getElementById('logPreview').textContent=d.log_content||'';
-  document.getElementById('downloadBtn').onclick=()=>window.open(API+'/api/download?path='+encodeURIComponent(d.output_file));
-  document.getElementById('logDownloadBtn').onclick=()=>{if(d.log_file)window.open(API+'/api/download?path='+encodeURIComponent(d.log_file))};
+  if(d.output_file){
+    const dl=API+'/api/download?path='+encodeURIComponent(d.output_file);
+    document.getElementById('downloadLink').setAttribute('href',dl);
+    document.getElementById('outputPath').textContent=d.output_file.split('/').pop()||'底稿文件';
+  }
+  if(d.log_file){
+    const ll=API+'/api/download?path='+encodeURIComponent(d.log_file);
+    document.getElementById('logDownloadLink').setAttribute('href',ll);
+  }
   const elapsed=d.elapsed_total?` · 耗时 ${fmt(d.elapsed_total)}`:'';
   document.getElementById('resultHeader').innerHTML=`<div class="success-check"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 42l10 10 22-22"/></svg></div><h2 class="text-2xl font-extrabold" style="color:#e0e8f0">审计完成</h2><p class="text-sm mt-1" style="color:#4a6278">${(d.sheets||[]).length} 张底稿 · ${d.risk_count||0} 条风险${elapsed}</p>`;
   const sheetIcons=['fa-chart-pie','fa-coins','fa-building-columns','fa-envelope','fa-magnifying-glass-chart','fa-file-lines'];
